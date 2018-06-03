@@ -1,5 +1,4 @@
 #' @description It corrects NAN and normalizes data.
-#' @import softImpute
 #' @import ncImpute
 #' @export
 #'
@@ -21,7 +20,7 @@ data_preprocess <- function(data,
   }
 
   if (impute) {
-    softImpute(cont, rank = 100, lambda = 30) -> cont
+    ncImpute(cont, rank = 100, lambda = 30) -> cont
     # softImpute(desc) -> desc
   }
   if (scale) {

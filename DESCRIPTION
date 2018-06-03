@@ -12,6 +12,5 @@ LazyData: true
 Suggests: packagedocs
 VignetteBuilder: packagedocs
 RoxygenNote: 6.0.1
-Imports: 
-    ncImpute
-Remotes: diegofrasal/ncImpute
+Imports:
+    softImpute

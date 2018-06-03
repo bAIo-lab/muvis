@@ -1,4 +1,4 @@
-#' @description It corrects NAN and normalizes data.
+#' This function corrects NAN and normalizes data.
 #' @import softImpute
 #' @export
 #'

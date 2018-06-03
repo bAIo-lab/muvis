@@ -1,5 +1,5 @@
 ---
-title: "Questools Documentation"
+title: "questools Documentation"
 subtitle: "What the Package Does (Title Case)"
 author: "The package maintainer"
 copyright: "The package maintainer"
@@ -7,9 +7,9 @@ output:
   packagedocs::package_docs_rd:
     toc: true
     toc_collapse: false
-redirect: bAIo-lab/Qeustools/rd.html
+redirect: bAIo-lab/questools/rd.html
 vignette: |
-  %\VignetteIndexEntry{Questools Package Reference}
+  %\VignetteIndexEntry{questools Package Reference}
   %\VignetteEngine{packagedocs::redirect}
 navpills: |
   <li><a href='docs.html'>Docs</a></li>

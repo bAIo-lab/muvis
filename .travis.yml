@@ -4,6 +4,9 @@ cache: packages
 install:
 - R -e 'install.packages("devtools")'
 - R -e 'devtools::install(dependencies = TRUE, upgrade_dependencies = TRUE)'
+- R -e 'source("http://bioconductor.org/biocLite.R")'
+- R -e 'biocLite(c("graph", "RBGL", "Rgraphviz", "SIN", "glasso", "igraph"))'
+- R -e 'devtools::install_github("cran/gRapHD")'
 warnings_are_errors: no
 after_success: Rscript -e "packagedocs::deploy_travis()"
 env:

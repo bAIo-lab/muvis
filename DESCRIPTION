@@ -1,4 +1,4 @@
-Package: Questools
+Package: questools
 Type: Package
 Title: What the Package Does (Title Case)
 Version: 0.1.0
@@ -13,4 +13,12 @@ Suggests: packagedocs
 VignetteBuilder: packagedocs
 RoxygenNote: 6.0.1
 Imports:
-    softImpute
+    softImpute,
+    purrr,
+    visNetwork,
+    gRim,
+    RBGL,
+    SIN,
+    glasso,
+    igraph,
+    gRapHD

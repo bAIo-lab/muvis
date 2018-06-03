@@ -1,7 +1,6 @@
-#' print
-#' @import softImptue
-#' @import readxl
-#'
+#' @description It corrects NAN and normalizes data.
+#' @import softImpute
+#' @import ncImpute
 #' @export
 #'
 
@@ -15,14 +14,15 @@ data_preprocess <- function(data,
     cont <- data[, which(is.cont)]
     desc <- data[, !which(is.cont)]
   } else{
-    level <- apply(data, 2 , function(x) length(unique(x)))
-    cont <- data[,which(level > 6)]
-    desc <- data[,which(level <= 6)]
+    level <- apply(data, 2 , function(x)
+      length(unique(x)))
+    cont <- data[, which(level > 6)]
+    desc <- data[, which(level <= 6)]
   }
 
   if (impute) {
-    softImpute(cont, rank=100, lambda = 30) -> cont
-   # softImpute(desc) -> desc
+    softImpute(cont, rank = 100, lambda = 30) -> cont
+    # softImpute(desc) -> desc
   }
   if (scale) {
     cont <- biScale(cont)

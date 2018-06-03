@@ -2,4 +2,4 @@
 
 export(data_preprocess)
 import(readxl)
-import(softImptue)
+import(softImpute)

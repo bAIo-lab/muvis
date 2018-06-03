@@ -1,0 +1,12 @@
+language: R
+sudo: no
+cache: packages
+install:
+- R -e 'install.packages("devtools")'
+- R -e 'devtools::install(dependencies = TRUE, upgrade_dependencies = TRUE)'
+warnings_are_errors: false
+
+after_success: Rscript -e "packagedocs::deploy_travis()"
+env:
+  global:
+    secure: Ixba9f/N58ttFn5ICs4vFysB0V63wllYwPCEB9s8gMpmsCrSXXxuaeHGoqMk9jIZiixMw9x/sKCC3HV3i3fRz5e+HCPJKcOc16OQ0+ZVEzArXpvV+gUY9jNSSyTKO60bqm/mFTPlSpEZMZWpkZK1u8bL1YzV7F8CCm32DvHwO5fRQtGlgEPWKhUFQPqVNycaAUwv3VGCkBGBJ5WzPOVGCVYTZnbK1cskJxh+YVO+Y6OW61MNEtN9Z1L4ON9z9ZITQfphchZIW3tt6wo/gcj4nipw1SWtNSVIBBd92Y9HgZxiK5jRwvZJNnREIm0MdjBGWbQBuB2rvxU3uilu/styXRVYfd0ShbTep8PAZfUQioU7TGvkj2QxbYQ0VLxs1JqgSwZp/UMCH/vOL/Z6/XtHl3cTHExLv1TPJhycHzJasm/lbO0T8n/kP4NdnrddJmS18rcA5sKW8tJi4Wndm/d3ImzVNMqCnhP/m3J6JNcv5pGybThYDmZzT+uLkexph6wCIPdtSVYfdhmDw8FraBDO8OF5VySa1ujxivubechDHH8dxBB+qp/4eIl9TqKKVaMKdqpo20kha0y7LJkwh7MDckRjJ5yF5g3nDknY1Sv+6Bkk7oJLWKlWP4SXjmE9qxEUhT3Fab9P4u4C28DvJYinDzGpPMHg4Aj9SIMNCjzhhMY=

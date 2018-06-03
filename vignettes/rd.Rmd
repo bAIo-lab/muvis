@@ -1,0 +1,20 @@
+---
+title: "Questools Documentation"
+subtitle: "What the Package Does (Title Case)"
+author: "The package maintainer"
+copyright: "The package maintainer"
+output:
+  packagedocs::package_docs_rd:
+    toc: true
+    toc_collapse: false
+redirect: bAIo-lab/Qeustools/rd.html
+vignette: |
+  %\VignetteIndexEntry{Questools Package Reference}
+  %\VignetteEngine{packagedocs::redirect}
+navpills: |
+  <li><a href='docs.html'>Docs</a></li>
+  <li class="active"><a href='rd.html'>Package Ref</a></li>
+---
+
+```{r auto-gen-child, child="auto-generated-rd.Rmd"}
+```

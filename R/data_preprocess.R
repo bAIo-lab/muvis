@@ -1,6 +1,5 @@
 #' print
 #' @import softImptue
-#' @import ncImpute
 #' @import readxl
 #'
 #' @export
@@ -22,7 +21,7 @@ data_preprocess <- function(data,
   }
 
   if (impute) {
-    ncImpute(cont, rank=100, lambda = 30) -> cont
+    softImpute(cont, rank=100, lambda = 30) -> cont
    # softImpute(desc) -> desc
   }
   if (scale) {

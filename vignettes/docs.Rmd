@@ -1,5 +1,5 @@
 ---
-title: "questools Documentation"
+title: "Questools Documentation"
 subtitle: "What the Package Does (Title Case)"
 author: "The package maintainer"
 copyright: "The package maintainer"
@@ -9,7 +9,7 @@ output:
     toc_collapse: false
 redirect: bAIo-lab/questools
 vignette: |
-  %\VignetteIndexEntry{questools Documentation}
+  %\VignetteIndexEntry{Questools Documentation}
   %\VignetteEngine{packagedocs::redirect}
 navpills: |
   <li class="active"><a href='docs.html'>Docs</a></li>
@@ -26,7 +26,7 @@ rdl <- function(x) packagedocs::rd_link(deparse(substitute(x)))
 
 # Header 1
 
-Welcome to the questools Documentation documentation page.
+Welcome to the Questools Documentation documentation page.
 
 # Example
 

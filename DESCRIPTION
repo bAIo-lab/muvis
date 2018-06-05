@@ -12,6 +12,7 @@ LazyData: true
 Suggests: packagedocs
 VignetteBuilder: packagedocs
 RoxygenNote: 6.0.1
+biocViews:
 Imports:
     softImpute,
     visNetwork,

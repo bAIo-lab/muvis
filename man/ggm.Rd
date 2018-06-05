@@ -16,13 +16,14 @@ ggm(data, treshold = 0.05, significance = 0.05, rho = 0.1)
 \item{rho}{(Non-negative) regularization parameter for glasso (default = 0.1).}
 }
 \value{
-A list in which each element is the details of a specific fitted method.aic: Fit details of aic model.
-bic: Fit details of bic model.
-test: Fit details of significance test model.
-pcor: Partial correlaiton matrix used for tresholding method.
-significance: Significance matrix consisting p.values of each edge.
-glasso: Partial correlation matrix calculated by glasso.
-betweenness: Betweenness measurement for each node.
+A list in which each element is the details of a specific fitted method.
+\item{aic}{Fit details of aic model.}
+\item{bic}{Fit details of bic model.}
+\item{test}{Fit details of significance test model.}
+\item{pcor}{Partial correlaiton matrix used for tresholding method.}
+\item{significance}{Significance matrix consisting p.values of each edge.}
+\item{glasso}{Partial correlation matrix calculated by glasso.}
+\item{betweenness}{Betweenness measurement for each node.}
 }
 \description{
 A function to fit a gussian graphical model to continuous variables using six methods, i.e, stepwise AIC, stepwise BIC, stepwise significance test, partial correlation tresholding, edgewise significance test, and glasso.
@@ -33,10 +34,10 @@ The function combines six methods to construct the model, that is, the edge set 
 }
 \references{
 Højsgaard, S., Edwards, D., & Lauritzen, S. (2012). Graphical Models with R. Springer US. \url{https://doi.org/10.1007/978-1-4614-2299-0}
-Friedman, J., Hastie, T., & Tibshirani, R. (2007). Sparse inverse covariance estimation with the graphical lasso. Biostatistics, 9(3), 432–441.
-\url{https://doi.org/10.1093/biostatistics/kxm045}
-Abreu, G. C. G., Edwards, D., & Labouriau, R. (2010). High-Dimensional Graphical Model Search with thegRapHDRPackage. Journal of Statistical Software, 37(1).
-\url{https://doi.org/10.18637/jss.v037.i01}
+
+Friedman, J., Hastie, T., & Tibshirani, R. (2007). Sparse inverse covariance estimation with the graphical lasso. Biostatistics, 9(3), 432–441. \url{https://doi.org/10.1093/biostatistics/kxm045}
+
+Abreu, G. C. G., Edwards, D., & Labouriau, R. (2010). High-Dimensional Graphical Model Search with thegRapHDRPackage. Journal of Statistical Software, 37(1). \url{https://doi.org/10.18637/jss.v037.i01}
 }
 \author{
 Elyas Heidari

@@ -14,11 +14,14 @@ VignetteBuilder: packagedocs
 RoxygenNote: 6.0.1
 Imports:
     softImpute,
-    purrr,
     visNetwork,
+    gRbase,
     gRim,
-    RBGL,
+    graph,
     SIN,
     glasso,
     igraph,
-    gRapHD
+    stats,
+    methods
+remotes: cran/gRapHD
+

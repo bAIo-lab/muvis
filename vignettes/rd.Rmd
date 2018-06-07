@@ -1,8 +1,8 @@
 ---
 title: "Questools Documentation"
-subtitle: "What the Package Does (Title Case)"
-author: "The package maintainer"
-copyright: "The package maintainer"
+subtitle: "Questionnarie Tools."
+author: "statCompTeam@bAIo-lab"
+copyright: "statCompTeam@bAIo-lab"
 output:
   packagedocs::package_docs_rd:
     toc: true

@@ -1,18 +1,16 @@
 Package: Questools
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Questionnarie Tools.
 Version: 0.1.0
-Author: Who wrote it
-Maintainer: The package maintainer <yourself@somewhere.net>
-Description: More about what it does (maybe more than one line)
-    Use four spaces when indenting paragraphs within the Description.
-License: What license is it under?
+Author: statCompTeam@bAIo-lab
+Maintainer: statCompTeam@bAIo-lab <sharifi.statComp@gmail.com>
+Description: A collection of tools to preprocess, analyze, and visualize Questionnaire datasets. It can be also applied to every dataset including both continuous and categorical data, e.g., genotype-phenotype datasets, etc.
+License: GPL-3
 Encoding: UTF-8
 LazyData: true
-Suggests: packagedocs
 VignetteBuilder: packagedocs
 RoxygenNote: 6.0.1
-biocViews:
+biocViews: 
 Imports:
     softImpute,
     visNetwork,
@@ -25,4 +23,4 @@ Imports:
     stats,
     methods
 remotes: cran/gRapHD
-
+Suggests: packagedocs

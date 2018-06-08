@@ -38,7 +38,7 @@
 #' @importFrom visNetwork toVisNetworkData visNetwork visOptions visEdges
 #'
 
-min.forest <- function(data, stat = "BIC", community = T) {
+minforest <- function(data, stat = "BIC", community = T) {
   my.forest <- gRapHD::minForest(data, homog = F, stat = stat)
   nby <- gRapHD::neighbourhood(my.forest, orig = 1, rad = 2000)$v[, 1]
   bc.marg <- yas.df[, nby]

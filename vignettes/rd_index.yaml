@@ -15,5 +15,10 @@ sections:
 -
   section_name: Package Functions
   topics:
+    - bn
     - data_preprocess
+    - div
+    - div2
     - ggm
+    - min.forest
+    - plot

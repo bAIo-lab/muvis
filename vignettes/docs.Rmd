@@ -25,3 +25,23 @@ rdl <- function(x) packagedocs::rd_link(deparse(substitute(x)))
 ```
 
 # Questools
+
+Questools is a visualization and analysis toolkit for Questionnaire datasets.  To use this package, you 
+will need the R statistical computing environment (version 3.0 or later).
+```{r echo=FALSE}
+library("jpeg")
+jj <- readJPEG("./figure/ques.jpeg",native=TRUE)
+plot(0:1,0:1,type="n",ann=FALSE,axes=FALSE)
+rasterImage(jj,0,0,1,1)
+```
+
+We highly recommend installation of **Questools** through our github.
+For installation in R you can use devtools package:
+
+```{r echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
+install.packages("devtools")
+devtools::install_github("bAIo-lab/Questools")
+library(Questools)
+```
+
+# Results

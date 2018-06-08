@@ -17,6 +17,3 @@ library(Questools)
 News and announcements for the **Questools** project will appear here:
 
 https://baio-lab.github.io/Questools/
-
-This release supports Mac OS X and Linux. Windows may support this 
-build, but Monocle has not been tested on Windows yet.

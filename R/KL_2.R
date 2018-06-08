@@ -16,7 +16,6 @@
 #' @return  if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.
 #'
 #' @examples
-#' TODO
 #'
 #' @export
 #'

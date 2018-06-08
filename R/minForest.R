@@ -23,13 +23,12 @@
 #'
 #'
 #' @return a list containing:
-#' \item{a gRapHD object which is the fit model.}
-#' \item{betweenness measurements for each node.}
-#' \item{the plot of the network.}
+#' \item{}{a gRapHD object which is the fit model.}
+#' \item{}{betweenness measurements for each node.}
+#' \item{}{the plot of the network.}
 #'
 #'
 #' @examples
-#' TODO
 #'
 #' @export
 #'

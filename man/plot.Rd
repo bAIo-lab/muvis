@@ -17,16 +17,15 @@ plot(data, vars, levels = 5, pie = F)
 }
 \value{
 if pie = TRUE the function returns pie chart, otherwise, there may be 5 scenarios:
-\item{one categorical variable: plots the histogram of the variable.}
-\item{one continuous variable: plots the density plot of the variable.}
-\item{one categorical and one continuous variable: plots a boxplot of the continuous variable for different levels of the categorical variable.}
-\item{two continuous variables: plots a scatter plot of two variables.}
+\item{}{one categorical variable: plots the histogram of the variable.}
+\item{}{one continuous variable: plots the density plot of the variable.}
+\item{}{one categorical and one continuous variable: plots a boxplot of the continuous variable for different levels of the categorical variable.}
+\item{}{two continuous variables: plots a scatter plot of two variables.}
 }
 \description{
 A function to interctively visualize one or a pair of the variables.
 }
 \examples{
-TODO
 
 }
 \author{

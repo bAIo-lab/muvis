@@ -24,7 +24,6 @@ if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. i
 A function to calculate Kullback-Leibler divergence for each categorical variable between two groups of samples which do not follow the linear association between two continuous variables.
 }
 \examples{
-TODO
 
 }
 \author{

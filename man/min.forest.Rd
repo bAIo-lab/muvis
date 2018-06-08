@@ -15,9 +15,9 @@
 }
 \value{
 a list containing:
-\item{a gRapHD object which is the fit model.}
-\item{betweenness measurements for each node.}
-\item{the plot of the network.}
+\item{}{a gRapHD object which is the fit model.}
+\item{}{betweenness measurements for each node.}
+\item{}{the plot of the network.}
 }
 \description{
 A function to fit a minimum forest to data.
@@ -27,7 +27,6 @@ The function also visualizes the minimum forest and color the graph based on the
 The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
 }
 \examples{
-TODO
 
 }
 \references{

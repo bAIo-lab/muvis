@@ -24,7 +24,6 @@ The function helps users to find out the variables with the most divergence betw
 The function is able to carry out permutation test to calculate the p_value for each variable.
 }
 \examples{
-TODO
 
 }
 \author{

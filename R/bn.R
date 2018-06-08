@@ -37,7 +37,6 @@
 #'
 #'
 #' @examples
-#' TODO
 #'
 #' @export
 #'

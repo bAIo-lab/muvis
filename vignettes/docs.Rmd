@@ -25,4 +25,4 @@ rdl <- function(x) packagedocs::rd_link(deparse(substitute(x)))
 ```
 
 # Questools
-![]() 
+![hi](./figure/ques.png) 

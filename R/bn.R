@@ -3,24 +3,24 @@
 #'
 #' @description
 #' A function to fit a Bayesian network (a directed acyclic graph) to variables using bootstrap.
-#' The function also visualizes the structure of the Beysian network and decompose the graph into the underlying communities.
+#' The function also visualizes the structure of the Baysian network and decompose the graph into the underlying communities.
 #'
 #'
-#' @param data a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurments.
-#' @param C.alg a vector of Constraint-based and Local Discovery algorithms from {"gs", "mmpc", "si.hiton.pc"}. Defualt value is NULL. See Details.
-#' @param S.alg a vector of Score-based and Hybrid algorithms form {"pc.stable", "hc", "tabu", "mmhc", "aracne"}. Defaut value is "mmhc". See Details.
+#' @param data a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
+#' @param C.alg a vector of Constraint-based and Local Discovery algorithms from {"gs", "mmpc", "si.hiton.pc"}. The default value is NULL. See Details.
+#' @param S.alg a vector of Score-based and Hybrid algorithms form {"pc.stable", "hc", "tabu", "mmhc", "aracne"}. The default value is "mmhc". See Details.
 #' @param blacklist a two-column dataframe which includes edges to be excluded from the network.
 #' @param whitelist a two-column dataframe which includes edges to be included from the network.
-#' @param R an integer value to indicate the number of runs of bootstrap sampling. Defult value is 10.
-#' @param m an integer value to indicate the number of rows to be sampled from dataset in each bootstrap sampling. Defult value is the number of rows in data.
-#' @param str.tresh a double value between 0 and 1 indicating the threshold value for an association to be considered in the network. Defult value is 0.
-#' @param dir.tresh a double value between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. Defult value is 0.
-#' @param community a logical value. If TRUE (the defualt) the network will be colored into communities of edge-dense subgraphs.
+#' @param R an integer value to indicate the number of runs of bootstrap sampling. The default value is 10.
+#' @param m an integer value to indicate the number of rows to be sampled from dataset in each bootstrap sampling. The default value is the number of rows in data.
+#' @param str.tresh a double value between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.
+#' @param dir.tresh a double value between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.
+#' @param community a logical value. If TRUE (The default) the network will be colored into communities of edge-dense subgraphs.
 #'
 #'
 #'
 #' @details
-#' The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is cunstructed based on the strength of associations calculated by bootstrapping.
+#' The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
 #'
 #'
 #' @references  Nagarajan R, Scutari M, Lebre S (2013). "Bayesian Networks in R with Applications in Systems Biology". Springer.
@@ -42,21 +42,10 @@
 #' @export
 #'
 #' @importFrom purrr map
-#' @importFrom base do.call rbind colMeans rownames paste0 unlist
 #' @importFrom utils View
-#' @importFrom igraph graph.data.frame cluster_louvain membership graph
+#' @importFrom igraph graph.data.frame cluster_louvain membership
 #' @importFrom visNetwork toVisNetworkData visNetwork visOptions visEdges
 
-
-library(purrr)
-library(visNetwork)
-library(gRim)
-library(RBGL)
-library(SIN)
-library(glasso)
-library(igraph)
-library(gRapHD)
-library(bnlearn)
 
 bn <-
   function(data,
@@ -71,67 +60,65 @@ bn <-
            community = T) {
     m <- dim(data)[1]
     bootstrap <- TRUE
-    if(bootstrap){
+    if (bootstrap) {
       S.alg %>% purrr::map(function(alg)
         boot.strength(
           data,
           R = R,
           m = m,
           algorithm =  alg,
-          algorithm.args = list(
-            blacklist = blacklist,
-            whitelist = whitelist
-          )
+          algorithm.args = list(blacklist = blacklist,
+                                whitelist = whitelist)
         )) -> S.boot
       S.boot %>% purrr::map(function(x)
         x$strength) -> S.strength
       S.boot %>% purrr::map(function(x)
         x$direction) -> S.direction
-      strength <- base::do.call(base::rbind, S.strength)
-      direction <- base::do.call(base::rbind, S.direction)
+      strength <-  do.call(rbind, S.strength)
+      direction <-  do.call(rbind, S.direction)
 
-      if(length(C.alg) != 0){
+      if (length(C.alg) != 0) {
         C.alg %>% purrr::map(function(alg)
           boot.strength(
             data,
             R = R,
             m = m,
             algorithm =  alg,
-            algorithm.args = list(
-              blacklist = blacklist,
-              whitelist = whitelist
-            )
+            algorithm.args = list(blacklist = blacklist,
+                                  whitelist = whitelist)
           )) -> C.boot
         C.boot %>% purrr::map(function(x)
           x$strength) -> C.strength
         C.boot %>% purrr::map(function(x)
           x$direction) -> C.direction
-        C.strength <- base::do.call(base::rbind, C.strength)
-        C.direction <- base::do.call(base::rbind, C.direction)
-        strength <- base::rbind(C.strength, strength)
-        direction <- base::rbind(C.direction , direction)
+        C.strength <-  do.call(rbind, C.strength)
+        C.direction <-  do.call(rbind, C.direction)
+        strength <-  rbind(C.strength, strength)
+        direction <-  rbind(C.direction , direction)
       }
-      direction <- base::colMeans(direction, na.rm = TRUE)
-      strength <- base::colMeans(strength, na.rm = TRUE)
+      direction <-  colMeans(direction, na.rm = TRUE)
+      strength <-  colMeans(strength, na.rm = TRUE)
 
     }
     bn.s <- S.boot[[1]]
-    bn.s[which(!is.na(strength) & strength >= str.tresh & !is.na(direction) & direction >= dir.tresh), ] -> bn.s
+    bn.s[which(!is.na(strength) &
+                 strength >= str.tresh &
+                 !is.na(direction) & direction >= dir.tresh),] -> bn.s
     utils::View(bn.s)
     bn.s1 <- bn.s
     bn.s2 <- bn.s
-    base::rownames(bn.s1) <- base::paste0(bn.s1$from, bn.s1$to)
+    rownames(bn.s1) <-  paste0(bn.s1$from, bn.s1$to)
     bn.s2$from <- bn.s$to
     bn.s2$to <- bn.s$from
-    base::rownames(bn.s2) <- base::paste0(bn.s2$from, bn.s2$to)
-    base::rownames(bn.s) %>% purrr::map(function(x)
+    rownames(bn.s2) <-  paste0(bn.s2$from, bn.s2$to)
+    rownames(bn.s) %>% purrr::map(function(x)
       (bn.s1[x, 4] > bn.s2[x, 4])) -> direction
-    direction <- base::unlist(direction)
+    direction <-  unlist(direction)
 
-    g <- bn.s[direction, ]
+    g <- bn.s[direction,]
     g <- igraph::graph.data.frame(bn.s)
     data <- visNetwork::toVisNetworkData(g)
-    if(community){
+    if (community) {
       fc <- igraph::cluster_louvain(as.undirected(g))
       groups <- igraph::membership(fc)
       data$nodes %>% mutate(group = groups[data$nodes$id]) -> data$nodes
@@ -142,5 +129,5 @@ bn <-
         degree = 1,
         hover = T
       )) %>% visNetwork::visEdges(arrows = "to")
-    list(igraph::graph = bn.s)
+    list(graph = bn.s)
   }

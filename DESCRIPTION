@@ -21,6 +21,10 @@ Imports:
     glasso,
     igraph,
     stats,
-    methods
-remotes: cran/gRapHD
+    methods,
+    entropy,
+    dplyr,
+    highcharter,
+    limma
+remotes: cran/gRapHD, jlmelville/smallvis/smallvis
 Suggests: packagedocs

@@ -47,7 +47,7 @@ ggm <-
            treshold = 0.05,
            significance = 0.05,
            rho = 0.1) {
-    model <- gRim::cmod( ~ . ^ ., data = data)
+    model <- gRim::cmod(~ . ^ ., data = data)
     aic <- gRbase::stepwise(model)
     bic <- gRbase::stepwise(model, k = log(nrow(data)))
     test <- gRbase::stepwise(model, criterion = "test")

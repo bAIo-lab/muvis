@@ -14,6 +14,7 @@ vignette: |
 navpills: |
   <li class="active"><a href='docs.html'>Docs</a></li>
   <li><a href='rd.html'>Package Ref</a></li>
+  <li><a href='https://github.com/bAIo-lab/Questools'>Github <i class='fa fa-github'></i></a></li>
 ---
 
 ```{r global_options, include=FALSE}

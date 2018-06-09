@@ -1,0 +1,737 @@
+<html lang="en">
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta charset="utf-8">
+  <meta name="generator" content="pandoc" />
+
+    <meta name="author" content="statCompTeam@bAIo-lab" />
+  
+  
+  <title>Questools Documentation</title>
+
+    <script src="rd_files/jquery-1.11.3/jquery.min.js"></script>
+  <link href="rd_files/bootstrap-3.3.2/css/bootstrap.min.css" rel="stylesheet" />
+  <script src="rd_files/bootstrap-3.3.2/js/bootstrap.min.js"></script>
+  <script src="rd_files/bootstrap-3.3.2/shim/html5shiv.min.js"></script>
+  <script src="rd_files/bootstrap-3.3.2/shim/respond.min.js"></script>
+  <link href="rd_files/highlight-8.4/tomorrow.css" rel="stylesheet" />
+  <script src="rd_files/highlight-8.4/highlight.pack.js"></script>
+  <link href="rd_files/fontawesome-4.3.0/css/font-awesome.min.css" rel="stylesheet" />
+  <script src="rd_files/stickykit-1.1.1/sticky-kit.min.js"></script>
+  <script src="rd_files/jqueryeasing-1.3/jquery.easing.min.js"></script>
+  <link href="rd_files/recliner-0.2.2/recliner.css" rel="stylesheet" />
+  <script src="rd_files/recliner-0.2.2/recliner.min.js"></script>
+  <script src="rd_files/recliner-0.2.2/onload.js"></script>
+  <link href="rd_files/packagedocs-0.0.1/pd.css" rel="stylesheet" />
+  <script src="rd_files/packagedocs-0.0.1/pd.js"></script>
+  <script src="rd_files/packagedocs-0.0.1/pd-sticky-toc.js"></script>
+  
+  
+  
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+
+<body>
+
+  
+  <header class="navbar navbar-white navbar-fixed-top" role="banner" id="header">
+    <div class="container">
+      <div class="navbar-header">
+        <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".navbar-collapse">
+          <span class="sr-only">Toggle navigation</span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+          <span class="icon-bar"></span>
+        </button>
+                <a href="index.html" class="navbar-brand page-scroll">
+        Questools Documentation - Questionnarie Tools.
+        </a>
+      </div>
+            <nav class="collapse navbar-collapse" role="navigation">
+        <ul class="nav nav-pills pull-right">
+<li>
+<a href='docs.html'>Docs</a>
+</li>
+<li class="active">
+<a href='rd.html'>Package Ref</a>
+</li>
+        </ul>
+      </nav>
+          </div>
+  </header>
+
+  <!-- Begin Body -->
+  <div class="container">
+    <div class="row">
+            <div class="col-md-3" id="sidebar-col">
+        <div id="toc">
+          <ul>
+          <li><a href="#package-functions">Package Functions</a><ul>
+          <li><a href="#bn">bn</a></li>
+          <li><a href="#data_preprocess">data_preprocess</a></li>
+          <li><a href="#div">div</a></li>
+          <li><a href="#div2">div2</a></li>
+          <li><a href="#ggm">ggm</a></li>
+          <li><a href="#minforest">minforest</a></li>
+          <li><a href="#plot">plot</a></li>
+          <li><a href="#dim_reduce">dim_reduce</a></li>
+          </ul></li>
+          </ul>
+        </div>
+      </div>
+      <div class="col-md-9" id="content-col">
+      
+<div id="content-top"></div>
+<h1>
+Questionnarie Tools.
+</h1>
+<p>
+<strong>Authors:</strong>
+</p>
+<p>
+<strong>Version:</strong> 0.1.0
+</p>
+<p>
+<strong>License:</strong> GPL-3
+</p>
+<h4>
+Description
+</h4>
+<p>
+A collection of tools to preprocess, analyze, and visualize Questionnaire datasets. It can be also applied to every dataset including both continuous and categorical data, e.g., genotype-phenotype datasets, etc.
+</p>
+<h4>
+Imports
+</h4>
+<p>
+softImpute, visNetwork, gRbase, gRim, purrr, gRapHD, permute, graph, SIN, glasso, igraph, stats, methods, entropy, dplyr, highcharter, limma, smallvis
+</p>
+<h4>
+Suggests
+</h4>
+<p>
+packagedocs
+</p>
+<div id="package-functions" class="section level1">
+<h1>Package Functions</h1>
+<div id="bn" class="section level2">
+<h2>bn</h2>
+<a id="bn_alias"></a>
+<h3>
+construct and visualize a Bayesian (directed) network indicating the causal associations among variables in dataset
+</h3>
+<p class="rd-p">
+A function to fit a Bayesian network (a directed acyclic graph) to variables using bootstrap. The function also visualizes the structure of the Baysian network and decompose the graph into the underlying communities.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>bn(data, C.alg&nbsp;=&nbsp;NULL, S.alg&nbsp;=&nbsp;c("mmhc"), blacklist&nbsp;=&nbsp;NULL, whitelist&nbsp;=&nbsp;NULL, R&nbsp;=&nbsp;10, m&nbsp;=&nbsp;10, str.tresh&nbsp;=&nbsp;0, dir.tresh&nbsp;=&nbsp;0, community&nbsp;=&nbsp;T)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
+</dd>
+<dt>
+C.alg
+</dt>
+<dd class="rd-dd">
+a vector of Constraint-based and Local Discovery algorithms from “gs”, “mmpc”, “si.hiton.pc”. The default value is NULL. See Details.
+</dd>
+<dt>
+S.alg
+</dt>
+<dd class="rd-dd">
+a vector of Score-based and Hybrid algorithms form “pc.stable”, “hc”, “tabu”, “mmhc”, “aracne”. The default value is “mmhc”. See Details.
+</dd>
+<dt>
+blacklist
+</dt>
+<dd class="rd-dd">
+a two-column dataframe which includes edges to be excluded from the network.
+</dd>
+<dt>
+whitelist
+</dt>
+<dd class="rd-dd">
+a two-column dataframe which includes edges to be included from the network.
+</dd>
+<dt>
+R
+</dt>
+<dd class="rd-dd">
+an integer value to indicate the number of runs of bootstrap sampling. The default value is 10.
+</dd>
+<dt>
+m
+</dt>
+<dd class="rd-dd">
+an integer value to indicate the number of rows to be sampled from dataset in each bootstrap sampling. The default value is the number of rows in data.
+</dd>
+<dt>
+str.tresh
+</dt>
+<dd class="rd-dd">
+a double value between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.
+</dd>
+<dt>
+dir.tresh
+</dt>
+<dd class="rd-dd">
+a double value between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.
+</dd>
+<dt>
+community
+</dt>
+<dd class="rd-dd">
+a logical value. If TRUE (The default) the network will be colored into communities of edge-dense subgraphs.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+returns a dataframe including the edges of the network with their strength and strength of directions.
+</dl>
+</p>
+<h4>
+Details
+</h4>
+<p class="rd-p">
+The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
+</p>
+<h4>
+References
+</h4>
+<p class="rd-p">
+Nagarajan R, Scutari M, Lebre S (2013). “Bayesian Networks in R with Applications in Systems Biology”. Springer.
+</p>
+<p class="rd-p">
+Scutari M (2010). “Learning Bayesian Networks with the bnlearn R Package”. Journal of Statistical Software, 35(3), 1-22. URL <a href="http://www.jstatsoft.org/v35/i03/" class="uri">http://www.jstatsoft.org/v35/i03/</a>.
+</p>
+<p class="rd-p">
+Scutari M (20107). “Bayesian Network Constraint-Based Structure Learning Algorithms: Parallel and Optimized Implementations in the bnlearn R Package”. Journal of Statistical Software, 77(2), 1-20. URL <a href="http://www.jstatsoft.org/v77/i02/" class="uri">http://www.jstatsoft.org/v77/i02/</a>.
+</p>
+<p class="rd-p">
+Koller D, Friedman N (2009). Probabilistic Graphical Models: Principles and Techniques. MIT Press.
+</p>
+<p class="rd-p">
+Korb K, Nicholson AE (2010). Bayesian Artificial Intelligence. Chapman &amp; Hall/CRC, 2nd edition.
+</p>
+<p class="rd-p">
+Pearl J (1988). Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference. Morgan Kaufmann.
+</p>
+<h4>
+Examples
+</h4>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari</p>
+</div>
+<div id="data_preprocess" class="section level2">
+<h2>data_preprocess</h2>
+<a id="data_preprocess_alias"></a>
+<h3>
+This function corrects NAN and normalizes data.
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>data_preprocess(data, impute&nbsp;=&nbsp;T, scale&nbsp;=&nbsp;T, is.cont&nbsp;=&nbsp;NULL)</div></code></pre>
+</div>
+<div id="div" class="section level2">
+<h2>div</h2>
+<a id="div_alias"></a>
+<h3>
+calculating Kullback-Leibler divergence for each categorical variable between two different groups of samples.
+</h3>
+<p class="rd-p">
+A function to calculate Kullback-Leibler divergence for each categorical variable between two groups of samples which have different values of a binary-valued variable.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>div(data, var, permute&nbsp;=&nbsp;0)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+a dataframe of categorical variables.
+</dd>
+<dt>
+var
+</dt>
+<dd class="rd-dd">
+a character string or an integer indicating the column of the variable of interest. Note that the column should be of two levels (binary-valued).
+</dd>
+<dt>
+permute
+</dt>
+<dd class="rd-dd">
+an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute &gt; 0 returns a dataframe including KL divergence and p.values.
+</dl>
+</p>
+<h4>
+Details
+</h4>
+<p class="rd-p">
+The function helps users to find out the variables with the most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements, we are interested in finding the most important variables in occurring cardiovascular disease. The function is able to carry out permutation test to calculate the p_value for each variable.
+</p>
+<h4>
+Examples
+</h4>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari</p>
+</div>
+<div id="div2" class="section level2">
+<h2>div2</h2>
+<a id="div2_alias"></a>
+<h3>
+calculating Kullback-Leibler divergence for each categorical variable between two different groups of samples.
+</h3>
+<p class="rd-p">
+A function to calculate Kullback-Leibler divergence for each categorical variable between two groups of samples which do not follow the linear association between two continuous variables.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>div2(data, var1, var2, permute&nbsp;=&nbsp;0, frac&nbsp;=&nbsp;0.05)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+a dataframe of categorical variables.
+</dd>
+<dt>
+var1
+</dt>
+<dd class="rd-dd">
+a vector of continuous values indicating the first variable.
+</dd>
+<dt>
+var2
+</dt>
+<dd class="rd-dd">
+a vector of continuous values indicating the second variable.
+</dd>
+<dt>
+permute
+</dt>
+<dd class="rd-dd">
+an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
+</dd>
+<dt>
+frac
+</dt>
+<dd class="rd-dd">
+a double value between 0 and 1 which indicates the fraction of outliers in the fit model. That is, the threshold to recognize a datapoint as an outlier of the fit line.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute &gt; 0 returns a dataframe including KL divergence and p.values.
+</dl>
+</p>
+<h4>
+Examples
+</h4>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari</p>
+</div>
+<div id="ggm" class="section level2">
+<h2>ggm</h2>
+<a id="ggm_alias"></a>
+<h3>
+construct and visualize a gussian graphical model indicating the associations between continuous variables in data
+</h3>
+<p class="rd-p">
+A function to fit a gussian graphical model to continuous variables using six methods, i.e, stepwise AIC, stepwise BIC, stepwise significance test, partial correlation tresholding, edgewise significance test, and glasso. The function also visualizes the graphical model and decompose the graph into the underlying communities.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>ggm(data, treshold&nbsp;=&nbsp;0.05, significance&nbsp;=&nbsp;0.05, rho&nbsp;=&nbsp;0.1)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+A normalized dataframe or matrix with no missing data of continuous measurments.
+</dd>
+<dt>
+treshold
+</dt>
+<dd class="rd-dd">
+A treshhold for partial correlation tresholding method (default = 0.05).
+</dd>
+<dt>
+significance
+</dt>
+<dd class="rd-dd">
+A cutoff for edge significance (default = 0.05).
+</dd>
+<dt>
+rho
+</dt>
+<dd class="rd-dd">
+(Non-negative) regularization parameter for glasso (default = 0.1).
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+A list in which each element is the details of a specific fitted method.
+<dt>
+aic
+</dt>
+<dd>
+Fit details of aic model.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+bic
+</dt>
+<dd>
+Fit details of bic model.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+test
+</dt>
+<dd>
+Fit details of significance test model.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+pcor
+</dt>
+<dd>
+Partial correlaiton matrix used for tresholding method.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+significance
+</dt>
+<dd>
+Significance matrix consisting p.values of each edge.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+glasso
+</dt>
+<dd>
+Partial correlation matrix calculated by glasso.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+betweenness
+</dt>
+<dd>
+Betweenness measurement for each node.
+</dd>
+</p>
+<p class="rd-p">
+</dl>
+</p>
+<h4>
+Details
+</h4>
+<p class="rd-p">
+The function combines six methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse inverse covariance matrix.
+</p>
+<h4>
+References
+</h4>
+<p class="rd-p">
+Højsgaard, S., Edwards, D., &amp; Lauritzen, S. (2012). Graphical Models with R. Springer US. <a href = https://doi.org/10.1007/978-1-4614-2299-0>https://doi.org/10.1007/978-1-4614-2299-0</a>
+</p>
+<p class="rd-p">
+Friedman, J., Hastie, T., &amp; Tibshirani, R. (2007). Sparse inverse covariance estimation with the graphical lasso. Biostatistics, 9(3), 432–441. <a href = https://doi.org/10.1093/biostatistics/kxm045>https://doi.org/10.1093/biostatistics/kxm045</a>
+</p>
+<p class="rd-p">
+Abreu, G. C. G., Edwards, D., &amp; Labouriau, R. (2010). High-Dimensional Graphical Model Search with thegRapHDRPackage. Journal of Statistical Software, 37(1). <a href = https://doi.org/10.18637/jss.v037.i01>https://doi.org/10.18637/jss.v037.i01</a>
+</p>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari</p>
+</div>
+<div id="minforest" class="section level2">
+<h2>minforest</h2>
+<a id="minforest_alias"></a>
+<h3>
+construct and visualize a minimum forest based on Chow-Liu algorithm indicating the associations among variables in the dataset
+</h3>
+<p class="rd-p">
+A function to fit a minimum forest to data. The function also visualizes the minimum forest and color the graph based on the communities.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>minforest(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;T)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
+</dd>
+<dt>
+stat
+</dt>
+<dd class="rd-dd">
+measure to be minimized: LR, AIC, or BIC (the default). The default is BIC. It can also be a user-defined function with the format: FUN(model, dataset, previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.
+</dd>
+<dt>
+community
+</dt>
+<dd class="rd-dd">
+a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+a list containing:
+<dt>
+</dt>
+<dd>
+a gRapHD object which is the fit model.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+</dt>
+<dd>
+betweenness measurements for each node.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+</dt>
+<dd>
+the plot of the network.
+</dd>
+</p>
+<p class="rd-p">
+</dl>
+</p>
+<h4>
+Details
+</h4>
+<p class="rd-p">
+The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
+</p>
+<h4>
+References
+</h4>
+<p class="rd-p">
+Chow, C.K., and Liu, C.N. (1968) Approximating discrete probability distributions with dependence trees. IEEE Transactions on Information Theory, Vol. IT-14, 3:462-7.
+</p>
+<p class="rd-p">
+Edwards, D., de Abreu, G.C.G. and Labouriau, R. (2010). Selecting high- dimensional mixed graphical models using minimal AIC or BIC forests. BMC Bioinformatics, 11:18.
+</p>
+<h4>
+Examples
+</h4>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari</p>
+</div>
+<div id="plot" class="section level2">
+<h2>plot</h2>
+<a id="plot_alias"></a>
+<h3>
+interactive visulizaiton tool for datasets.
+</h3>
+<p class="rd-p">
+A function to interctively visualize one or a pair of the variables.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>plot(data, vars, levels&nbsp;=&nbsp;5, pie&nbsp;=&nbsp;F)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+a dataframe. It is strongly recommended that the dataframe has no missing data and is preprocessed.
+</dd>
+<dt>
+vars
+</dt>
+<dd class="rd-dd">
+a vector of length one or two including the name (or index) of a (tow) column(s) of data.
+</dd>
+<dt>
+levels
+</dt>
+<dd class="rd-dd">
+an integer to indicate the maximum levels of categorical variables. The default is 7.
+</dd>
+<dt>
+pie
+</dt>
+<dd class="rd-dd">
+a logical variable. If TRUE the function returns a pie chart for one variable.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+if pie = TRUE the function returns pie chart, otherwise, there may be 5 scenarios:
+<dt>
+</dt>
+<dd>
+one categorical variable: plots the histogram of the variable.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+</dt>
+<dd>
+one continuous variable: plots the density plot of the variable.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+</dt>
+<dd>
+one categorical and one continuous variable: plots a boxplot of the continuous variable for different levels of the categorical variable.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+</dt>
+<dd>
+two continuous variables: plots a scatter plot of two variables.
+</dd>
+</p>
+<p class="rd-p">
+</dl>
+</p>
+<h4>
+Examples
+</h4>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari</p>
+</div>
+<div id="dim_reduce" class="section level2">
+<h2>dim_reduce</h2>
+<a id="dim_reduce_alias"></a>
+<h3>
+Dimensionality reduction and visualization.
+</h3>
+<p class="rd-p">
+A function to reduce dimensionality using seven methods, namely, tsne, umap, repeated tsne, Momenton umap, L-BFGS umap, Early Exaggeration tsne, and Late Exaggeration tsne.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>dim_reduce(X)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+X
+</dt>
+<dd class="rd-dd">
+a dataset to be reduced in dimension.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+a list of seven plots each of which is for a method mentioned in the description.
+</dl>
+</p>
+<h4>
+Examples
+</h4>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari</p>
+</div>
+</div>
+
+
+      </div>
+    </div>
+  </div>
+
+  <div id="footer">
+    <div class="container">
+      <div class="col-md-6">
+                <p>&copy; <a href="mailto:statCompTeam@bAIo-lab">statCompTeam@bAIo-lab</a>, 2018</p>
+              </div>
+      <div class="col-md-6">
+        <p class="pull-right">created with <a href="https://github.com/hafen/packagedocs">packagedocs</a>
+                  </p>
+      </div>
+    </div>
+  </div>
+
+  
+</body>
+</html>

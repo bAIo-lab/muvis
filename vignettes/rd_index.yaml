@@ -22,3 +22,4 @@ sections:
     - ggm
     - minforest
     - plot
+    - dim_reduce

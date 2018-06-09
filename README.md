@@ -1,5 +1,6 @@
 # Questools
 ========================
+[![Build Status](https://travis-ci.org/bAIo-lab/Questools.svg?branch=master)](https://travis-ci.org/bAIo-lab/Questools)
 
 Questools is a visualization and analysis toolkit for Questionnaire datasets.  To use this package, you 
 will need the R statistical computing environment (version 3.0 or later).

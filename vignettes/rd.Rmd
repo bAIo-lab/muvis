@@ -7,12 +7,12 @@ output:
   packagedocs::package_docs_rd:
     toc: true
     toc_collapse: false
-redirect: bAIo-lab/Questools/rd.html
+redirect: http://bAIo-lab.github.io/Questools/rd.html
 vignette: |
   %\VignetteIndexEntry{Questools Package Reference}
   %\VignetteEngine{packagedocs::redirect}
 navpills: |
-  <li><a href='docs.html'>Docs</a></li>
+  <li><a href='index.html'>Docs</a></li>
   <li class="active"><a href='rd.html'>Package Ref</a></li>
   <li><a href='https://github.com/bAIo-lab/Questools'>Github <i class='fa fa-github'></i></a></li>
 ---

@@ -52,10 +52,13 @@
             <nav class="collapse navbar-collapse" role="navigation">
         <ul class="nav nav-pills pull-right">
 <li>
-<a href='docs.html'>Docs</a>
+<a href='index.html'>Docs</a>
 </li>
 <li class="active">
 <a href='rd.html'>Package Ref</a>
+</li>
+<li>
+<a href='https://github.com/bAIo-lab/Questools'>Github <i class='fa fa-github'></i></a>
 </li>
         </ul>
       </nav>
@@ -70,13 +73,12 @@
           <ul>
           <li><a href="#package-functions">Package Functions</a><ul>
           <li><a href="#bn">bn</a></li>
-          <li><a href="#data_preprocess">data_preprocess</a></li>
           <li><a href="#div">div</a></li>
           <li><a href="#div2">div2</a></li>
           <li><a href="#ggm">ggm</a></li>
-          <li><a href="#minforest">minforest</a></li>
+          <li><a href="#min.forest">min.forest</a></li>
           <li><a href="#plot">plot</a></li>
-          <li><a href="#dim_reduce">dim_reduce</a></li>
+          <li><a href="#dim.reduce">dim.reduce</a></li>
           </ul></li>
           </ul>
         </div>
@@ -120,15 +122,15 @@ packagedocs
 <h2>bn</h2>
 <a id="bn_alias"></a>
 <h3>
-construct and visualize a Bayesian (directed) network indicating the causal associations among variables in dataset
+construct and visualize a Bayesian (directed) Network
 </h3>
 <p class="rd-p">
-A function to fit a Bayesian network (a directed acyclic graph) to variables using bootstrap. The function also visualizes the structure of the Baysian network and decompose the graph into the underlying communities.
+Fits a Bayesian network (a directed acyclic graph) to variables and performs bootstrapping. The function also visualizes the structure of the Baysian network and decompose the graph into the underlying communities.
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>bn(data, C.alg&nbsp;=&nbsp;NULL, S.alg&nbsp;=&nbsp;c("mmhc"), blacklist&nbsp;=&nbsp;NULL, whitelist&nbsp;=&nbsp;NULL, R&nbsp;=&nbsp;10, m&nbsp;=&nbsp;10, str.tresh&nbsp;=&nbsp;0, dir.tresh&nbsp;=&nbsp;0, community&nbsp;=&nbsp;T)</div></code></pre>
+<pre class="r"><code><div>bn(data, C.alg&nbsp;=&nbsp;NULL, S.alg&nbsp;=&nbsp;c("mmhc"), blacklist&nbsp;=&nbsp;NULL, whitelist&nbsp;=&nbsp;NULL, R&nbsp;=&nbsp;10, m&nbsp;=&nbsp;0, str.thresh&nbsp;=&nbsp;0, dir.thresh&nbsp;=&nbsp;0, community&nbsp;=&nbsp;T)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -137,19 +139,19 @@ Arguments
 data
 </dt>
 <dd class="rd-dd">
-a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
+a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurments.
 </dd>
 <dt>
 C.alg
 </dt>
 <dd class="rd-dd">
-a vector of Constraint-based and Local Discovery algorithms from “gs”, “mmpc”, “si.hiton.pc”. The default value is NULL. See Details.
+a vector of Constraint-based and Local Discovery algorithms from {“gs”, “mmpc”, “si.hiton.pc”}. Defualt is NULL.
 </dd>
 <dt>
 S.alg
 </dt>
 <dd class="rd-dd">
-a vector of Score-based and Hybrid algorithms form “pc.stable”, “hc”, “tabu”, “mmhc”, “aracne”. The default value is “mmhc”. See Details.
+a vector of Score-based and Hybrid algorithms from {“pc.stable”, “hc”, “tabu”, “mmhc”, “aracne”}. Defaut is “mmhc”.
 </dd>
 <dt>
 blacklist
@@ -167,31 +169,31 @@ a two-column dataframe which includes edges to be included from the network.
 R
 </dt>
 <dd class="rd-dd">
-an integer value to indicate the number of runs of bootstrap sampling. The default value is 10.
+an integer to demonstrate the number of runs of bootstrap sampling. Defult value is 10.
 </dd>
 <dt>
 m
 </dt>
 <dd class="rd-dd">
-an integer value to indicate the number of rows to be sampled from dataset in each bootstrap sampling. The default value is the number of rows in data.
-</dd>
-<dt>
-str.tresh
-</dt>
-<dd class="rd-dd">
-a double value between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.
-</dd>
-<dt>
-dir.tresh
-</dt>
-<dd class="rd-dd">
-a double value between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.
+an integer to demonstrate the number of rows to be sampled from dataset in each bootstrap sampling. Defult value is the number of rows in data.
 </dd>
 <dt>
 community
 </dt>
 <dd class="rd-dd">
-a logical value. If TRUE (The default) the network will be colored into communities of edge-dense subgraphs.
+a logical value. If TRUE (the defualt) the network will be colored into communities of edge-dense subgraphs.
+</dd>
+<dt>
+str.tresh
+</dt>
+<dd class="rd-dd">
+a double between 0 and 1 indicating the threshold value for an association to be considered in the network. Defult value is 0.
+</dd>
+<dt>
+dir.tresh
+</dt>
+<dd class="rd-dd">
+a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. Defult value is 0.
 </dd>
 </dl>
 <h4>
@@ -199,14 +201,14 @@ Value
 </h4>
 <p class="rd-p">
 <dl>
-returns a dataframe including the edges of the network with their strength and strength of directions.
+returns a list including a dataframe including the edges of the network with their strength and strength of directions and a highcharter plot.
 </dl>
 </p>
 <h4>
 Details
 </h4>
 <p class="rd-p">
-The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
+The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is cunstructed based on the strength of associations calculated by bootstrapping.
 </p>
 <h4>
 References
@@ -230,37 +232,23 @@ Korb K, Nicholson AE (2010). Bayesian Artificial Intelligence. Chapman &amp; Hal
 Pearl J (1988). Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference. Morgan Kaufmann.
 </p>
 <h4>
-Examples
-</h4>
-<h4>
 Author
 </h4>
 <p>Elyas Heidari</p>
-</div>
-<div id="data_preprocess" class="section level2">
-<h2>data_preprocess</h2>
-<a id="data_preprocess_alias"></a>
-<h3>
-This function corrects NAN and normalizes data.
-</h3>
-<h4>
-Usage
-</h4>
-<pre class="r"><code><div>data_preprocess(data, impute&nbsp;=&nbsp;T, scale&nbsp;=&nbsp;T, is.cont&nbsp;=&nbsp;NULL)</div></code></pre>
 </div>
 <div id="div" class="section level2">
 <h2>div</h2>
 <a id="div_alias"></a>
 <h3>
-calculating Kullback-Leibler divergence for each categorical variable between two different groups of samples.
+calculate variable-wise Kullback-Leibler divergence
 </h3>
 <p class="rd-p">
-A function to calculate Kullback-Leibler divergence for each categorical variable between two groups of samples which have different values of a binary-valued variable.
+Calculates variable-wise Kullback-Libler divergence between two groups of samples.
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>div(data, var, permute&nbsp;=&nbsp;0)</div></code></pre>
+<pre class="r"><code><div>div(data, g1, g2, permute&nbsp;=&nbsp;0)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -272,16 +260,22 @@ data
 a dataframe of categorical variables.
 </dd>
 <dt>
-var
+g1
 </dt>
 <dd class="rd-dd">
-a character string or an integer indicating the column of the variable of interest. Note that the column should be of two levels (binary-valued).
+a vector of integers. Demonstrates the row indices of group 1.
+</dd>
+<dt>
+g2
+</dt>
+<dd class="rd-dd">
+a vector of integers. Demonstrates the row indices of group 2.
 </dd>
 <dt>
 permute
 </dt>
 <dd class="rd-dd">
-an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
+an integer indicating the number of permutations for permutation test. If 0 (the defualt) no permutation test will be carried out.
 </dd>
 </dl>
 <h4>
@@ -296,11 +290,8 @@ if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. i
 Details
 </h4>
 <p class="rd-p">
-The function helps users to find out the variables with the most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements, we are interested in finding the most important variables in occurring cardiovascular disease. The function is able to carry out permutation test to calculate the p_value for each variable.
+The function helps users to find out the variables with most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements we are intrested in finding the most important variables in occuring cardiovascular disease. The function is able to carry out permutation test to calculate the p_value for each variable.
 </p>
-<h4>
-Examples
-</h4>
 <h4>
 Author
 </h4>
@@ -313,7 +304,7 @@ Author
 calculating Kullback-Leibler divergence for each categorical variable between two different groups of samples.
 </h3>
 <p class="rd-p">
-A function to calculate Kullback-Leibler divergence for each categorical variable between two groups of samples which do not follow the linear association between two continuous variables.
+Calculates variable-wise Kullback-Libler divergence between two groups of samples which violate the linear relationship between two continuous variables.
 </p>
 <h4>
 Usage
@@ -333,13 +324,13 @@ a dataframe of categorical variables.
 var1
 </dt>
 <dd class="rd-dd">
-a vector of continuous values indicating the first variable.
+a vector of continuous values indicating the first variable. (the order of values should be the same as the order of rows in data)
 </dd>
 <dt>
 var2
 </dt>
 <dd class="rd-dd">
-a vector of continuous values indicating the second variable.
+a vector of continuous values indicating the second variable. (the order of values should be the same as the order of rows in data)
 </dd>
 <dt>
 permute
@@ -362,9 +353,6 @@ Value
 if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute &gt; 0 returns a dataframe including KL divergence and p.values.
 </dl>
 </p>
-<h4>
-Examples
-</h4>
 <h4>
 Author
 </h4>
@@ -499,19 +487,19 @@ Author
 </h4>
 <p>Elyas Heidari</p>
 </div>
-<div id="minforest" class="section level2">
-<h2>minforest</h2>
-<a id="minforest_alias"></a>
+<div id="min.forest" class="section level2">
+<h2>min.forest</h2>
+<a id="min.forest_alias"></a>
 <h3>
-construct and visualize a minimum forest based on Chow-Liu algorithm indicating the associations among variables in the dataset
+construct and visualize a minimum forest based on Chow-Liu algorithm
 </h3>
 <p class="rd-p">
-A function to fit a minimum forest to data. The function also visualizes the minimum forest and color the graph based on the communities.
+Fits a minimum forest to data. Also visualizes the the minimum forest.
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>minforest(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;T)</div></code></pre>
+<pre class="r"><code><div>"min"(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;TRUE)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -520,19 +508,19 @@ Arguments
 data
 </dt>
 <dd class="rd-dd">
-a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
+a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurments.
 </dd>
 <dt>
 stat
 </dt>
 <dd class="rd-dd">
-measure to be minimized: LR, AIC, or BIC (the default). The default is BIC. It can also be a user-defined function with the format: FUN(model, dataset, previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.
+measure to be minimized: LR, AIC, or BIC (the defult). Default is BIC. It can also be a user defined function with format: FUN(model,dataset,previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.
 </dd>
 <dt>
 community
 </dt>
 <dd class="rd-dd">
-a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
+a logical value. If TRUE (the defualt) the network will be colored into communities of edge-dense subgraphs.
 </dd>
 </dl>
 <h4>
@@ -558,7 +546,7 @@ betweenness measurements for each node.
 <dt>
 </dt>
 <dd>
-the plot of the network.
+the highcharter plot of the network.
 </dd>
 </p>
 <p class="rd-p">
@@ -568,7 +556,7 @@ the plot of the network.
 Details
 </h4>
 <p class="rd-p">
-The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
+The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is cunstructed based on the strength of associations calculated by bootstrapping.
 </p>
 <h4>
 References
@@ -580,9 +568,6 @@ Chow, C.K., and Liu, C.N. (1968) Approximating discrete probability distribution
 Edwards, D., de Abreu, G.C.G. and Labouriau, R. (2010). Selecting high- dimensional mixed graphical models using minimal AIC or BIC forests. BMC Bioinformatics, 11:18.
 </p>
 <h4>
-Examples
-</h4>
-<h4>
 Author
 </h4>
 <p>Elyas Heidari</p>
@@ -591,10 +576,10 @@ Author
 <h2>plot</h2>
 <a id="plot_alias"></a>
 <h3>
-interactive visulizaiton tool for datasets.
+interactive plot
 </h3>
 <p class="rd-p">
-A function to interctively visualize one or a pair of the variables.
+Plots one or a pair of variables.
 </p>
 <h4>
 Usage
@@ -663,29 +648,33 @@ two continuous variables: plots a scatter plot of two variables.
 </dd>
 </p>
 <p class="rd-p">
+<dt>
+</dt>
+<dd>
+two categorical variables: plots a relative histogram showing distribution of one variable for each level of the other.
+</dd>
+</p>
+<p class="rd-p">
 </dl>
 </p>
-<h4>
-Examples
-</h4>
 <h4>
 Author
 </h4>
 <p>Elyas Heidari</p>
 </div>
-<div id="dim_reduce" class="section level2">
-<h2>dim_reduce</h2>
-<a id="dim_reduce_alias"></a>
+<div id="dim.reduce" class="section level2">
+<h2>dim.reduce</h2>
+<a id="dim.reduce_alias"></a>
 <h3>
 Dimensionality reduction and visualization.
 </h3>
 <p class="rd-p">
-A function to reduce dimensionality using seven methods, namely, tsne, umap, repeated tsne, Momenton umap, L-BFGS umap, Early Exaggeration tsne, and Late Exaggeration tsne.
+Reduce dimentionality with a method in { tsne, umap, repeated tsne, Momenton umap, L-BFGS umap, Early Exaggeration tsne, and Late Exaggeration tsne}.
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>dim_reduce(X)</div></code></pre>
+<pre class="r"><code><div>"dim"(X, method&nbsp;=&nbsp;"tsne", verbose&nbsp;=&nbsp;TRUE)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -696,22 +685,31 @@ X
 <dd class="rd-dd">
 a dataset to be reduced in dimension.
 </dd>
+<dt>
+method
+</dt>
+<dd class="rd-dd">
+a character string as the name of the method. Available values are “tsne” (the default), “tsne_rep”, “tsne_early”, “tsne_late”, “umap”, “umap_mom”, “umap_l_bfgs”.
+</dd>
+<dt>
+verbose
+</dt>
+<dd class="rd-dd">
+a logical value. If TRUE (the default) the details will be printed.
+</dd>
 </dl>
 <h4>
 Value
 </h4>
 <p class="rd-p">
 <dl>
-a list of seven plots each of which is for a method mentioned in the description.
+a plot of data points in the 2 dimensional space.
 </dl>
 </p>
 <h4>
-Examples
-</h4>
-<h4>
 Author
 </h4>
-<p>Elyas Heidari</p>
+<p>Elyas Heidari with a refrence smallvis package</p>
 </div>
 </div>
 

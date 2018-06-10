@@ -2,11 +2,11 @@
 #'
 #'
 #' @description
-#' A function to calculate Kullback-Leibler divergence for each categorical variable between two groups of samples which do not follow the linear association between two continuous variables.
+#' Calculates variable-wise Kullback-Libler divergence between two groups of samples which violate the linear relationship between two continuous variables.
 #'
 #' @param  data a dataframe of categorical variables.
-#' @param  var1 a vector of continuous values indicating the first variable.
-#' @param  var2 a vector of continuous values indicating the second variable.
+#' @param  var1 a vector of continuous values indicating the first variable. (the order of values should be the same as the order of rows in data)
+#' @param  var2 a vector of continuous values indicating the second variable. (the order of values should be the same as the order of rows in data)
 #' @param  permute an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
 #' @param  frac a double value between 0 and 1 which indicates the fraction of outliers in the fit model. That is, the threshold to recognize a datapoint as an outlier of the fit line.
 #'
@@ -15,31 +15,30 @@
 #'
 #' @return  if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.
 #'
-#' @examples
-#'
 #' @export
 #'
 #' @importFrom purrr map
 #' @importFrom entropy KL.plugin
 #' @importFrom permute shuffle
-
 div2 <- function(data, var1, var2, permute = 0, frac = 0.05) {
-  kl.calc <- function(up, down, data) {
-    up <- data[up, 1:dim(data)[2]]
-    down <- data[down, 1:dim(data)[2]]
-    up.freq <- do.call(cbind, apply(up , 2, leveler))
-    down.freq <- do.call(cbind, apply(down , 2, leveler))
-    1:dim(up)[2] %>% purrr::map(function(x)
-      abs(entropy::KL.plugin(up.freq[,x], down.freq[,x])) + abs(entropy::KL.plugin(down.freq[,x], up.freq[,x]))) -> kl.up.down
-    unlist(kl.up.down)
+  kl.calc <- function(g1, g2, data) {
+    1:dim(data)[2] %>% purrr::map(function(x)
+      freq(data[, x], g1, g2)) %>% purrr::map(function(x)
+        abs(entropy::KL.plugin(x$g1, x$g2)) + abs(entropy::KL.plugin(x$g2, x$g1))) -> to.ret
+    unlist(to.ret)
   }
-  leveler <- function(vec) {
-    tb <- table(factor(vec))
-    pmax(tb, 1)
+  freq <- function(vec, g1, g2) {
+    to.ret <- list(g1 = c(), g2 = c())
+    levels(factor(vec)) %>% purrr::map(function(x)
+      list(g1 = max(1, sum(vec[g1] == x)), g2 = max(1, sum(vec[g2] == x)))) %>% purrr::map(function(x)
+        to.ret <<-
+          list(
+            g1 = c(to.ret$g1, x$g1),
+            g2 = c(to.ret$g2, x$g2)
+          )) -> na
+    to.ret
   }
   p.val <- function(x, vec) {
-    print(x)
-    print(vec)
     which(sort(vec, decreasing = T) < x)[1] / length(vec)
   }
   lm <- lm(var1~var2)
@@ -63,7 +62,6 @@ div2 <- function(data, var1, var2, permute = 0, frac = 0.05) {
 
     1:dim(kl.df)[2] %>% purrr::map(function(i)
       p.val(kl[i], kl.df[, i])) -> kls
-    print(kls)
     return(data.frame(KL = kl, row.names = colnames(data), p.value = unlist(kls)))
   }
   return(data.frame(KL = kl, row.names = colnames(data)))

@@ -16,10 +16,9 @@ sections:
   section_name: Package Functions
   topics:
     - bn
-    - data_preprocess
     - div
     - div2
     - ggm
-    - minforest
+    - min.forest
     - plot
-    - dim_reduce
+    - dim.reduce

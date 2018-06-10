@@ -3,3 +3,4 @@ _gh-pages
 .Rproj.user
 #
 *.Rhistory
+data/

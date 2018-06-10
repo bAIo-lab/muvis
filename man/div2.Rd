@@ -9,9 +9,9 @@ div2(data, var1, var2, permute = 0, frac = 0.05)
 \arguments{
 \item{data}{a dataframe of categorical variables.}
 
-\item{var1}{a vector of continuous values indicating the first variable.}
+\item{var1}{a vector of continuous values indicating the first variable. (the order of values should be the same as the order of rows in data)}
 
-\item{var2}{a vector of continuous values indicating the second variable.}
+\item{var2}{a vector of continuous values indicating the second variable. (the order of values should be the same as the order of rows in data)}
 
 \item{permute}{an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.}
 
@@ -21,10 +21,7 @@ div2(data, var1, var2, permute = 0, frac = 0.05)
 if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.
 }
 \description{
-A function to calculate Kullback-Leibler divergence for each categorical variable between two groups of samples which do not follow the linear association between two continuous variables.
-}
-\examples{
-
+Calculates variable-wise Kullback-Libler divergence between two groups of samples which violate the linear relationship between two continuous variables.
 }
 \author{
 Elyas Heidari

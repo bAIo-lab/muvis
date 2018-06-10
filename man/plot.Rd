@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot.R
 \name{plot}
 \alias{plot}
-\title{interactive visulizaiton tool for datasets.}
+\title{interactive plot}
 \usage{
 plot(data, vars, levels = 5, pie = F)
 }
@@ -21,12 +21,10 @@ if pie = TRUE the function returns pie chart, otherwise, there may be 5 scenario
 \item{}{one continuous variable: plots the density plot of the variable.}
 \item{}{one categorical and one continuous variable: plots a boxplot of the continuous variable for different levels of the categorical variable.}
 \item{}{two continuous variables: plots a scatter plot of two variables.}
+\item{}{two categorical variables: plots a relative histogram showing distribution of one variable for each level of the other.}
 }
 \description{
-A function to interctively visualize one or a pair of the variables.
-}
-\examples{
-
+Plots one or a pair of variables.
 }
 \author{
 Elyas Heidari

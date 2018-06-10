@@ -2,45 +2,42 @@
 % Please edit documentation in R/bn.R
 \name{bn}
 \alias{bn}
-\title{construct and visualize a Bayesian (directed) network indicating the causal associations among variables in dataset}
+\title{construct and visualize a Bayesian (directed) Network}
 \usage{
 bn(data, C.alg = NULL, S.alg = c("mmhc"), blacklist = NULL,
-  whitelist = NULL, R = 10, m = 10, str.tresh = 0, dir.tresh = 0,
+  whitelist = NULL, R = 10, m = 0, str.thresh = 0, dir.thresh = 0,
   community = T)
 }
 \arguments{
-\item{data}{a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.}
+\item{data}{a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurments.}
 
-\item{C.alg}{a vector of Constraint-based and Local Discovery algorithms from {"gs", "mmpc", "si.hiton.pc"}. The default value is NULL. See Details.}
+\item{C.alg}{a vector of Constraint-based and Local Discovery algorithms from \{"gs", "mmpc", "si.hiton.pc"\}. Defualt is NULL.}
 
-\item{S.alg}{a vector of Score-based and Hybrid algorithms form {"pc.stable", "hc", "tabu", "mmhc", "aracne"}. The default value is "mmhc". See Details.}
+\item{S.alg}{a vector of Score-based and Hybrid algorithms from \{"pc.stable", "hc", "tabu", "mmhc", "aracne"\}. Defaut is "mmhc".}
 
 \item{blacklist}{a two-column dataframe which includes edges to be excluded from the network.}
 
 \item{whitelist}{a two-column dataframe which includes edges to be included from the network.}
 
-\item{R}{an integer value to indicate the number of runs of bootstrap sampling. The default value is 10.}
+\item{R}{an integer to demonstrate the number of runs of bootstrap sampling. Defult value is 10.}
 
-\item{m}{an integer value to indicate the number of rows to be sampled from dataset in each bootstrap sampling. The default value is the number of rows in data.}
+\item{m}{an integer to demonstrate the number of rows to be sampled from dataset in each bootstrap sampling. Defult value is the number of rows in data.}
 
-\item{str.tresh}{a double value between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.}
+\item{community}{a logical value. If TRUE (the defualt) the network will be colored into communities of edge-dense subgraphs.}
 
-\item{dir.tresh}{a double value between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.}
+\item{str.tresh}{a double between 0 and 1 indicating the threshold value for an association to be considered in the network. Defult value is 0.}
 
-\item{community}{a logical value. If TRUE (The default) the network will be colored into communities of edge-dense subgraphs.}
+\item{dir.tresh}{a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. Defult value is 0.}
 }
 \value{
-returns a dataframe including the edges of the network with their strength and strength of directions.
+returns a list including a dataframe including the edges of the network with their strength and strength of directions and a highcharter plot.
 }
 \description{
-A function to fit a Bayesian network (a directed acyclic graph) to variables using bootstrap.
+Fits a Bayesian network (a directed acyclic graph) to variables and performs bootstrapping.
 The function also visualizes the structure of the Baysian network and decompose the graph into the underlying communities.
 }
 \details{
-The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
-}
-\examples{
-
+The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is cunstructed based on the strength of associations calculated by bootstrapping.
 }
 \references{
 Nagarajan R, Scutari M, Lebre S (2013). "Bayesian Networks in R with Applications in Systems Biology". Springer.

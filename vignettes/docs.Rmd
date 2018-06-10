@@ -36,13 +36,632 @@ plot(0:1,0:1,type="n",ann=FALSE,axes=FALSE)
 rasterImage(jj,0,0,1,1)
 ```
 
-We highly recommend installation of **Questools** through our github.
-For installation in R you can use devtools package:
-
-```{r echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
-install.packages("devtools")
+## Installation and import
+Questools can be installed through github:
+```{r package, message=FALSE, warning=FALSE, eval=FALSE}
 devtools::install_github("bAIo-lab/Questools")
 library(Questools)
 ```
 
-# Results
+
+```{r packages, message=FALSE, warning=FALSE, include=FALSE, paged.print=FALSE}
+library(highcharter)
+library(dplyr)
+library(purrr)
+library(softImpute)
+library(purrr)
+library(visNetwork)
+library(gRim)
+library(RBGL)
+library(SIN)
+library(glasso)
+library(igraph)
+library(gRapHD)
+library(bnlearn)
+library(purrr)
+library(visNetwork)
+library(gRim)
+library(RBGL)
+library(SIN)
+library(glasso)
+library(igraph)
+library(gRapHD)
+library(bnlearn)
+library(readxl)
+library(highcharter)
+library(dplyr)
+library(limma)
+library(ggplot2)
+library(entropy)
+library(purrr)
+library(permute)
+library(entropy)
+library(purrr)
+library(permute)
+library(smallvis)
+library(purrr)
+library(visNetwork)
+library(gRim)
+library(RBGL)
+library(SIN)
+library(glasso)
+library(igraph)
+library(gRapHD)
+library(kableExtra)
+```
+
+## Dateset
+We'll use a health Questionnaire dataset to work with Questools. The dataset contains 291 variables, including 36 continuous (i.e., laboratory measurements), and 255 categorical variables (i.e., questions) having no missing data.
+```{r dataset}
+data <- read.csv("../data/data.csv")
+kableExtra::kable(head(data)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = "200px")
+```
+
+
+```{r funcitons, include=FALSE}
+dim.reduce <- function(X, method = "tsne", verbose = TRUE) {
+  # By default, we use all numeric columns found in a data frame, so you don't need to filter out factor or strings
+  # set verbose = TRUE to log progress to the console
+  # Automatically plots the results during optimization
+  if (method == "tsne") {
+    return(smallvis(X, perplexity = 25, verbose = TRUE))
+  }
+  
+  
+  # UMAP: see https://github.com/lmcinnes/umap
+  # UMAP also has extra parameters, but we use the defaults here
+  if (method == "umap") {
+    return(smallvis(
+      X,
+      method = "umap",
+      perplexity = 25,
+      eta = 0.01
+    ))
+  }
+  
+  # Repeat embedding 10 times and keep the one with the best cost
+  if (method == "tsne_rep") {
+    return(smallvis_rep(
+      nrep = 10,
+      X = X,
+      perplexity = 25,
+      ret_extra = TRUE
+    ))
+  }
+  
+  
+  # Classical momentum optimization instead of delta-bar-delta
+  if (method == "umap_mom") {
+    return(smallvis(
+      X,
+      scale = FALSE,
+      opt = list("mom", eta = 1e-2, mu = 0.8),
+      method = "umap",
+      Y_init = "spca"
+    ))
+  }
+  
+  # L-BFGS optimization via the mize package
+  if (method == "umap_l_bfgs") {
+    smallvis(
+      X,
+      scale = FALSE,
+      opt = list("l-bfgs", c1 = 1e-4, c2 = 0.9),
+      method = "umap",
+      Y_init = "spca",
+      max_iter = 300
+    )
+  }
+  
+  # Early Exaggeration
+  if (method == "tsne_early") {
+    smallvis(
+      X,
+      eta = 100,
+      exaggeration_factor = 4,
+      stop_lying_iter = 100
+    )
+  }
+  
+  # and Late Exaggeration as suggested by Linderman and co-workers
+  if (method == "tsne_late") {
+    return(
+      smallvis(
+        X,
+        eta = 100,
+        exaggeration_factor = 4,
+        stop_lying_iter = 100,
+        late_exaggeration_factor = 1.5,
+        start_late_lying_iter = 900
+      )
+    )
+  }
+  
+}
+
+
+div <- function(data, g1, g2, permute = 0) {
+  kl.calc <- function(g1, g2, data) {
+    1:dim(data)[2] %>% map(function(x)
+      freq(data[, x], g1, g2)) %>% map(function(x)
+        abs(KL.plugin(x$g1, x$g2)) + abs(KL.plugin(x$g2, x$g1))) -> to.ret
+    unlist(to.ret)
+  }
+  freq <- function(vec, g1, g2) {
+    to.ret <- list(g1 = c(), g2 = c())
+    levels(factor(vec)) %>% map(function(x)
+      list(g1 = max(1, sum(vec[g1] == x)), g2 = max(1, sum(vec[g2] == x)))) %>% map(function(x)
+        to.ret <<-
+          list(
+            g1 = c(to.ret$g1, x$g1),
+            g2 = c(to.ret$g2, x$g2)
+          )) -> na
+    to.ret
+  }
+  p.val <- function(x, vec) {
+    which(sort(vec, decreasing = T) < x)[1] / length(vec)
+  }
+  # inja!
+  data <- data[, colSums(data.matrix(data), na.rm = T) > 5000]
+  data <- data.frame(data)
+  g1.g2 <- c(g1, g2)
+  # inja!
+  kl <-
+    kl.calc(g1.g2[1:length(g1)], g1.g2[(length(g1) + 1):length(g1.g2)], data)
+  if (permute > 0) {
+    kl.df <- data.frame()
+    1:100 %>% map(function(x)
+      shuffle(g1.g2)) %>% map(function(x)
+        list(g1 = x[1:length(g1)], g2 = x[(length(g1) + 1):length(x)])) %>% map(function(f)
+          kl.calc(f[[1]], f[[2]], data)) %>% map(function(x)
+            kl.df <<- rbind(kl.df, x)) -> na
+    
+    1:dim(kl.df)[2] %>% map(function(i)
+      p.val(kl[i], kl.df[, i])) -> kls
+    return(data.frame(
+      KL = kl,
+      row.names = colnames(data),
+      p.value = unlist(kls)
+    ))
+  }
+  return(data.frame(KL = kl, row.names = colnames(data)))
+}
+
+
+
+div2 <- function(data, var1, var2, permute = 0, frac = 0.05) {
+  kl.calc <- function(g1, g2, data) {
+    1:dim(data)[2] %>% map(function(x)
+      freq(data[, x], g1, g2)) %>% map(function(x)
+        abs(KL.plugin(x$g1, x$g2)) + abs(KL.plugin(x$g2, x$g1))) -> to.ret
+    unlist(to.ret)
+  }
+  freq <- function(vec, g1, g2) {
+    to.ret <- list(g1 = c(), g2 = c())
+    levels(factor(vec)) %>% map(function(x)
+      list(g1 = max(1, sum(vec[g1] == x)), g2 = max(1, sum(vec[g2] == x)))) %>% map(function(x)
+        to.ret <<-
+          list(
+            g1 = c(to.ret$g1, x$g1),
+            g2 = c(to.ret$g2, x$g2)
+          )) -> na
+    to.ret
+  }
+  p.val <- function(x, vec) {
+    which(sort(vec, decreasing = T) < x)[1] / length(vec)
+  }
+  lm <- lm(var1~var2)
+  sm <- summary(lm)
+  res <- residuals(lm)
+  names(res) <- 1:length(res)
+  down <- head(order(res),frac*dim(data)[1])
+  up <- tail(order(res),frac*dim(data)[1])
+  data <- data[, colSums(data.matrix(data), na.rm = T) > 5000]
+  data <- data.frame(data)
+  up.down <- c(up, down)
+  kl <-
+    kl.calc(up.down[1:length(up)], up.down[(length(up) + 1):length(up.down)], data)
+  if(permute > 0){
+    kl.df <- data.frame()
+    1:100 %>% map(function(x)
+      shuffle(up.down)) %>% map(function(x)
+        list(up = x[1:length(up)], down = x[(length(up) + 1):length(x)])) %>% map(function(f)
+          kl.calc(f[[1]], f[[2]], data)) %>% map(function(x)
+            kl.df <<- rbind(kl.df, x)) -> na
+    
+    1:dim(kl.df)[2] %>% map(function(i)
+      p.val(kl[i], kl.df[, i])) -> kls
+    return(data.frame(KL = kl, row.names = colnames(data), p.value = unlist(kls)))
+  }
+  return(data.frame(KL = kl, row.names = colnames(data)))
+}
+
+bn <-
+  function(data,
+           C.alg = NULL,
+           S.alg = c("mmhc"),
+           blacklist = NULL,
+           whitelist = NULL,
+           R = 10,
+           m = 0,
+           str.thresh = 0,
+           dir.thresh = 0,
+           community = T) {
+    data <- data.matrix(data)
+    data <- data.frame(data)
+    if (m == 0) {
+      m <- dim(data)[1]
+    }
+    
+    S.alg %>% map(function(alg)
+      boot.strength(
+        data,
+        R = R,
+        m = m,
+        algorithm =  alg,
+        algorithm.args = list(blacklist = blacklist,
+                              whitelist = whitelist)
+      )) -> S.boot
+    S.boot %>% map(function(x)
+      x$strength) -> S.strength
+    S.boot %>% map(function(x)
+      x$direction) -> S.direction
+    strength <- do.call(rbind, S.strength)
+    direction <- do.call(rbind, S.direction)
+    if (length(C.alg) != 0) {
+      C.alg %>% map(function(alg)
+        boot.strength(
+          data,
+          R = R,
+          m = m,
+          algorithm =  alg,
+          algorithm.args = list(blacklist = blacklist,
+                                whitelist = whitelist)
+        )) -> C.boot
+      C.boot %>% map(function(x)
+        x$strength) -> C.strength
+      C.boot %>% map(function(x)
+        x$direction) -> C.direction
+      C.strength <- do.call(rbind, C.strength)
+      C.direction <- do.call(rbind, C.direction)
+      strength <- rbind(C.strength, strength)
+      direction <- rbind(C.direction , direction)
+    }
+    direction <- colMeans(direction, na.rm = TRUE)
+    strength <- colMeans(strength, na.rm = TRUE)
+    
+    bn.s <- S.boot[[1]]
+    bn.s[which(
+      !is.na(strength) &
+        strength >= str.thresh &
+        !is.na(direction) & direction >= dir.thresh
+    ),] -> bn.s
+    View(bn.s)
+    bn.s1 <- bn.s
+    bn.s2 <- bn.s
+    rownames(bn.s1) <- paste0(bn.s1$from, bn.s1$to)
+    bn.s2$from <- bn.s$to
+    bn.s2$to <- bn.s$from
+    rownames(bn.s2) <- paste0(bn.s2$from, bn.s2$to)
+    rownames(bn.s) %>% map(function(x)
+      (bn.s1[x, 4] > bn.s2[x, 4])) -> direction
+    direction <- unlist(direction)
+    
+    g <- bn.s[direction,]
+    g <- graph.data.frame(bn.s)
+    data <- toVisNetworkData(g)
+    if (community) {
+      fc <- cluster_louvain(as.undirected(g))
+      groups <- membership(fc)
+      data$nodes %>% mutate(group = groups[data$nodes$id]) -> data$nodes
+    }
+    vs <- visNetwork(nodes = data$nodes, edges = data$edges)  %>%
+      visOptions(highlightNearest = list(
+        enabled = T,
+        degree = 1,
+        hover = T
+      )) %>% visEdges(arrows = "to")
+    list(graph = bn.s, network = vs)
+  }
+
+
+plot <- function(data,
+                 vars,
+                 levels = 5,
+                 pie = F) {
+  is.cat <- function(var) {
+    !length(unique(var)) > levels
+    
+  }
+  var1 <- data[, vars[1]]
+  var1.is.cat <- is.cat(var1)
+  if (!pie) {
+    if (length(vars) == 1) {
+      if (var1.is.cat) {
+        pt <- data.frame(prop.table(table(var1)))
+        hc <- highchart() %>%
+          hc_xAxis(categories = factor(pt$Var1)) %>%
+          hc_add_series(name = "Frequncy", data = pt$Freq)
+        to.ret <-
+            hc %>% hc_chart(type = "column") %>% hc_add_theme(hc_theme_google()) %>% 
+  hc_title(text = paste("Histogram of", vars[1])) %>% hc_xAxis(title = list(text = vars[1]))
+      } else{
+        to.ret <- hchart(object = density(
+          as.numeric(var1),
+          area = TRUE,
+          color = "#B71C1C",
+          name = vars[1]
+        )) %>% hc_add_theme(hc_theme_google()) %>% 
+  hc_title(text = paste("Density of", vars[1])) %>% hc_xAxis(title = list(text = vars[1]))
+      }
+    } else{
+      var2 <- data[, vars[2]]
+      var2.is.cat <- is.cat(var2)
+      if (var1.is.cat & var2.is.cat) {
+        features <- data.frame(f1 = var1, f2 = var2)
+        cols <- colnames(features)
+        pt <- data.frame(table(as.character(interaction(features))))
+        pt$t1 <- strsplit2(pt$Var1, "\\.")[, 1]
+        pt$t2 <- strsplit2(pt$Var1, "\\.")[, 2]
+        pt %>% filter(t1 != 0 & t2 != 0) -> pt
+        pt %>% group_by(t1) %>% summarize(Freq = sum(Freq)) -> pt1
+        rownames(pt1) <- pt1$t1
+        # pt %>% mutate(Freq = Freq/pt1[as.character(t1),"Freq"]) -> pt2
+        # pt2$Freq <- pt2$Freq[,1]
+        pt2 <- pt
+        to.ret <-
+          hchart(pt2, "column", hcaes(
+            x = t1,
+            y = Freq,
+            group = t2
+          )) %>% hc_add_theme(hc_theme_google()) %>% 
+  hc_title(text = paste("Relative histogram of", paste(vars[1], vars[2], sep = "-"))) %>% hc_xAxis(title = list(text = vars[1])) %>% hc_yAxis(title = list(text = "number"))}
+      if (var1.is.cat & !var2.is.cat) {
+        features <-
+          data.frame(f1 = as.factor(var1), f2 = var2)
+        features$f2 <- as.numeric(features$f2)
+        features %>% group_by(f1) %>% summarise(m = mean(f2, na.rm = T)) -> f
+        # hc <- highchart() %>%
+        #   hc_xAxis(categories = 1:5) %>%
+        #   hc_add_series(name = "Mean", data = f$m[2:6])
+        # to.ret <-
+        #   hc %>% hc_chart(type = "column") %>% hc_add_theme(hc_theme_google())
+        to.ret <- hcboxplot(x = var2, var = var1) %>% hc_add_theme(hc_theme_google()) %>% 
+  hc_title(text = paste("Boxplot of", vars[2])) %>% hc_xAxis(title = list(text = vars[1])) %>% hc_yAxis(title = list(text = vars[2]))
+      }
+      if (!var1.is.cat & var2.is.cat) {
+        features <-
+          data.frame(f1 = as.factor(var2), f2 = var1)
+        features$f2 <- as.numeric(features$f2)
+        features %>% group_by(f1) %>% summarise(m = mean(f2, na.rm = T)) -> f
+        # hc <- highchart() %>%
+        #   hc_xAxis(categories = 1:5) %>%
+        #   hc_add_series(name = "Mean", data = f$m[2:6])
+        # to.ret <-
+        #   hc %>% hc_chart(type = "column") %>% hc_add_theme(hc_theme_google())
+        to.ret <- hcboxplot(x = var1, var = var2) %>% hc_add_theme(hc_theme_google()) %>% 
+  hc_title(text = paste("Boxplot of", vars[1])) %>% hc_xAxis(title = list(text = vars[2])) %>% hc_yAxis(title = list(text = vars[1]))
+      }
+      if (!var1.is.cat & !var2.is.cat) {
+        d <- data.frame(v1 = var1, v2 = var2)
+        to.ret <-
+          hchart(d, "scatter", hcaes(x = v1, y = v2)) %>% hc_add_theme(hc_theme_google()) %>% 
+  hc_title(text = paste("Scatter plot of", paste(vars[1], vars[2], sep = "-"))) %>% hc_xAxis(title = list(text = vars[1])) %>% hc_yAxis(title = list(text = vars[2]))
+      }
+    }
+  } else{
+    to.ret <- hcpie(as.factor(var1)) %>% 
+  hc_title(text = paste("Pie chart of", vars[1]))
+  }
+  
+  to.ret
+}
+
+
+
+
+min.forest <- function(data, stat = "BIC", community = TRUE) {
+  my.forest <- minForest(data, homog = F, stat = stat)
+  nby <- neighbourhood(my.forest, orig = 1, rad = 2000)$v[, 1]
+  bc.marg <- data[, nby]
+  mbF <- minForest(bc.marg)
+  mbG <- stepw(model = mbF, data = bc.marg, stat = stat)
+  rpl <- function(x) {
+    colnames(data[, nby])[x]
+  }
+  l <- apply(mbG@edges, 2, rpl)
+  colnames(l) <- c("from", "to")
+  l <- data.frame(l)
+  nodes <- unique(c(as.character(l$from), as.character(l$to)))
+  nodes <- data.frame(id = nodes, label = nodes)
+  edges <- l
+  e <- c()
+  for (i in 1:dim(edges)[1]) {
+    e <- c(e, edges[i,])
+  }
+  e <- unlist(e)
+  e <- as.character(e)
+  g <- make_undirected_graph(e)
+  bc <- betweenness(
+    g,
+    v = V(g),
+    directed = F,
+    weights = NULL,
+    nobigint = TRUE,
+    normalized = FALSE
+  )
+  title = paste0("<p>", paste("statistic =", mbG@statSeq), "</p>")
+  edges[, "title"] <- title
+  if (community) {
+    fc <- fastgreedy.community(g)
+    groups <- membership(fc)
+    groups <- groups[as.character(nodes$id)]
+    groups -> nodes$group
+  }
+  vn <- visNetwork(nodes, edges, height = "500px", width = "100%")  %>%
+    visOptions(highlightNearest = list(
+      enabled = T,
+      degree = 1,
+      hover = T
+    ))
+  list(summary = mbG, betweenness = bc, network = vn)
+}
+
+
+ggm <-
+  function(data,
+           threshold = 0.05,
+           significance = 0.05,
+           methods = c("glasso"),
+           rho = 0.1,
+           community = TRUE) {
+    model <- cmod(~ . ^ ., data = data)
+    S <- cov.wt (data, method = "ML")$cov
+    PC <- cov2pcor(S)
+    othermodels <- list()
+    if("aic" %in% methods){
+      othermodels$aic <- aic <- stepwise(model)
+    }
+    if("bic" %in% methods){
+      othermodels$bic <- stepwise(model, k = log(nrow(data)))
+    }
+    if("test" %in% methods){
+      othermodels$test <- stepwise(model, criterion = "test")
+    }
+    if("threshold" %in% methods){
+      Z <- abs(PC)
+      Z[Z < threshold] <- 0
+      diag(Z) <- 0
+      Z[Z > 0] <- 1
+      g.thresh <- as(Z, "graphNEL")
+      thresh <- cmod(g.thresh, data = data)
+    }
+    if("sin" %in% methods){
+      psin <- sinUG(S, n = nrow(data))
+      othermodels$gsin <- as(getgraph(psin, significance), "graphNEL")
+    }
+    if("glasso" %in% methods){
+      C<-cov2cor(S)
+      res.lasso <- glasso(C, rho = rho)
+      AM <- abs(res.lasso$wi) > threshold
+      diag(AM) <- F
+      g.lasso <- as(AM, "graphNEL")
+      nodes(g.lasso) <- colnames(data)
+      othermodels$glasso <- g.lasso
+    }
+    othermodels <- othermodels %>% map(as, "igraph")
+    commonedges <- do.call(igraph::intersection, othermodels)
+    bt <- betweenness(as(commonedges, "igraph"), V(as(commonedges, "igraph")))
+    data <- toVisNetworkData(as(commonedges, "igraph"))
+    if(community){
+      fc <- cluster_louvain(as(commonedges, "igraph"))
+      data$nodes$group <- membership(fc)
+    }
+    vs <- visNetwork(nodes = data$nodes, edges = data$edges)  %>%
+      visOptions(highlightNearest = list(
+        enabled = TRUE,
+        degree = 1,
+        hover = TRUE
+      ))
+    list(graph = as(commonedges, "igraph"), betweenness = bt, network = vs)
+  }
+
+```
+
+
+## dim.reduce
+Use `dim.reduce` to visualize the continuous variables in 2 dimensions with tsne. 
+```{r dim, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
+dim.reduce(data[,1:36], method = "tsne") -> plt
+#plt
+```
+
+## ggm
+Use `ggm` to construct a Gaussian Graphical Model with glasso and significance test method.
+```{r ggm, echo=TRUE, message=FALSE, warning=FALSE}
+ggm(data[,1:36], significance = 0.05, rho = 0.1, community = TRUE, methods = c("glasso", "sin")) -> g
+g$network
+g
+```
+
+## bn
+Use `bn` to learn the structure of a Bayesian network fitting data with `si.hito.pc` as a Constraint-based algorithm, `mmhc` as a Hybrid algorithm, and `tabu` as a Score-based algorithm. Repeat the bootstrap sampling 100 times. (very time consuming)
+```{r bn, echo=TRUE, message=FALSE, warning=FALSE}
+bn(data = data[,1:36], C.alg = c("si.hiton.pc"), S.alg = c("mmhc", "tabu"), blacklist = data.frame(to = "BMI", to = "Age"), R = 10, community = FALSE, str.thresh = 0.9, dir.thresh = 0.5) -> n
+n$network
+n
+```
+
+## min.forst
+Employ `min.forest` with BIC to construct a mixed-interaction model fitting the data.
+```{r mf, echo=TRUE, message=FALSE, warning=FALSE}
+min.forest(data, stat = "BIC", community = TRUE) -> mf
+mf$network
+mf
+```
+
+## div
+Use `div` with 1000 times of permutation to find the most deferentially answered questions between people with answer "1" to the test 62 and people with answer "2" to the test 62. (Test 62 is about cardiovascular diseases.)
+```{r div, echo=TRUE, message=FALSE, warning=FALSE}
+g1 <- which(data$test62 == "1") 
+g2 <- which(data$test62 == "2")
+div(data[37:dim(data)[2]], g1, g2, permute = 1000) -> KL
+KL$name <- row.names(KL)
+KL <- KL %>% arrange(desc(KL))
+kableExtra::kable(head(KL,n = 20)) %>%
+  kable_styling() %>%
+  scroll_box(width = "400px", height = "400px")
+```
+
+
+## div2
+Use `div2` to find the most deferentially answered questions between people with relatively high BMI (relative to blood pressure) and people with high pressure (relative to BMI). (`FesharS` demonstrates blood pressure.)
+
+```{r div2, echo=TRUE, message=FALSE, warning=FALSE}
+div2(data[37:dim(data)[2]], var1 = data$BMI, var2 = data$FesharS, permute = 0) -> KL
+KL$name <- row.names(KL)
+KL <- KL %>% arrange(desc(KL))
+kableExtra::kable(head(KL, n = 20)) %>%
+  kable_styling() %>%
+  scroll_box(width = "300px", height = "400px")
+```
+
+
+## plot
+Use `plot` for different visualizations. 
+`levels` is set to 10 to capture categorical variables.
+
+Histogram for test 10:
+```{r plot1, echo=TRUE, message=FALSE, warning=FALSE}
+plot(data, vars = c("test10"), levels = 10)
+```
+
+Density plot for BMI:pl
+```{r plot2, echo=TRUE, message=FALSE, warning=FALSE}
+plot(data, vars = c("BMI"), levels = 10)
+```
+
+Boxplot of BMI for different answers of test 1:
+```{r plot3, echo=TRUE, message=FALSE, warning=FALSE}
+plot(data, vars = c("test1", "BMI"), levels = 10)
+```
+
+Relative histogram of test 1 vs test 10:
+```{r plot4, echo=TRUE, message=FALSE, warning=FALSE}
+plot(data, vars = c("test1", "test10"), levels = 10)
+```
+
+Scatter plot of Vazn (weight) vs BMI:
+```{r plot5, echo=TRUE, message=FALSE, warning=FALSE}
+plot(data, vars = c("Vazn", "BMI"), levels = 10)
+```
+
+Pie chart of test 1:
+```{r plot6, echo=TRUE, warning=FALSE}
+plot(data, vars = c("test1"), levels = 10, pie = TRUE)
+```
+
+
+

@@ -2,29 +2,28 @@
 % Please edit documentation in R/KL.R
 \name{div}
 \alias{div}
-\title{calculating Kullback-Leibler divergence for each categorical variable between two different groups of samples.}
+\title{calculate variable-wise Kullback-Leibler divergence}
 \usage{
-div(data, var, permute = 0)
+div(data, g1, g2, permute = 0)
 }
 \arguments{
 \item{data}{a dataframe of categorical variables.}
 
-\item{var}{a character string or an integer indicating the column of the variable of interest. Note that the column should be of two levels (binary-valued).}
+\item{g1}{a vector of integers. Demonstrates the row indices of group 1.}
 
-\item{permute}{an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.}
+\item{g2}{a vector of integers. Demonstrates the row indices of group 2.}
+
+\item{permute}{an integer indicating the number of permutations for permutation test. If 0 (the defualt) no permutation test will be carried out.}
 }
 \value{
 if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.
 }
 \description{
-A function to calculate Kullback-Leibler divergence for each categorical variable between two groups of samples which have different values of a binary-valued variable.
+Calculates variable-wise Kullback-Libler divergence between two groups of samples.
 }
 \details{
-The function helps users to find out the variables with the most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements, we are interested in finding the most important variables in occurring cardiovascular disease.
+The function helps users to find out the variables with most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements we are intrested in finding the most important variables in occuring cardiovascular disease.
 The function is able to carry out permutation test to calculate the p_value for each variable.
-}
-\examples{
-
 }
 \author{
 Elyas Heidari

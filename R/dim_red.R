@@ -2,7 +2,7 @@
 #'
 #'
 #' @description
-#' Reduce dimentionality with a method in \{ tsne, umap, repeated tsne, Momenton umap, L-BFGS umap, Early Exaggeration tsne, and Late Exaggeration tsne\}.
+#' Reduce dimensionality with a method in \{ tsne, umap, repeated tsne, Momenton umap, L-BFGS umap, Early Exaggeration tsne, and Late Exaggeration tsne\}.
 #'
 #' @param X a dataset to be reduced in dimension.
 #' @param method a character string as the name of the method. Available values are "tsne" (the default), "tsne_rep", "tsne_early", "tsne_late", "umap", "umap_mom",  "umap_l_bfgs".

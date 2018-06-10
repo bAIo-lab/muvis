@@ -7,11 +7,11 @@
 \method{min}{forest}(data, stat = "BIC", community = TRUE)
 }
 \arguments{
-\item{data}{a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurments.}
+\item{data}{a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.}
 
-\item{stat}{measure to be minimized: LR, AIC, or BIC (the defult). Default is BIC. It can also be a user defined function with format: FUN(model,dataset,previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.}
+\item{stat}{measure to be minimized: LR, AIC, or BIC (the default). Default is BIC. It can also be a user-defined function with the format: FUN(model, dataset, previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.}
 
-\item{community}{a logical value. If TRUE (the defualt) the network will be colored into communities of edge-dense subgraphs.}
+\item{community}{a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.}
 }
 \value{
 a list containing:
@@ -24,7 +24,7 @@ Fits a minimum forest to data.
 Also visualizes the the minimum forest.
 }
 \details{
-The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is cunstructed based on the strength of associations calculated by bootstrapping.
+The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
 }
 \references{
 Chow, C.K., and Liu, C.N. (1968) Approximating discrete probability distributions with dependence trees. IEEE Transactions on Information Theory, Vol. IT-14, 3:462-7.

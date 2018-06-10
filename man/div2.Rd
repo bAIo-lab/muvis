@@ -21,7 +21,7 @@ div2(data, var1, var2, permute = 0, frac = 0.05)
 if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.
 }
 \description{
-Calculates variable-wise Kullback-Libler divergence between two groups of samples which violate the linear relationship between two continuous variables.
+Calculates variable-wise Kullback-Leibler divergence between two groups of samples which violate the linear relationship between two continuous variables.
 }
 \author{
 Elyas Heidari

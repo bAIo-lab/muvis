@@ -2,31 +2,31 @@
 % Please edit documentation in R/ggm.R
 \name{ggm}
 \alias{ggm}
-\title{construct and visualize a gussian graphical model indicating the associations between continuous variables in data}
+\title{construct and visualize a Gaussian graphical model indicating the associations between continuous variables in data}
 \usage{
 ggm(data, treshold = 0.05, significance = 0.05, rho = 0.1)
 }
 \arguments{
-\item{data}{A normalized dataframe or matrix with no missing data of continuous measurments.}
-
-\item{treshold}{A treshhold for partial correlation tresholding method (default = 0.05).}
+\item{data}{A normalized dataframe or matrix with no missing data of continuous measurements.}
 
 \item{significance}{A cutoff for edge significance (default = 0.05).}
 
 \item{rho}{(Non-negative) regularization parameter for glasso (default = 0.1).}
+
+\item{threshold}{A threshold for partial correlation thresholding method (default = 0.05).}
 }
 \value{
 A list in which each element is the details of a specific fitted method.
 \item{aic}{Fit details of aic model.}
 \item{bic}{Fit details of bic model.}
 \item{test}{Fit details of significance test model.}
-\item{pcor}{Partial correlaiton matrix used for tresholding method.}
+\item{pcor}{Partial correlation matrix used for thresholding method.}
 \item{significance}{Significance matrix consisting p.values of each edge.}
 \item{glasso}{Partial correlation matrix calculated by glasso.}
 \item{betweenness}{Betweenness measurement for each node.}
 }
 \description{
-A function to fit a gussian graphical model to continuous variables using six methods, i.e, stepwise AIC, stepwise BIC, stepwise significance test, partial correlation tresholding, edgewise significance test, and glasso.
+A function to fit a Gaussian graphical model to continuous variables using six methods, i.e, stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, and glasso.
 The function also visualizes the graphical model and decompose the graph into the underlying communities.
 }
 \details{

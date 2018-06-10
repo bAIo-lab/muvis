@@ -3,15 +3,15 @@
 #'
 #'
 #' @description
-#' Calculates variable-wise Kullback-Libler divergence between two groups of samples.
+#' Calculates variable-wise Kullback-Leibler divergence between two groups of samples.
 #'
 #' @param  data a dataframe of categorical variables.
 #' @param  g1 a vector of integers. Demonstrates the row indices of group 1.
 #' @param  g2 a vector of integers. Demonstrates the row indices of group 2.
-#' @param  permute an integer indicating the number of permutations for permutation test. If 0 (the defualt) no permutation test will be carried out.
+#' @param  permute an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
 #'
 #' @details
-#' The function helps users to find out the variables with most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements we are intrested in finding the most important variables in occuring cardiovascular disease.
+#' The function helps users to find out the variables with the most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements, we are interested in finding the most important variables in occurring cardiovascular disease.
 #' The function is able to carry out permutation test to calculate the p_value for each variable.
 #'
 #'

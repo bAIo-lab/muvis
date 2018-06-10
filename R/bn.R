@@ -3,24 +3,24 @@
 #'
 #' @description
 #' Fits a Bayesian network (a directed acyclic graph) to variables and performs bootstrapping.
-#' The function also visualizes the structure of the Baysian network and decompose the graph into the underlying communities.
+#' The function also visualizes the structure of the Bayesian network and decompose the graph into the underlying communities.
 #'
 #'
-#' @param data a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurments.
-#' @param C.alg a vector of Constraint-based and Local Discovery algorithms from \{"gs", "mmpc", "si.hiton.pc"\}. Defualt is NULL.
-#' @param S.alg a vector of Score-based and Hybrid algorithms from \{"pc.stable", "hc", "tabu", "mmhc", "aracne"\}. Defaut is "mmhc".
+#' @param data a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
+#' @param C.alg a vector of Constraint-based and Local Discovery algorithms from \{"gs", "mmpc", "si.hiton.pc"\}. Default is NULL.
+#' @param S.alg a vector of Score-based and Hybrid algorithms from \{"pc.stable", "hc", "tabu", "mmhc", "aracne"\}. The default is "mmhc".
 #' @param blacklist a two-column dataframe which includes edges to be excluded from the network.
 #' @param whitelist a two-column dataframe which includes edges to be included from the network.
-#' @param R an integer to demonstrate the number of runs of bootstrap sampling. Defult value is 10.
-#' @param m an integer to demonstrate the number of rows to be sampled from dataset in each bootstrap sampling. Defult value is the number of rows in data.
-#' @param str.tresh a double between 0 and 1 indicating the threshold value for an association to be considered in the network. Defult value is 0.
-#' @param dir.tresh a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. Defult value is 0.
-#' @param community a logical value. If TRUE (the defualt) the network will be colored into communities of edge-dense subgraphs.
+#' @param R an integer to demonstrate the number of runs of bootstrap sampling. The default value is 10.
+#' @param m an integer to demonstrate the number of rows to be sampled from dataset in each bootstrap sampling. The default value is the number of rows in data.
+#' @param str.tresh a double between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.
+#' @param dir.tresh a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.
+#' @param community a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
 #'
 #'
 #'
 #' @details
-#' The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is cunstructed based on the strength of associations calculated by bootstrapping.
+#' The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
 #'
 #'
 #' @references  Nagarajan R, Scutari M, Lebre S (2013). "Bayesian Networks in R with Applications in Systems Biology". Springer.

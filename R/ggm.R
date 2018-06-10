@@ -1,10 +1,10 @@
-#' construct and visualize a gussian graphical model indicating the associations between continuous variables in data
+#' construct and visualize a Gaussian graphical model indicating the associations between continuous variables in data
 #' @description
-#' A function to fit a gussian graphical model to continuous variables using six methods, i.e, stepwise AIC, stepwise BIC, stepwise significance test, partial correlation tresholding, edgewise significance test, and glasso.
+#' A function to fit a Gaussian graphical model to continuous variables using six methods, i.e, stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, and glasso.
 #' The function also visualizes the graphical model and decompose the graph into the underlying communities.
 #'
-#' @param data A normalized dataframe or matrix with no missing data of continuous measurments.
-#' @param treshold A treshhold for partial correlation tresholding method (default = 0.05).
+#' @param data A normalized dataframe or matrix with no missing data of continuous measurements.
+#' @param threshold A threshold for partial correlation thresholding method (default = 0.05).
 #' @param significance A cutoff for edge significance (default = 0.05).
 #' @param rho (Non-negative) regularization parameter for glasso (default = 0.1).
 #'
@@ -22,7 +22,7 @@
 #' \item{aic}{Fit details of aic model.}
 #' \item{bic}{Fit details of bic model.}
 #' \item{test}{Fit details of significance test model.}
-#' \item{pcor}{Partial correlaiton matrix used for tresholding method.}
+#' \item{pcor}{Partial correlation matrix used for thresholding method.}
 #' \item{significance}{Significance matrix consisting p.values of each edge.}
 #' \item{glasso}{Partial correlation matrix calculated by glasso.}
 #' \item{betweenness}{Betweenness measurement for each node.}

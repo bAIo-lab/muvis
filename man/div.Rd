@@ -13,16 +13,16 @@ div(data, g1, g2, permute = 0)
 
 \item{g2}{a vector of integers. Demonstrates the row indices of group 2.}
 
-\item{permute}{an integer indicating the number of permutations for permutation test. If 0 (the defualt) no permutation test will be carried out.}
+\item{permute}{an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.}
 }
 \value{
 if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.
 }
 \description{
-Calculates variable-wise Kullback-Libler divergence between two groups of samples.
+Calculates variable-wise Kullback-Leibler divergence between two groups of samples.
 }
 \details{
-The function helps users to find out the variables with most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements we are intrested in finding the most important variables in occuring cardiovascular disease.
+The function helps users to find out the variables with the most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements, we are interested in finding the most important variables in occurring cardiovascular disease.
 The function is able to carry out permutation test to calculate the p_value for each variable.
 }
 \author{

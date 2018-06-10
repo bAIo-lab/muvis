@@ -17,7 +17,7 @@
 a plot of data points in the 2 dimensional space.
 }
 \description{
-Reduce dimentionality with a method in \{ tsne, umap, repeated tsne, Momenton umap, L-BFGS umap, Early Exaggeration tsne, and Late Exaggeration tsne\}.
+Reduce dimensionality with a method in \{ tsne, umap, repeated tsne, Momenton umap, L-BFGS umap, Early Exaggeration tsne, and Late Exaggeration tsne\}.
 }
 \author{
 Elyas Heidari with a refrence smallvis package

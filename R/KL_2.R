@@ -2,7 +2,7 @@
 #'
 #'
 #' @description
-#' Calculates variable-wise Kullback-Libler divergence between two groups of samples which violate the linear relationship between two continuous variables.
+#' Calculates variable-wise Kullback-Leibler divergence between two groups of samples which violate the linear relationship between two continuous variables.
 #'
 #' @param  data a dataframe of categorical variables.
 #' @param  var1 a vector of continuous values indicating the first variable. (the order of values should be the same as the order of rows in data)

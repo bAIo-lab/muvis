@@ -32,7 +32,7 @@ will need the R statistical computing environment (version 3.0 or later).
 ```{r echo=FALSE}
 library("jpeg")
 jj <- readJPEG("./figure/ques.jpeg",native=TRUE)
-plot(0:1,0:1,type="n",ann=FALSE,axes=FALSE)
+graphics::plot(0:1,0:1,type="n",ann=FALSE,axes=FALSE)
 rasterImage(jj,0,0,1,1)
 ```
 

@@ -7,8 +7,10 @@ cache: packages
 warnings_are_errors: no
 before_install:
   - sudo apt-get install libgsl0-dev
-after_success:
   - Rscript -e "install.packages(\"jpeg\")"
+  - Rscript -e "install.packages(\"kableExtra\")"
+  - Rscript -e "install.packages(\"bnlearn\")"
+after_success:
   - Rscript -e "packagedocs::deploy_travis()"
 env:
   global:

@@ -4,7 +4,7 @@
 \alias{min.forest}
 \title{construct and visualize a minimum forest based on Chow-Liu algorithm}
 \usage{
-\method{min}{forest}(data, stat = "BIC", community = TRUE)
+min.forest(data, stat = "BIC", community = TRUE)
 }
 \arguments{
 \item{data}{a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.}

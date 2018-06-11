@@ -1,14 +1,16 @@
-#' construct and visualize a Gaussian graphical model indicating the associations between continuous variables in data
+#' construct and visualize Gaussian Graphical Models.
+#'
 #' @description
-#' A function to fit a Gaussian graphical model to continuous variables using six methods, i.e, stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, and glasso.
-#' The function also visualizes the graphical model and decompose the graph into the underlying communities.
+#' Fit a Gaussian Graphical Model to continuous-valued dataset employing a subset of methods from stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, or glasso.
+#' Also visualizes the fitted Graphical Model.
 #'
-#' @param data A normalized dataframe or matrix with no missing data of continuous measurements.
-#' @param threshold A threshold for partial correlation thresholding method (default = 0.05).
-#' @param significance A cutoff for edge significance (default = 0.05).
-#' @param rho (Non-negative) regularization parameter for glasso (default = 0.1).
+#' @param  data A normalized dataframe or matrix with no missing data of continuous measurements.
+#' @param  method
+#' @param  threshold A threshold for partial correlation tresholding method (default = 0.05). To be used only when the method "threshold" is used.
+#' @param  significance A cutoff for edge significance (default = 0.05). To be used only when the method "significance" is used.
+#' @param  rho (Non-negative) regularization parameter for glasso (default = 0.1). To be used only when the method "glasso" is used.
 #'
-#' @details The function combines six methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse inverse covariance matrix.
+#' @details The function combines the methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse estimation of the inverse covariance matrix.
 #'
 #' @references  Højsgaard, S., Edwards, D., & Lauritzen, S. (2012). Graphical Models with R. Springer US. \url{https://doi.org/10.1007/978-1-4614-2299-0}
 #' @references  Friedman, J., Hastie, T., & Tibshirani, R. (2007). Sparse inverse covariance estimation with the graphical lasso. Biostatistics, 9(3), 432–441. \url{https://doi.org/10.1093/biostatistics/kxm045}
@@ -19,80 +21,81 @@
 #'
 #'
 #' @return A list in which each element is the details of a specific fitted method.
-#' \item{aic}{Fit details of aic model.}
-#' \item{bic}{Fit details of bic model.}
-#' \item{test}{Fit details of significance test model.}
-#' \item{pcor}{Partial correlation matrix used for thresholding method.}
-#' \item{significance}{Significance matrix consisting p.values of each edge.}
-#' \item{glasso}{Partial correlation matrix calculated by glasso.}
-#' \item{betweenness}{Betweenness measurement for each node.}
+#' \item{graph}{an igraph object of the graphical model.}
+#' \item{betweenness}{betweenness measurements of each edge.}
+#' \item{network}{a highcharter plot of the graphical model.}
 #'
 #' @export
 #'
 #' @importFrom  visNetwork toVisNetworkData visNetwork visOptions
-#' @importFrom gRbase cov2pcor stepwise
+#' @importFrom  gRbase cov2pcor stepwise
+#' @importFrom  purrr map
 #' @importFrom  gRim cmod
-#' @importFrom graph graphNEL
+#' @importFrom  graph graphNEL
 #' @importFrom  SIN sinUG getgraph
 #' @importFrom  glasso glasso
-#' @importFrom  igraph cluster_louvain betweenness
-#' @importFrom methods as
-#' @importFrom stats C cov.wt
+#' @importFrom  igraph cluster_louvain betweenness membership
+#' @importFrom  methods as
+#' @importFrom  stats C cov.wt
 #'
+
 
 
 
 ggm <-
   function(data,
-           treshold = 0.05,
+           threshold = 0.05,
            significance = 0.05,
-           rho = 0.1) {
+           methods = c("glasso"),
+           rho = 0.1,
+           community = TRUE) {
     model <- gRim::cmod(~ . ^ ., data = data)
-    aic <- gRbase::stepwise(model)
-    bic <- gRbase::stepwise(model, k = log(nrow(data)))
-    test <- gRbase::stepwise(model, criterion = "test")
     S <- stats::cov.wt (data, method = "ML")$cov
     PC <- gRbase::cov2pcor(S)
-    Z <- abs(PC)
-    Z[Z < threshold] <- 0
-    diag(Z) <- 0
-    Z[Z > 0] <- 1
-    g.thresh <- as(Z, "graph::graphNEL")
-    thresh <- gRim::cmod(g.thresh, data = data)
-    psin <- SIN::sinUG(S, n = nrow(data))
-    gsin <- as(SIN::getgraph(psin, significance), "graph::graphNEL")
-    res.lasso <- glasso::glasso(stats::C, rho = rho)
-    AM <- abs(res.lasso$wi) > treshold
-    diag(AM) <- F
-    g.lasso <- as(AM, "graph::graphNEL")
-    nodes(g.lasso) <- colnames(data)
-    othermodels <-
-      list(
-        as(test, "igraph"),
-        as(thresh, "igraph"),
-        as(gsin, "igraph"),
-        as(g.lasso, "igraph"),
-        as(aic, "igraph"),
-        as(bic, "igraph")
-      )
+    othermodels <- list()
+    if("aic" %in% methods){
+      othermodels$aic <- aic <- gRbase::stepwise(model)
+    }
+    if("bic" %in% methods){
+      othermodels$bic <- gRbase::stepwise(model, k = log(nrow(data)))
+    }
+    if("test" %in% methods){
+      othermodels$test <- gRbase::stepwise(model, criterion = "test")
+    }
+    if("threshold" %in% methods){
+      Z <- abs(PC)
+      Z[Z < threshold] <- 0
+      diag(Z) <- 0
+      Z[Z > 0] <- 1
+      g.thresh <- methods::as(Z, "graph::graphNEL")
+      thresh <- gRim::cmod(g.thresh, data = data)
+    }
+    if("sin" %in% methods){
+      psin <- SIN::sinUG(S, n = nrow(data))
+      othermodels$gsin <- methods::as(SIN::getgraph(psin, significance), "graph::graphNEL")
+    }
+    if("glasso" %in% methods){
+      C<-stats::cov2cor(S)
+      res.lasso <- glasso::glasso(C, rho = rho)
+      AM <- abs(res.lasso$wi) > threshold
+      diag(AM) <- F
+      g.lasso <- methods::as(AM, "graph::graphNEL")
+      nodes(g.lasso) <- colnames(data)
+      othermodels$glasso <- g.lasso
+    }
+    othermodels <- othermodels %>% purrr::map(methods::as, "igraph")
     commonedges <- do.call(igraph::intersection, othermodels)
-    bt <-
-      igraph::betweenness(as(commonedges, "igraph"), V(as(commonedges, "igraph")))
-    fc <- igraph::cluster_louvain(as(commonedges, "igraph"))
-    data <- visNetwork::toVisNetworkData(as(commonedges, "igraph"))
-    data$nodes$group <- igraph::membership(fc)
-    visNetwork::visNetwork(nodes = data$nodes, edges = data$edges)  %>%
+    bt <- igraph::betweenness(methods::as(commonedges, "igraph"), V(methods::as(commonedges, "igraph")))
+    data <- visNetwork::toVisNetworkData(methods::as(commonedges, "igraph"))
+    if(community){
+      fc <- igraph::cluster_louvain(methods::as(commonedges, "igraph"))
+      data$nodes$group <- igraph::membership(fc)
+    }
+    vs <- visNetwork::visNetwork(nodes = data$nodes, edges = data$edges)  %>%
       visNetwork::visOptions(highlightNearest = list(
-        enabled = T,
+        enabled = TRUE,
         degree = 1,
-        hover = T
+        hover = TRUE
       ))
-    list(
-      aic = aic$fitinfo,
-      bic = bic$fitinfo,
-      test = test$fitinfo,
-      pcor = PC,
-      glasso = g.lasso,
-      betweenness = bt
-    )
+    list(graph = as(commonedges, "igraph"), betweenness = bt, network = vs)
   }

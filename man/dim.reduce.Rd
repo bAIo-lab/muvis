@@ -4,7 +4,7 @@
 \alias{dim.reduce}
 \title{Dimensionality reduction and visualization.}
 \usage{
-\method{dim}{reduce}(X, method = "tsne", verbose = TRUE)
+dim.reduce(X, method = "tsne", verbose = TRUE)
 }
 \arguments{
 \item{X}{a dataset to be reduced in dimension.}

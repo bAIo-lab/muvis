@@ -27,7 +27,7 @@
 #' \item{}{betweenness measurements for each node.}
 #' \item{}{the highcharter plot of the network.}
 #'
-#'
+#' @usage min.forest(data, stat = "BIC", community = TRUE)
 #' @export min.forest
 #'
 #' @importFrom gRapHD minForest neighbourhood stepw

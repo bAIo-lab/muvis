@@ -13,7 +13,7 @@
 #' @return a plot of data points in the 2 dimensional space.
 #'
 #'
-#'
+#' @usage dim.reduce(X, method = "tsne", verbose = TRUE)
 #' @export dim.reduce
 #'
 #' @importFrom smallvis smallvis smallvis_rep

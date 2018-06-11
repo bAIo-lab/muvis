@@ -2,35 +2,34 @@
 % Please edit documentation in R/ggm.R
 \name{ggm}
 \alias{ggm}
-\title{construct and visualize a Gaussian graphical model indicating the associations between continuous variables in data}
+\title{construct and visualize Gaussian Graphical Models.}
 \usage{
-ggm(data, treshold = 0.05, significance = 0.05, rho = 0.1)
+ggm(data, threshold = 0.05, significance = 0.05, methods = c("glasso"),
+  rho = 0.1, community = TRUE)
 }
 \arguments{
 \item{data}{A normalized dataframe or matrix with no missing data of continuous measurements.}
 
-\item{significance}{A cutoff for edge significance (default = 0.05).}
+\item{threshold}{A threshold for partial correlation tresholding method (default = 0.05). To be used only when the method "threshold" is used.}
 
-\item{rho}{(Non-negative) regularization parameter for glasso (default = 0.1).}
+\item{significance}{A cutoff for edge significance (default = 0.05). To be used only when the method "significance" is used.}
 
-\item{threshold}{A threshold for partial correlation thresholding method (default = 0.05).}
+\item{rho}{(Non-negative) regularization parameter for glasso (default = 0.1). To be used only when the method "glasso" is used.}
+
+\item{method}{}
 }
 \value{
 A list in which each element is the details of a specific fitted method.
-\item{aic}{Fit details of aic model.}
-\item{bic}{Fit details of bic model.}
-\item{test}{Fit details of significance test model.}
-\item{pcor}{Partial correlation matrix used for thresholding method.}
-\item{significance}{Significance matrix consisting p.values of each edge.}
-\item{glasso}{Partial correlation matrix calculated by glasso.}
-\item{betweenness}{Betweenness measurement for each node.}
+\item{graph}{an igraph object of the graphical model.}
+\item{betweenness}{betweenness measurements of each edge.}
+\item{network}{a highcharter plot of the graphical model.}
 }
 \description{
-A function to fit a Gaussian graphical model to continuous variables using six methods, i.e, stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, and glasso.
-The function also visualizes the graphical model and decompose the graph into the underlying communities.
+Fit a Gaussian Graphical Model to continuous-valued dataset employing a subset of methods from stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, or glasso.
+Also visualizes the fitted Graphical Model.
 }
 \details{
-The function combines six methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse inverse covariance matrix.
+The function combines the methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse estimation of the inverse covariance matrix.
 }
 \references{
 Højsgaard, S., Edwards, D., & Lauritzen, S. (2012). Graphical Models with R. Springer US. \url{https://doi.org/10.1007/978-1-4614-2299-0}

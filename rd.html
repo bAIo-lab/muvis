@@ -24,7 +24,7 @@
   <script src="rd_files/recliner-0.2.2/onload.js"></script>
   <link href="rd_files/packagedocs-0.0.1/pd.css" rel="stylesheet" />
   <script src="rd_files/packagedocs-0.0.1/pd.js"></script>
-  <script src="rd_files/packagedocs-0.0.1/pd-sticky-toc.js"></script>
+  <script src="rd_files/packagedocs-0.0.1/pd-collapse-toc.js"></script>
   
   
   
@@ -46,7 +46,7 @@
           <span class="icon-bar"></span>
         </button>
                 <a href="index.html" class="navbar-brand page-scroll">
-        Questools Documentation - Questionnarie Tools.
+        Questools Documentation - Questionnarie Tools
         </a>
       </div>
             <nav class="collapse navbar-collapse" role="navigation">
@@ -87,7 +87,7 @@
       
 <div id="content-top"></div>
 <h1>
-Questionnarie Tools.
+Questionnarie Tools
 </h1>
 <p>
 <strong>Authors:</strong> statCompTeam@bAIo-lab
@@ -108,7 +108,7 @@ A collection of tools to preprocess, analyze, and visualize Questionnaire datase
 Imports
 </h4>
 <p>
-softImpute, visNetwork, gRbase, gRim, purrr, gRapHD, permute, graph, SIN, glasso, igraph, stats, methods, entropy, dplyr, highcharter, limma, smallvis
+visNetwork, gRbase, gRim, purrr, gRapHD, permute, graph, SIN, glasso, igraph, stats, methods, entropy, dplyr, highcharter, limma, smallvis
 </p>
 <h4>
 Suggests
@@ -178,22 +178,22 @@ m
 an integer to demonstrate the number of rows to be sampled from dataset in each bootstrap sampling. The default value is the number of rows in data.
 </dd>
 <dt>
-community
-</dt>
-<dd class="rd-dd">
-a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
-</dd>
-<dt>
-str.tresh
+str.thresh
 </dt>
 <dd class="rd-dd">
 a double between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.
 </dd>
 <dt>
-dir.tresh
+dir.thresh
 </dt>
 <dd class="rd-dd">
 a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.
+</dd>
+<dt>
+community
+</dt>
+<dd class="rd-dd">
+a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
 </dd>
 </dl>
 <h4>
@@ -385,7 +385,7 @@ A normalized dataframe or matrix with no missing data of continuous measurements
 threshold
 </dt>
 <dd class="rd-dd">
-A threshold for partial correlation tresholding method (default = 0.05). To be used only when the method “threshold” is used.
+A threshold for partial correlation thresholding method (default = 0.05). To be used only when the method “threshold” is used.
 </dd>
 <dt>
 significance
@@ -394,16 +394,22 @@ significance
 A cutoff for edge significance (default = 0.05). To be used only when the method “significance” is used.
 </dd>
 <dt>
+methods
+</dt>
+<dd class="rd-dd">
+(default = “glasso”)
+</dd>
+<dt>
 rho
 </dt>
 <dd class="rd-dd">
 (Non-negative) regularization parameter for glasso (default = 0.1). To be used only when the method “glasso” is used.
 </dd>
 <dt>
-method
+community
 </dt>
 <dd class="rd-dd">
-Fit a Gaussian Graphical Model to continuous-valued dataset employing a subset of methods from stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, or glasso. Also visualizes the fitted Graphical Model.
+(default = TRUE)
 </dd>
 </dl>
 <h4>

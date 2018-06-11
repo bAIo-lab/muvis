@@ -1,6 +1,5 @@
 Package: Questools
-Type: Package
-Title: Questionnarie Tools.
+Title: Questionnarie Tools
 Version: 0.1.0
 Author: statCompTeam@bAIo-lab
 Maintainer: statCompTeam@bAIo-lab <sharifi.statComp@gmail.com>
@@ -14,7 +13,6 @@ biocViews:
 remotes: cran/gRapHD, 
          jlmelville/smallvis/smallvis
 Imports:
-    softImpute,
     visNetwork,
     gRbase,
     gRim,

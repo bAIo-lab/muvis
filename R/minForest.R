@@ -30,6 +30,7 @@
 #' @usage min.forest(data, stat = "BIC", community = TRUE)
 #' @export min.forest
 #'
+#'
 #' @importFrom gRapHD minForest neighbourhood stepw
 #' @importFrom igraph make_undirected_graph betweenness fastgreedy.community membership groups
 #' @importFrom graph nodes

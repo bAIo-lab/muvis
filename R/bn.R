@@ -13,8 +13,8 @@
 #' @param whitelist a two-column dataframe which includes edges to be included from the network.
 #' @param R an integer to demonstrate the number of runs of bootstrap sampling. The default value is 10.
 #' @param m an integer to demonstrate the number of rows to be sampled from dataset in each bootstrap sampling. The default value is the number of rows in data.
-#' @param str.tresh a double between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.
-#' @param dir.tresh a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.
+#' @param str.thresh a double between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.
+#' @param dir.thresh a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.
 #' @param community a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
 #'
 #'

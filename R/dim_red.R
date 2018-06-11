@@ -16,6 +16,7 @@
 #' @usage dim.reduce(X, method = "tsne", verbose = TRUE)
 #' @export dim.reduce
 #'
+#'
 #' @importFrom smallvis smallvis smallvis_rep
 
 

@@ -1,6 +1,6 @@
 ---
 title: "Questools Documentation"
-subtitle: "Questionnarie Tools."
+subtitle: "Questionnarie Tools"
 author: "statCompTeam@bAIo-lab"
 copyright: "statCompTeam@bAIo-lab"
 output:

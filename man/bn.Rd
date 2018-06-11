@@ -23,11 +23,11 @@ bn(data, C.alg = NULL, S.alg = c("mmhc"), blacklist = NULL,
 
 \item{m}{an integer to demonstrate the number of rows to be sampled from dataset in each bootstrap sampling. The default value is the number of rows in data.}
 
+\item{str.thresh}{a double between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.}
+
+\item{dir.thresh}{a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.}
+
 \item{community}{a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.}
-
-\item{str.tresh}{a double between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.}
-
-\item{dir.tresh}{a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.}
 }
 \value{
 returns a list including a dataframe including the edges of the network with their strength and strength of directions and a highcharter plot.

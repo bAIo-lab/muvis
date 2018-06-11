@@ -10,13 +10,15 @@ ggm(data, threshold = 0.05, significance = 0.05, methods = c("glasso"),
 \arguments{
 \item{data}{A normalized dataframe or matrix with no missing data of continuous measurements.}
 
-\item{threshold}{A threshold for partial correlation tresholding method (default = 0.05). To be used only when the method "threshold" is used.}
+\item{threshold}{A threshold for partial correlation thresholding method (default = 0.05). To be used only when the method "threshold" is used.}
 
 \item{significance}{A cutoff for edge significance (default = 0.05). To be used only when the method "significance" is used.}
 
+\item{methods}{(default = "glasso")}
+
 \item{rho}{(Non-negative) regularization parameter for glasso (default = 0.1). To be used only when the method "glasso" is used.}
 
-\item{method}{}
+\item{community}{(default = TRUE)}
 }
 \value{
 A list in which each element is the details of a specific fitted method.

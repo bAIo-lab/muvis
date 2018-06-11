@@ -362,15 +362,15 @@ Author
 <h2>ggm</h2>
 <a id="ggm_alias"></a>
 <h3>
-construct and visualize a Gaussian graphical model indicating the associations between continuous variables in data
+construct and visualize Gaussian Graphical Models.
 </h3>
 <p class="rd-p">
-A function to fit a Gaussian graphical model to continuous variables using six methods, i.e, stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, and glasso. The function also visualizes the graphical model and decompose the graph into the underlying communities.
+Fit a Gaussian Graphical Model to continuous-valued dataset employing a subset of methods from stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, or glasso. Also visualizes the fitted Graphical Model.
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>ggm(data, treshold&nbsp;=&nbsp;0.05, significance&nbsp;=&nbsp;0.05, rho&nbsp;=&nbsp;0.1)</div></code></pre>
+<pre class="r"><code><div>ggm(data, threshold&nbsp;=&nbsp;0.05, significance&nbsp;=&nbsp;0.05, methods&nbsp;=&nbsp;c("glasso"), rho&nbsp;=&nbsp;0.1, community&nbsp;=&nbsp;TRUE)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -382,22 +382,28 @@ data
 A normalized dataframe or matrix with no missing data of continuous measurements.
 </dd>
 <dt>
+threshold
+</dt>
+<dd class="rd-dd">
+A threshold for partial correlation tresholding method (default = 0.05). To be used only when the method “threshold” is used.
+</dd>
+<dt>
 significance
 </dt>
 <dd class="rd-dd">
-A cutoff for edge significance (default = 0.05).
+A cutoff for edge significance (default = 0.05). To be used only when the method “significance” is used.
 </dd>
 <dt>
 rho
 </dt>
 <dd class="rd-dd">
-(Non-negative) regularization parameter for glasso (default = 0.1).
+(Non-negative) regularization parameter for glasso (default = 0.1). To be used only when the method “glasso” is used.
 </dd>
 <dt>
-threshold
+method
 </dt>
 <dd class="rd-dd">
-A threshold for partial correlation thresholding method (default = 0.05).
+Fit a Gaussian Graphical Model to continuous-valued dataset employing a subset of methods from stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, or glasso. Also visualizes the fitted Graphical Model.
 </dd>
 </dl>
 <h4>
@@ -407,50 +413,10 @@ Value
 <dl>
 A list in which each element is the details of a specific fitted method.
 <dt>
-aic
+graph
 </dt>
 <dd>
-Fit details of aic model.
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-bic
-</dt>
-<dd>
-Fit details of bic model.
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-test
-</dt>
-<dd>
-Fit details of significance test model.
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-pcor
-</dt>
-<dd>
-Partial correlation matrix used for thresholding method.
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-significance
-</dt>
-<dd>
-Significance matrix consisting p.values of each edge.
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-glasso
-</dt>
-<dd>
-Partial correlation matrix calculated by glasso.
+an igraph object of the graphical model.
 </dd>
 </p>
 <p class="rd-p">
@@ -458,7 +424,15 @@ Partial correlation matrix calculated by glasso.
 betweenness
 </dt>
 <dd>
-Betweenness measurement for each node.
+betweenness measurements of each edge.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+network
+</dt>
+<dd>
+a highcharter plot of the graphical model.
 </dd>
 </p>
 <p class="rd-p">
@@ -468,7 +442,7 @@ Betweenness measurement for each node.
 Details
 </h4>
 <p class="rd-p">
-The function combines six methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse inverse covariance matrix.
+The function combines the methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse estimation of the inverse covariance matrix.
 </p>
 <h4>
 References
@@ -499,7 +473,7 @@ Fits a minimum forest to data. Also visualizes the the minimum forest.
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>"min"(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;TRUE)</div></code></pre>
+<pre class="r"><code><div>min.forest(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;TRUE)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -674,7 +648,7 @@ Reduce dimensionality with a method in { tsne, umap, repeated tsne, Momenton uma
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>"dim"(X, method&nbsp;=&nbsp;"tsne", verbose&nbsp;=&nbsp;TRUE)</div></code></pre>
+<pre class="r"><code><div>dim.reduce(X, method&nbsp;=&nbsp;"tsne", verbose&nbsp;=&nbsp;TRUE)</div></code></pre>
 <h4>
 Arguments
 </h4>

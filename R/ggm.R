@@ -36,7 +36,6 @@
 #' @importFrom  SIN sinUG getgraph
 #' @importFrom  glasso glasso
 #' @importFrom  igraph cluster_louvain betweenness membership
-#' @importFrom  methods as
 #' @importFrom  stats C cov.wt
 #'
 
@@ -68,28 +67,28 @@ ggm <-
       Z[Z < threshold] <- 0
       diag(Z) <- 0
       Z[Z > 0] <- 1
-      g.thresh <- methods::as(Z, "graph::graphNEL")
+      g.thresh <-  as(Z, "graphNEL")
       thresh <- gRim::cmod(g.thresh, data = data)
     }
     if("sin" %in% methods){
       psin <- SIN::sinUG(S, n = nrow(data))
-      othermodels$gsin <- methods::as(SIN::getgraph(psin, significance), "graph::graphNEL")
+      othermodels$gsin <- as(SIN::getgraph(psin, significance), "graphNEL")
     }
     if("glasso" %in% methods){
       C<-stats::cov2cor(S)
       res.lasso <- glasso::glasso(C, rho = rho)
       AM <- abs(res.lasso$wi) > threshold
       diag(AM) <- F
-      g.lasso <- methods::as(AM, "graph::graphNEL")
+      g.lasso <- as(AM, "graphNEL")
       nodes(g.lasso) <- colnames(data)
       othermodels$glasso <- g.lasso
     }
-    othermodels <- othermodels %>% purrr::map(methods::as, "igraph")
+    othermodels <- othermodels %>% purrr::map(as, "igraph")
     commonedges <- do.call(igraph::intersection, othermodels)
-    bt <- igraph::betweenness(methods::as(commonedges, "igraph"), V(methods::as(commonedges, "igraph")))
-    data <- visNetwork::toVisNetworkData(methods::as(commonedges, "igraph"))
+    bt <- igraph::betweenness( as(commonedges, "igraph"), V( as(commonedges, "igraph")))
+    data <- visNetwork::toVisNetworkData( as(commonedges, "igraph"))
     if(community){
-      fc <- igraph::cluster_louvain(methods::as(commonedges, "igraph"))
+      fc <- igraph::cluster_louvain( as(commonedges, "igraph"))
       data$nodes$group <- igraph::membership(fc)
     }
     vs <- visNetwork::visNetwork(nodes = data$nodes, edges = data$edges)  %>%

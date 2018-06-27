@@ -20,6 +20,11 @@
 #' @importFrom purrr map
 #' @importFrom entropy KL.plugin
 #' @importFrom permute shuffle
+#' @importFrom magrittr %>%
+#' @importFrom stats residuals
+#' @importFrom utils head tail
+
+
 div2 <- function(data, var1, var2, permute = 0, frac = 0.05) {
   kl.calc <- function(g1, g2, data) {
     1:dim(data)[2] %>% purrr::map(function(x)
@@ -43,10 +48,10 @@ div2 <- function(data, var1, var2, permute = 0, frac = 0.05) {
   }
   lm <- lm(var1~var2)
   sm <- summary(lm)
-  res <- residuals(lm)
+  res <- stats::residuals(lm)
   names(res) <- 1:length(res)
-  down <- head(order(res),frac*dim(data)[1])
-  up <- tail(order(res),frac*dim(data)[1])
+  down <- utils::head(order(res),frac*dim(data)[1])
+  up <- utils::tail(order(res),frac*dim(data)[1])
   data <- data[, colSums(data.matrix(data), na.rm = T) > 5000]
   data <- data.frame(data)
   up.down <- c(up, down)

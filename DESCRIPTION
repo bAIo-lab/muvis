@@ -28,5 +28,9 @@ Imports:
     dplyr,
     highcharter,
     limma,
-    smallvis
+    smallvis,
+    bnlearn,
+    magrittr,
+    utils,
+    methods
 Suggests: packagedocs

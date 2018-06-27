@@ -27,7 +27,7 @@
 #' @importFrom permute shuffle
 #' @importFrom dplyr pull
 #' @importFrom entropy KL.plugin
-
+#' @importFrom magrittr %>%
 
 
 div <- function(data, g1, g2, permute = 0) {

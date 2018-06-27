@@ -21,9 +21,10 @@
 #'
 #' @export
 #'
-#' @importFrom dplyr pull group_by summarise summarize
-#' @importFrom highcharter highchart hc_xAxis hc_yAxis hc_add_series hc_chart hc_add_theme hc_theme_google hcpie hcboxplot hc_add_series_scatter hc_title
+#' @importFrom dplyr pull group_by summarise summarize filter
+#' @importFrom highcharter highchart hc_xAxis hc_yAxis hc_add_series hc_chart hc_add_theme hc_theme_google hcpie hcboxplot hc_add_series_scatter hc_title hcaes
 #' @importFrom limma strsplit2
+#' @importFrom stats density
 
 
 plot <- function(data,
@@ -47,7 +48,7 @@ plot <- function(data,
           hc %>% highcharter::hc_chart(type = "column") %>% highcharter::hc_add_theme(highcharter::hc_theme_google())%>%
           highcharter::hc_title(text = paste("Histogram of", vars[1])) %>% highcharter::hc_xAxis(title = list(text = vars[1]))
       } else{
-        to.ret <- highcharter::hchart(object = density(
+        to.ret <- highcharter::hchart(object = stats::density(
           as.numeric(var1),
           area = TRUE,
           color = "#B71C1C",
@@ -64,24 +65,24 @@ plot <- function(data,
         pt <- data.frame(table(as.character(interaction(features))))
         pt$t1 <- limma::strsplit2(pt$Var1, "\\.")[, 1]
         pt$t2 <- limma::strsplit2(pt$Var1, "\\.")[, 2]
-        pt %>% filter(t1 != 0 & t2 != 0) -> pt
-        pt %>% dplyr::group_by(t1) %>% dplyr::summarize(Freq = sum(Freq)) -> pt1
+        pt %>% dplyr::filter(pt$t1 != 0 & pt$t2 != 0) -> pt
+        pt %>% dplyr::group_by(pt$t1) %>% dplyr::summarize(Freq = sum(pt$Freq)) -> pt1
         rownames(pt1) <- pt1$t1
         # pt %>% mutate(Freq = Freq/pt1[as.character(t1),"Freq"]) -> pt2
         # pt2$Freq <- pt2$Freq[,1]
         pt2 <- pt
         to.ret <-
-          highcharter::hchart(pt2, "column", hcaes(
-            x = t1,
-            y = Freq,
-            group = t2
+          highcharter::hchart(pt2, "column", highcharter::hcaes(
+            x = pt2$t1,
+            y = pt2$Freq,
+            group = pt2$t2
           )) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
           highcharter::hc_title(text = paste("Relative histogram of", paste(vars[1], vars[2], sep = "-"))) %>% highcharter::hc_xAxis(title = list(text = vars[1])) %>% highcharter::hc_yAxis(title = list(text = "number"))}
       if (var1.is.cat & !var2.is.cat) {
         features <-
           data.frame(f1 = as.factor(var1), f2 = var2)
         features$f2 <- as.numeric(features$f2)
-        features %>% dplyr::group_by(f1) %>% dplyr::summarise(m = mean(f2, na.rm = T)) -> f
+        features %>% dplyr::group_by(features$f1) %>% dplyr::summarise(m = mean(features$f2, na.rm = T)) -> f
         # hc <- highchart() %>%
         #   hc_xAxis(categories = 1:5) %>%
         #   hc_add_series(name = "Mean", data = f$m[2:6])
@@ -94,7 +95,7 @@ plot <- function(data,
         features <-
           data.frame(f1 = as.factor(var2), f2 = var1)
         features$f2 <- as.numeric(features$f2)
-        features %>% dplyr::group_by(f1) %>% dplyr::summarise(m = mean(f2, na.rm = T)) -> f
+        features %>% dplyr::group_by(features$f1) %>% dplyr::summarise(m = mean(features$f2, na.rm = T)) -> f
         # hc <- highchart() %>%
         #   hc_xAxis(categories = 1:5) %>%
         #   hc_add_series(name = "Mean", data = f$m[2:6])
@@ -106,7 +107,7 @@ plot <- function(data,
       if (!var1.is.cat & !var2.is.cat) {
         d <- data.frame(v1 = var1, v2 = var2)
         to.ret <-
-          highcharter::hchart(d, "scatter", hcaes(x = v1, y = v2)) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
+          highcharter::hchart(d, "scatter", highcharter::hcaes(x = d$v1, y = d$v2)) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
           highcharter::hc_title(text = paste("Scatter plot of", paste(vars[1], vars[2], sep = "-"))) %>% highcharter::hc_xAxis(title = list(text = vars[1])) %>% highcharter::hc_yAxis(title = list(text = vars[2]))
       }
     }

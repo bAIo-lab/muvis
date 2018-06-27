@@ -32,9 +32,9 @@
 #'
 #'
 #' @importFrom gRapHD minForest neighbourhood stepw
-#' @importFrom igraph make_undirected_graph betweenness fastgreedy.community membership groups
-#' @importFrom graph nodes
+#' @importFrom igraph make_undirected_graph betweenness fastgreedy.community membership
 #' @importFrom visNetwork toVisNetworkData visNetwork visOptions visEdges
+#' @importFrom igraph V
 #'
 min.forest <- function(data, stat = "BIC", community = TRUE) {
   my.forest <- gRapHD::minForest(data, homog = F, stat = stat)
@@ -60,7 +60,7 @@ min.forest <- function(data, stat = "BIC", community = TRUE) {
   g <- igraph::make_undirected_graph(e)
   bc <- igraph::betweenness(
     g,
-    v = V(g),
+    v = igraph::V(g),
     directed = F,
     weights = NULL,
     nobigint = TRUE,
@@ -71,8 +71,8 @@ min.forest <- function(data, stat = "BIC", community = TRUE) {
   if (community) {
     fc <- igraph::fastgreedy.community(g)
     groups <- igraph::membership(fc)
-    groups <- igraph::groups[as.character(nodes$id)]
-    groups -> graph::nodes$group
+    groups <- groups[as.character(nodes$id)]
+    groups -> nodes$group
   }
   vn <- visNetwork::visNetwork(nodes, edges, height = "500px", width = "100%")  %>%
     visNetwork::visOptions(highlightNearest = list(

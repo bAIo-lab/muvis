@@ -41,8 +41,11 @@
 #'
 #' @importFrom purrr map
 #' @importFrom utils View
-#' @importFrom igraph graph.data.frame cluster_louvain membership
+#' @importFrom dplyr mutate
+#' @importFrom igraph graph.data.frame cluster_louvain membership as.undirected
 #' @importFrom visNetwork toVisNetworkData visNetwork visOptions visEdges
+#' @importFrom bnlearn boot.strength
+#' @importFrom magrittr %>%
 
 bn <-
   function(data,
@@ -62,7 +65,7 @@ bn <-
     }
 
     S.alg %>% purrr::map(function(alg)
-      boot.strength(
+      bnlearn::boot.strength(
         data,
         R = R,
         m = m,
@@ -78,7 +81,7 @@ bn <-
     direction <- do.call(rbind, S.direction)
     if (length(C.alg) != 0) {
       C.alg %>% purrr::map(function(alg)
-        boot.strength(
+        bnlearn::boot.strength(
           data,
           R = R,
           m = m,
@@ -119,9 +122,9 @@ bn <-
     g <- igraph::graph.data.frame(bn.s)
     data <- visNetwork::toVisNetworkData(g)
     if (community) {
-      fc <- igraph::cluster_louvain(as.undirected(g))
+      fc <- igraph::cluster_louvain(igraph::as.undirected(g))
       groups <- igraph::membership(fc)
-      data$nodes %>% mutate(group = groups[data$nodes$id]) -> data$nodes
+      data$nodes %>% dplyr::mutate(group = groups[data$nodes$id]) -> data$nodes
     }
     vs <- visNetwork::visNetwork(nodes = data$nodes, edges = data$edges)  %>%
       visNetwork::visOptions(highlightNearest = list(

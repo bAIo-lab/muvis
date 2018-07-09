@@ -73,9 +73,9 @@ plot <- function(data,
         pt2 <- pt
         to.ret <-
           highcharter::hchart(pt2, "column", highcharter::hcaes(
-            x = pt2$t1,
-            y = pt2$Freq,
-            group = pt2$t2
+            x = t1,
+            y = Freq,
+            group = t2
           )) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
           highcharter::hc_title(text = paste("Relative histogram of", paste(vars[1], vars[2], sep = "-"))) %>% highcharter::hc_xAxis(title = list(text = vars[1])) %>% highcharter::hc_yAxis(title = list(text = "number"))}
       if (var1.is.cat & !var2.is.cat) {
@@ -107,7 +107,7 @@ plot <- function(data,
       if (!var1.is.cat & !var2.is.cat) {
         d <- data.frame(v1 = var1, v2 = var2)
         to.ret <-
-          highcharter::hchart(d, "scatter", highcharter::hcaes(x = d$v1, y = d$v2)) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
+          highcharter::hchart(d, "scatter", highcharter::hcaes(x = v1, y = v2)) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
           highcharter::hc_title(text = paste("Scatter plot of", paste(vars[1], vars[2], sep = "-"))) %>% highcharter::hc_xAxis(title = list(text = vars[1])) %>% highcharter::hc_yAxis(title = list(text = vars[2]))
       }
     }

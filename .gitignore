@@ -4,3 +4,4 @@ _gh-pages
 #
 *.Rhistory
 data/
+.RData

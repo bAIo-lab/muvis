@@ -35,7 +35,7 @@
 #' @importFrom  graph graphNEL
 #' @importFrom  SIN sinUG getgraph
 #' @importFrom  glasso glasso
-#' @importFrom  igraph cluster_louvain betweenness membership V
+#' @importFrom  igraph cluster_louvain betweenness membership V intersection
 #' @importFrom  stats C cov.wt
 #' @importFrom  methods as
 #' @importFrom  graph nodes

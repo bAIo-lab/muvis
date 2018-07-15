@@ -10,7 +10,7 @@
 #' @param  significance A cutoff for edge significance (default = 0.05). To be used only when the method "significance" is used.
 #' @param  rho (Non-negative) regularization parameter for glasso (default = 0.1). To be used only when the method "glasso" is used.
 #' @param community (default = TRUE)
-#' @param interactive (default = TRUE)
+#' @param plot (default = TRUE)
 #'
 #' @details The function combines the methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse estimation of the inverse covariance matrix.
 #'
@@ -51,7 +51,7 @@ ggm <-
            methods = c("glasso"),
            rho = 0.1,
            community = TRUE,
-           interactive = TRUE) {
+           plot = TRUE) {
     model <- gRim::cmod(~ . ^ ., data = data)
     S <- stats::cov.wt (data, method = "ML")$cov
     PC <- gRbase::cov2pcor(S)
@@ -88,7 +88,7 @@ ggm <-
     }
     othermodels <- othermodels %>% purrr::map(methods::as, "igraph")
     commonedges <- do.call(igraph::intersection, othermodels)
-    graph.vis(commonedges, community = community, interactive = interactive, betweenness = T, directed=F)
+    graph.vis(commonedges, community = community, plot = plot, betweenness = T, directed=F)
     # bt <- igraph::betweenness( methods::as(commonedges, "igraph"), igraph::V( methods::as(commonedges, "igraph")))
     # data <- visNetwork::toVisNetworkData( methods::as(commonedges, "igraph"))
     # if(community){

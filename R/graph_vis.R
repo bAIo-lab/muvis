@@ -2,23 +2,23 @@
 #'
 #'
 #' @description
-#' Converts the graph to igraph, finds communities and plots (non)interactivly.
+#' Converts the graph to igraph, finds communities and plots.
 #'
 #' @param graph an arbitrary graph object in R.
 #' @param directed TRUE if the graph is directed (default = FALSE)
 #' @param community (default = TRUE)
 #' @param betweenness (default = TRUE)
-#' @param interactive (default = TRUE)
+#' @param plot (default = TRUE)
 #'
 #'
 #' @author  Elyas Heidari, Vahid Balazadeh
 #'
-#' @return (If interactive = FALSE it plots the noninteractive graph) A list contains:
+#' @return (If plot = TRUE it plots the noninteractive graph) A list contains:
 #' \item{graph}{an igraph object}
 #' \item{betweenness}{betweenness measurements of each edge. (if betweenness = TRUE)}
-#' \item{network}{a highcharter plot of the graph. (if interactive = TRUE)}
+#' \item{network}{a highcharter plot of the graph.}
 #'
-#' @export
+#' @export graph.vis
 #'
 #' @importFrom  visNetwork toVisNetworkData visNetwork visOptions
 #' @importFrom  igraph cluster_louvain betweenness membership V layout_with_fr
@@ -30,7 +30,7 @@ graph.vis <-
            directed = F,
            community = T,
            betweenness = T,
-           interactive = T) {
+           plot = T) {
     ig <- methods::as(graph, "igraph")
     if (betweenness) {
       bt <-
@@ -65,7 +65,7 @@ graph.vis <-
     if (directed)
       vs <- vs %>% visNetwork::visEdges(arrows = "to")
 
-    if (!interactive)
+    if (plot)
       igraph::plot.igraph(
         ig,
         vertex.label = "",
@@ -74,7 +74,7 @@ graph.vis <-
         vertex.color = igraph::V(ig)$color,
         mark.groups = ig$mark.group
       )
-
+    View(vs)
     list(graph = ig,
          betweenness = bt,
          network = vs)

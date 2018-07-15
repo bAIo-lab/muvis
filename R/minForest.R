@@ -9,7 +9,7 @@
 #' @param  data a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
 #' @param  stat measure to be minimized: LR, AIC, or BIC (the default). Default is BIC. It can also be a user-defined function with the format: FUN(model, dataset, previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.
 #' @param  community a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
-#' @param  interactive (default = TRUE)
+#' @param  plot (default = TRUE)
 #'
 #'
 #' @details
@@ -28,7 +28,7 @@
 #' \item{}{betweenness measurements for each node.}
 #' \item{}{the highcharter plot of the network.}
 #'
-#' @usage min.forest(data, stat = "BIC", interactive = TRUE, community = TRUE)
+#' @usage min.forest(data, stat = "BIC", community = TRUE, plot = TRUE)
 #' @export min.forest
 #'
 #'
@@ -41,7 +41,7 @@ min.forest <-
   function(data,
            stat = "BIC",
            community = TRUE,
-           interactive = TRUE) {
+           plot = TRUE) {
     my.forest <- gRapHD::minForest(data, homog = F, stat = stat)
     nby <-
       gRapHD::neighbourhood(my.forest, orig = 1, rad = 2000)$v[, 1]
@@ -73,7 +73,7 @@ min.forest <-
         g,
         community = community,
         betweenness = T,
-        interactive = interactive,
+        plot = plot,
         directed = F
       )
     # bc <- igraph::betweenness(

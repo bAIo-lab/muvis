@@ -5,7 +5,7 @@
 \title{construct and visualize Gaussian Graphical Models.}
 \usage{
 ggm(data, threshold = 0.05, significance = 0.05, methods = c("glasso"),
-  rho = 0.1, community = TRUE)
+  rho = 0.1, community = TRUE, interactive = TRUE)
 }
 \arguments{
 \item{data}{A normalized dataframe or matrix with no missing data of continuous measurements.}
@@ -19,6 +19,8 @@ ggm(data, threshold = 0.05, significance = 0.05, methods = c("glasso"),
 \item{rho}{(Non-negative) regularization parameter for glasso (default = 0.1). To be used only when the method "glasso" is used.}
 
 \item{community}{(default = TRUE)}
+
+\item{interactive}{(default = TRUE)}
 }
 \value{
 A list in which each element is the details of a specific fitted method.

@@ -45,7 +45,7 @@ plot <- function(data,
           highcharter::hc_xAxis(categories = factor(pt$Var1)) %>%
           highcharter::hc_add_series(name = "Frequncy", data = pt$Freq)
         to.ret <-
-          hc %>% highcharter::hc_chart(type = "column") %>% highcharter::hc_add_theme(highcharter::hc_theme_google())%>%
+          hc %>% highcharter::hc_chart(type = "column") %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
           highcharter::hc_title(text = paste("Histogram of", vars[1])) %>% highcharter::hc_xAxis(title = list(text = vars[1]))
       } else{
         to.ret <- highcharter::hchart(object = stats::density(
@@ -72,12 +72,15 @@ plot <- function(data,
         # pt2$Freq <- pt2$Freq[,1]
         pt2 <- pt
         to.ret <-
-          highcharter::hchart(pt2, "column", highcharter::hcaes(
-            x = t1,
-            y = Freq,
-            group = t2
-          )) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
-          highcharter::hc_title(text = paste("Relative histogram of", paste(vars[1], vars[2], sep = "-"))) %>% highcharter::hc_xAxis(title = list(text = vars[1])) %>% highcharter::hc_yAxis(title = list(text = "number"))}
+          highcharter::hchart(pt2,
+                              "column",
+                              highcharter::hcaes(
+                                x = t1,
+                                y = Freq,
+                                group = t2
+                              )) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
+          highcharter::hc_title(text = paste("Relative histogram of", paste(vars[1], vars[2], sep = "-"))) %>% highcharter::hc_xAxis(title = list(text = vars[1])) %>% highcharter::hc_yAxis(title = list(text = "number"))
+      }
       if (var1.is.cat & !var2.is.cat) {
         features <-
           data.frame(f1 = as.factor(var1), f2 = var2)
@@ -88,7 +91,8 @@ plot <- function(data,
         #   hc_add_series(name = "Mean", data = f$m[2:6])
         # to.ret <-
         #   hc %>% hc_chart(type = "column") %>% hc_add_theme(hc_theme_google())
-        to.ret <- highcharter::hcboxplot(x = var2, var = var1) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
+        to.ret <-
+          highcharter::hcboxplot(x = var2, var = var1) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
           highcharter::hc_title(text = paste("Boxplot of", vars[2])) %>% highcharter::hc_xAxis(title = list(text = vars[1])) %>% highcharter::hc_yAxis(title = list(text = vars[2]))
       }
       if (!var1.is.cat & var2.is.cat) {
@@ -101,7 +105,8 @@ plot <- function(data,
         #   hc_add_series(name = "Mean", data = f$m[2:6])
         # to.ret <-
         #   hc %>% hc_chart(type = "column") %>% hc_add_theme(hc_theme_google())
-        to.ret <- highcharter::hcboxplot(x = var1, var = var2) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
+        to.ret <-
+          highcharter::hcboxplot(x = var1, var = var2) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
           highcharter::hc_title(text = paste("Boxplot of", vars[1])) %>% highcharter::hc_xAxis(title = list(text = vars[2])) %>% highcharter::hc_yAxis(title = list(text = vars[1]))
       }
       if (!var1.is.cat & !var2.is.cat) {

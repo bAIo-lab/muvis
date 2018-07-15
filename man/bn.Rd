@@ -6,7 +6,7 @@
 \usage{
 bn(data, C.alg = NULL, S.alg = c("mmhc"), blacklist = NULL,
   whitelist = NULL, R = 10, m = 0, str.thresh = 0, dir.thresh = 0,
-  community = T)
+  community = T, interactive = T)
 }
 \arguments{
 \item{data}{a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.}
@@ -28,6 +28,8 @@ bn(data, C.alg = NULL, S.alg = c("mmhc"), blacklist = NULL,
 \item{dir.thresh}{a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.}
 
 \item{community}{a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.}
+
+\item{interactive}{(default = TRUE)}
 }
 \value{
 returns a list including a dataframe including the edges of the network with their strength and strength of directions and a highcharter plot.

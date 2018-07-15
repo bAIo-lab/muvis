@@ -47,26 +47,30 @@ dim.reduce <- function(X, method = "tsne", verbose = TRUE) {
 
   # Repeat embedding 10 times and keep the one with the best cost
   if (method == "tsne_rep") {
-    return(smallvis::smallvis_rep(
-      nrep = 10,
-      X = X,
-      perplexity = 25,
-      ret_extra = TRUE,
-      verbose = verbose
-    ))
+    return(
+      smallvis::smallvis_rep(
+        nrep = 10,
+        X = X,
+        perplexity = 25,
+        ret_extra = TRUE,
+        verbose = verbose
+      )
+    )
   }
 
 
   # Classical momentum optimization instead of delta-bar-delta
   if (method == "umap_mom") {
-    return(smallvis::smallvis(
-      X,
-      scale = FALSE,
-      opt = list("mom", eta = 1e-2, mu = 0.8),
-      method = "umap",
-      Y_init = "spca",
-      verbose = verbose
-    ))
+    return(
+      smallvis::smallvis(
+        X,
+        scale = FALSE,
+        opt = list("mom", eta = 1e-2, mu = 0.8),
+        method = "umap",
+        Y_init = "spca",
+        verbose = verbose
+      )
+    )
   }
 
   # L-BFGS optimization via the mize package

@@ -16,6 +16,7 @@
 #' @param str.thresh a double between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.
 #' @param dir.thresh a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.
 #' @param community a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
+#' @param interactive (default = TRUE)
 #'
 #'
 #'
@@ -57,30 +58,16 @@ bn <-
            m = 0,
            str.thresh = 0,
            dir.thresh = 0,
-           community = T) {
+           community = T,
+           interactive = T) {
     data <- data.matrix(data)
     data <- data.frame(data)
     if (m == 0) {
       m <- dim(data)[1]
     }
 
-    S.alg %>% purrr::map(function(alg)
-      bnlearn::boot.strength(
-        data,
-        R = R,
-        m = m,
-        algorithm =  alg,
-        algorithm.args = list(blacklist = blacklist,
-                              whitelist = whitelist)
-      )) -> S.boot
-    S.boot %>% purrr::map(function(x)
-      x$strength) -> S.strength
-    S.boot %>% purrr::map(function(x)
-      x$direction) -> S.direction
-    strength <- do.call(rbind, S.strength)
-    direction <- do.call(rbind, S.direction)
-    if (length(C.alg) != 0) {
-      C.alg %>% purrr::map(function(alg)
+    S.alg %>% purrr::map(
+      function(alg)
         bnlearn::boot.strength(
           data,
           R = R,
@@ -88,7 +75,26 @@ bn <-
           algorithm =  alg,
           algorithm.args = list(blacklist = blacklist,
                                 whitelist = whitelist)
-        )) -> C.boot
+        )
+    ) -> S.boot
+    S.boot %>% purrr::map(function(x)
+      x$strength) -> S.strength
+    S.boot %>% purrr::map(function(x)
+      x$direction) -> S.direction
+    strength <- do.call(rbind, S.strength)
+    direction <- do.call(rbind, S.direction)
+    if (length(C.alg) != 0) {
+      C.alg %>% purrr::map(
+        function(alg)
+          bnlearn::boot.strength(
+            data,
+            R = R,
+            m = m,
+            algorithm =  alg,
+            algorithm.args = list(blacklist = blacklist,
+                                  whitelist = whitelist)
+          )
+      ) -> C.boot
       C.boot %>% purrr::map(function(x)
         x$strength) -> C.strength
       C.boot %>% purrr::map(function(x)
@@ -106,7 +112,7 @@ bn <-
       !is.na(strength) &
         strength >= str.thresh &
         !is.na(direction) & direction >= dir.thresh
-    ),] -> bn.s
+    ), ] -> bn.s
     utils::View(bn.s)
     bn.s1 <- bn.s
     bn.s2 <- bn.s
@@ -118,19 +124,27 @@ bn <-
       (bn.s1[x, 4] > bn.s2[x, 4])) -> direction
     direction <- unlist(direction)
 
-    g <- bn.s[direction,]
+    g <- bn.s[direction, ]
     g <- igraph::graph.data.frame(bn.s)
-    data <- visNetwork::toVisNetworkData(g)
-    if (community) {
-      fc <- igraph::cluster_louvain(igraph::as.undirected(g))
-      groups <- igraph::membership(fc)
-      data$nodes %>% dplyr::mutate(group = groups[data$nodes$id]) -> data$nodes
-    }
-    vs <- visNetwork::visNetwork(nodes = data$nodes, edges = data$edges)  %>%
-      visNetwork::visOptions(highlightNearest = list(
-        enabled = T,
-        degree = 1,
-        hover = T
-      )) %>% visNetwork::visEdges(arrows = "to")
-    list(graph = bn.s, network = vs)
+
+    graph.vis(
+      g,
+      directed = T,
+      interactive = interactive,
+      community = community,
+      betweenness = T
+    )
+    # data <- visNetwork::toVisNetworkData(g)
+    # if (community) {
+    #   fc <- igraph::cluster_louvain(igraph::as.undirected(g))
+    #   groups <- igraph::membership(fc)
+    #   data$nodes %>% dplyr::mutate(group = groups[data$nodes$id]) -> data$nodes
+    # }
+    # vs <- visNetwork::visNetwork(nodes = data$nodes, edges = data$edges)  %>%
+    #   visNetwork::visOptions(highlightNearest = list(
+    #     enabled = T,
+    #     degree = 1,
+    #     hover = T
+    #   )) %>% visNetwork::visEdges(arrows = "to")
+    # list(graph = bn.s, igraph=val$graph, betweenness = val$betweenness, network = val$network)
   }

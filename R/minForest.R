@@ -9,6 +9,7 @@
 #' @param  data a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
 #' @param  stat measure to be minimized: LR, AIC, or BIC (the default). Default is BIC. It can also be a user-defined function with the format: FUN(model, dataset, previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.
 #' @param  community a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
+#' @param  interactive (default = TRUE)
 #'
 #'
 #' @details
@@ -27,7 +28,7 @@
 #' \item{}{betweenness measurements for each node.}
 #' \item{}{the highcharter plot of the network.}
 #'
-#' @usage min.forest(data, stat = "BIC", community = TRUE)
+#' @usage min.forest(data, stat = "BIC", interactive = TRUE, community = TRUE)
 #' @export min.forest
 #'
 #'
@@ -36,49 +37,69 @@
 #' @importFrom visNetwork toVisNetworkData visNetwork visOptions visEdges
 #' @importFrom igraph V
 #'
-min.forest <- function(data, stat = "BIC", community = TRUE) {
-  my.forest <- gRapHD::minForest(data, homog = F, stat = stat)
-  nby <- gRapHD::neighbourhood(my.forest, orig = 1, rad = 2000)$v[, 1]
-  bc.marg <- data[, nby]
-  mbF <- gRapHD::minForest(bc.marg)
-  mbG <- gRapHD::stepw(model = mbF, data = bc.marg, stat = stat)
-  rpl <- function(x) {
-    colnames(data[, nby])[x]
+min.forest <-
+  function(data,
+           stat = "BIC",
+           community = TRUE,
+           interactive = TRUE) {
+    my.forest <- gRapHD::minForest(data, homog = F, stat = stat)
+    nby <-
+      gRapHD::neighbourhood(my.forest, orig = 1, rad = 2000)$v[, 1]
+    bc.marg <- data[, nby]
+    mbF <- gRapHD::minForest(bc.marg)
+    mbG <- gRapHD::stepw(model = mbF,
+                         data = bc.marg,
+                         stat = stat)
+    rpl <- function(x) {
+      colnames(data[, nby])[x]
+    }
+    l <- apply(mbG@edges, 2, rpl)
+    colnames(l) <- c("from", "to")
+    l <- data.frame(l)
+    nodes <- unique(c(as.character(l$from), as.character(l$to)))
+    nodes <- data.frame(id = nodes, label = nodes)
+    edges <- l
+    e <- c()
+    for (i in 1:dim(edges)[1]) {
+      e <- c(e, edges[i, ])
+    }
+    e <- unlist(e)
+    e <- as.character(e)
+    title = paste0("<p>", paste("statistic =", mbG@statSeq), "</p>")
+    edges[, "title"] <- title
+    g <- igraph::make_undirected_graph(e)
+    val <-
+      graph.vis(
+        g,
+        community = community,
+        betweenness = T,
+        interactive = interactive,
+        directed = F
+      )
+    # bc <- igraph::betweenness(
+    #   g,
+    #   v = igraph::V(g),
+    #   directed = F,
+    #   weights = NULL,
+    #   nobigint = TRUE,
+    #   normalized = FALSE
+    # )
+    # if (community) {
+    #   fc <- igraph::fastgreedy.community(g)
+    #   groups <- igraph::membership(fc)
+    #   groups <- groups[as.character(nodes$id)]
+    #   groups -> nodes$group
+    # }
+    # vn <- visNetwork::visNetwork(nodes, edges, height = "500px", width = "100%")  %>%
+    #   visNetwork::visOptions(highlightNearest = list(
+    #     enabled = T,
+    #     degree = 1,
+    #     hover = T
+    #   ))
+    list(
+      summary = mbG,
+      graph = val$graph,
+      betweenness = val$betweenness,
+      network = val$network
+    )
   }
-  l <- apply(mbG@edges, 2, rpl)
-  colnames(l) <- c("from", "to")
-  l <- data.frame(l)
-  nodes <- unique(c(as.character(l$from), as.character(l$to)))
-  nodes <- data.frame(id = nodes, label = nodes)
-  edges <- l
-  e <- c()
-  for (i in 1:dim(edges)[1]) {
-    e <- c(e, edges[i,])
-  }
-  e <- unlist(e)
-  e <- as.character(e)
-  g <- igraph::make_undirected_graph(e)
-  bc <- igraph::betweenness(
-    g,
-    v = igraph::V(g),
-    directed = F,
-    weights = NULL,
-    nobigint = TRUE,
-    normalized = FALSE
-  )
-  title = paste0("<p>", paste("statistic =", mbG@statSeq), "</p>")
-  edges[, "title"] <- title
-  if (community) {
-    fc <- igraph::fastgreedy.community(g)
-    groups <- igraph::membership(fc)
-    groups <- groups[as.character(nodes$id)]
-    groups -> nodes$group
-  }
-  vn <- visNetwork::visNetwork(nodes, edges, height = "500px", width = "100%")  %>%
-    visNetwork::visOptions(highlightNearest = list(
-      enabled = T,
-      degree = 1,
-      hover = T
-    ))
-  list(summary = mbG, betweenness = bc, network = vn)
-}

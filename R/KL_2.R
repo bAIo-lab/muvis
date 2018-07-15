@@ -25,7 +25,11 @@
 #' @importFrom utils head tail
 
 
-div2 <- function(data, var1, var2, permute = 0, frac = 0.05) {
+div2 <- function(data,
+                 var1,
+                 var2,
+                 permute = 0,
+                 frac = 0.05) {
   kl.calc <- function(g1, g2, data) {
     1:dim(data)[2] %>% purrr::map(function(x)
       freq(data[, x], g1, g2)) %>% purrr::map(function(x)
@@ -46,18 +50,18 @@ div2 <- function(data, var1, var2, permute = 0, frac = 0.05) {
   p.val <- function(x, vec) {
     which(sort(vec, decreasing = T) < x)[1] / length(vec)
   }
-  lm <- lm(var1~var2)
+  lm <- lm(var1 ~ var2)
   sm <- summary(lm)
   res <- stats::residuals(lm)
   names(res) <- 1:length(res)
-  down <- utils::head(order(res),frac*dim(data)[1])
-  up <- utils::tail(order(res),frac*dim(data)[1])
+  down <- utils::head(order(res), frac * dim(data)[1])
+  up <- utils::tail(order(res), frac * dim(data)[1])
   data <- data[, colSums(data.matrix(data), na.rm = T) > 5000]
   data <- data.frame(data)
   up.down <- c(up, down)
   kl <-
     kl.calc(up.down[1:length(up)], up.down[(length(up) + 1):length(up.down)], data)
-  if(permute > 0){
+  if (permute > 0) {
     kl.df <- data.frame()
     1:100 %>% map(function(x)
       permute::shuffle(up.down)) %>% purrr::map(function(x)
@@ -67,7 +71,11 @@ div2 <- function(data, var1, var2, permute = 0, frac = 0.05) {
 
     1:dim(kl.df)[2] %>% purrr::map(function(i)
       p.val(kl[i], kl.df[, i])) -> kls
-    return(data.frame(KL = kl, row.names = colnames(data), p.value = unlist(kls)))
+    return(data.frame(
+      KL = kl,
+      row.names = colnames(data),
+      p.value = unlist(kls)
+    ))
   }
   return(data.frame(KL = kl, row.names = colnames(data)))
 }

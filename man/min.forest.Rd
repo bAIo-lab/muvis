@@ -4,7 +4,7 @@
 \alias{min.forest}
 \title{construct and visualize a minimum forest based on Chow-Liu algorithm}
 \usage{
-min.forest(data, stat = "BIC", community = TRUE)
+min.forest(data, stat = "BIC", interactive = TRUE, community = TRUE)
 }
 \arguments{
 \item{data}{a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.}
@@ -12,6 +12,8 @@ min.forest(data, stat = "BIC", community = TRUE)
 \item{stat}{measure to be minimized: LR, AIC, or BIC (the default). Default is BIC. It can also be a user-defined function with the format: FUN(model, dataset, previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.}
 
 \item{community}{a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.}
+
+\item{interactive}{(default = TRUE)}
 }
 \value{
 a list containing:

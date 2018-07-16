@@ -24,7 +24,7 @@
   <script src="rd_files/recliner-0.2.2/onload.js"></script>
   <link href="rd_files/packagedocs-0.0.1/pd.css" rel="stylesheet" />
   <script src="rd_files/packagedocs-0.0.1/pd.js"></script>
-  <script src="rd_files/packagedocs-0.0.1/pd-collapse-toc.js"></script>
+  <script src="rd_files/packagedocs-0.0.1/pd-sticky-toc.js"></script>
   
   
   
@@ -46,7 +46,7 @@
           <span class="icon-bar"></span>
         </button>
                 <a href="index.html" class="navbar-brand page-scroll">
-        Questools Documentation - Questionnarie Tools
+        Questools Documentation - Questionnaire Tools
         </a>
       </div>
             <nav class="collapse navbar-collapse" role="navigation">
@@ -79,6 +79,9 @@
           <li><a href="#min.forest">min.forest</a></li>
           <li><a href="#plot">plot</a></li>
           <li><a href="#dim.reduce">dim.reduce</a></li>
+          <li><a href="#graph.vis">graph.vis</a></li>
+          <li><a href="#is.categorical">is.categorical</a></li>
+          <li><a href="#simple.impute">simple.impute</a></li>
           </ul></li>
           </ul>
         </div>
@@ -87,7 +90,7 @@
       
 <div id="content-top"></div>
 <h1>
-Questionnarie Tools
+Questionnaire Tools
 </h1>
 <p>
 <strong>Authors:</strong> statCompTeam@bAIo-lab
@@ -108,7 +111,7 @@ A collection of tools to preprocess, analyze, and visualize Questionnaire datase
 Imports
 </h4>
 <p>
-visNetwork, gRbase, gRim, purrr, gRapHD, permute, graph, SIN, glasso, igraph, stats, methods, entropy, dplyr, highcharter, limma, smallvis
+visNetwork, gRbase, gRim, purrr, gRapHD, permute, graph, SIN, glasso, igraph, stats, entropy, dplyr, highcharter, limma, smallvis, bnlearn, magrittr, utils, methods
 </p>
 <h4>
 Suggests
@@ -130,7 +133,7 @@ Fits a Bayesian network (a directed acyclic graph) to variables and performs boo
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>bn(data, C.alg&nbsp;=&nbsp;NULL, S.alg&nbsp;=&nbsp;c("mmhc"), blacklist&nbsp;=&nbsp;NULL, whitelist&nbsp;=&nbsp;NULL, R&nbsp;=&nbsp;10, m&nbsp;=&nbsp;0, str.thresh&nbsp;=&nbsp;0, dir.thresh&nbsp;=&nbsp;0, community&nbsp;=&nbsp;T)</div></code></pre>
+<pre class="r"><code><div>bn(data, C.alg&nbsp;=&nbsp;NULL, S.alg&nbsp;=&nbsp;c("mmhc"), blacklist&nbsp;=&nbsp;NULL, whitelist&nbsp;=&nbsp;NULL, R&nbsp;=&nbsp;10, m&nbsp;=&nbsp;0, str.thresh&nbsp;=&nbsp;0, dir.thresh&nbsp;=&nbsp;0, community&nbsp;=&nbsp;T, plot&nbsp;=&nbsp;T)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -194,6 +197,12 @@ community
 </dt>
 <dd class="rd-dd">
 a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
+</dd>
+<dt>
+plot
+</dt>
+<dd class="rd-dd">
+(default = TRUE)
 </dd>
 </dl>
 <h4>
@@ -370,7 +379,7 @@ Fit a Gaussian Graphical Model to continuous-valued dataset employing a subset o
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>ggm(data, threshold&nbsp;=&nbsp;0.05, significance&nbsp;=&nbsp;0.05, methods&nbsp;=&nbsp;c("glasso"), rho&nbsp;=&nbsp;0.1, community&nbsp;=&nbsp;TRUE)</div></code></pre>
+<pre class="r"><code><div>ggm(data, threshold&nbsp;=&nbsp;0.05, significance&nbsp;=&nbsp;0.05, methods&nbsp;=&nbsp;c("glasso"), rho&nbsp;=&nbsp;0.1, community&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;TRUE)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -407,6 +416,12 @@ rho
 </dd>
 <dt>
 community
+</dt>
+<dd class="rd-dd">
+(default = TRUE)
+</dd>
+<dt>
+plot
 </dt>
 <dd class="rd-dd">
 (default = TRUE)
@@ -479,7 +494,7 @@ Fits a minimum forest to data. Also visualizes the the minimum forest.
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>min.forest(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;TRUE)</div></code></pre>
+<pre class="r"><code><div>min.forest(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;TRUE, levels&nbsp;=&nbsp;NA)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -501,6 +516,18 @@ community
 </dt>
 <dd class="rd-dd">
 a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
+</dd>
+<dt>
+plot
+</dt>
+<dd class="rd-dd">
+(default = TRUE)
+</dd>
+<dt>
+levels
+</dt>
+<dd class="rd-dd">
+an integer to indicate the maximum levels of categorical variables. The default is 10.
 </dd>
 </dl>
 <h4>
@@ -585,7 +612,7 @@ a vector of length one or two including the name (or index) of a (tow) column(s)
 levels
 </dt>
 <dd class="rd-dd">
-an integer to indicate the maximum levels of categorical variables. The default is 7.
+an integer to indicate the maximum levels of categorical variables. The default is 5.
 </dd>
 <dt>
 pie
@@ -690,6 +717,168 @@ a plot of data points in the 2 dimensional space.
 Author
 </h4>
 <p>Elyas Heidari with a refrence smallvis package</p>
+</div>
+<div id="graph.vis" class="section level2">
+<h2>graph.vis</h2>
+<a id="graph.vis_alias"></a>
+<h3>
+graph visualization and community detection
+</h3>
+<p class="rd-p">
+Converts the graph to igraph, finds communities and plots.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>graph.vis(graph, directed&nbsp;=&nbsp;F, community&nbsp;=&nbsp;T, betweenness&nbsp;=&nbsp;T, plot&nbsp;=&nbsp;T)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+graph
+</dt>
+<dd class="rd-dd">
+an arbitrary graph object in R.
+</dd>
+<dt>
+directed
+</dt>
+<dd class="rd-dd">
+TRUE if the graph is directed (default = FALSE)
+</dd>
+<dt>
+community
+</dt>
+<dd class="rd-dd">
+(default = TRUE)
+</dd>
+<dt>
+betweenness
+</dt>
+<dd class="rd-dd">
+(default = TRUE)
+</dd>
+<dt>
+plot
+</dt>
+<dd class="rd-dd">
+(default = TRUE)
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+(If plot = TRUE it plots the noninteractive graph) A list contains:
+<dt>
+graph
+</dt>
+<dd>
+an igraph object
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+betweenness
+</dt>
+<dd>
+betweenness measurements of each edge. (if betweenness = TRUE)
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+network
+</dt>
+<dd>
+a highcharter plot of the graph.
+</dd>
+</p>
+<p class="rd-p">
+</dl>
+</p>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari, Vahid Balazadeh</p>
+</div>
+<div id="is.categorical" class="section level2">
+<h2>is.categorical</h2>
+<a id="is.categorical_alias"></a>
+<h3>
+Specify categorical and continuous variables in a dataset.
+</h3>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>is.categorical(x, is.cat)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+x
+</dt>
+<dd class="rd-dd">
+An arbitrary dataframe
+</dd>
+<dt>
+is.cat
+</dt>
+<dd class="rd-dd">
+A list containing boolean elements related to dataset variables (For each categorical variable it is TRUE)
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+A dataset with specified categorical and continuous variables.
+</dl>
+</p>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari</p>
+</div>
+<div id="simple.impute" class="section level2">
+<h2>simple.impute</h2>
+<a id="simple.impute_alias"></a>
+<h3>
+simple missing-data imputation
+</h3>
+<p class="rd-p">
+Imputes missing-data using mean value for continuous variables and mode value for categoricals.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>simple.impute(data)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+an arbitrary dataset.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+a normalized dataframe with no missing data of continuous and (or) categorical measurements.
+</dl>
+</p>
+<h4>
+Author
+</h4>
+<p>Vahid Balazadeh</p>
 </div>
 </div>
 

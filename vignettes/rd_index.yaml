@@ -22,3 +22,6 @@ sections:
     - min.forest
     - plot
     - dim.reduce
+    - graph.vis
+    - is.categorical
+    - simple.impute

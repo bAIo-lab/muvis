@@ -6,7 +6,7 @@
 #'
 #' @param data a dataframe. It is strongly recommended that the dataframe has no missing data and is preprocessed.
 #' @param vars a vector of length one or two including the name (or index) of a (tow) column(s) of data.
-#' @param levels an integer to indicate the maximum levels of categorical variables. The default is 7.
+#' @param levels an integer to indicate the maximum levels of categorical variables. The default is 5.
 #' @param pie a logical variable. If TRUE the function returns a pie chart for one variable.
 #'
 #'

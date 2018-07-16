@@ -24,7 +24,6 @@
 #' @importFrom  igraph cluster_louvain betweenness membership V layout_with_fr
 #' @importFrom  methods as
 
-
 graph.vis <-
   function(graph,
            directed = F,
@@ -32,6 +31,27 @@ graph.vis <-
            betweenness = T,
            plot = T) {
     ig <- methods::as(graph, "igraph")
+
+    colrs <- c('#e6194b'
+               ,'#3cb44b'
+               ,'#ffe119'
+               ,'#0082c8'
+               ,'#f58231'
+               ,'#911eb4'
+               ,'#46f0f0'
+               ,'#f032e6'
+               ,'#d2f53c'
+               ,'#fabebe'
+               ,'#008080'
+               ,'#e6beff'
+               ,'#aa6e28'
+               ,'#fffac8'
+               ,'#800000'
+               ,'#aaffc3'
+               ,'#808000'
+               ,'#ffd8b1'
+               ,'#000080'
+               ,'#808080')
     if (betweenness) {
       bt <-
         sort(igraph::betweenness(ig, igraph::V(ig), directed = directed),
@@ -39,19 +59,21 @@ graph.vis <-
     } else {
       bt <- NULL
     }
+    community_n <- 1
     if (community) {
       fc <- igraph::cluster_louvain(igraph::as.undirected(ig))
       igraph::V(ig)$community <- igraph::membership(fc)
-      igraph::V(ig)$color <- igraph::V(ig)$community
+      community_n <- length(unique(igraph::V(ig)$community))
       mark_list <-
-        lapply(c(1:length(unique(
-          igraph::V(ig)$community
-        ))), function(x)
+        lapply(c(1:community_n), function(x)
           igraph::V(ig)[igraph::V(ig)$community == x])
     } else {
       mark_list <- NULL
-      igraph::V(ig)$color <- '#FF7F24'
     }
+    colrs <- sample(colrs, community_n + 1)
+    igraph::V(ig)$color <- colrs[igraph::V(ig)$community]
+    igraph::V(ig)$label_color <- colrs[community_n + 1]
+    ig$layout <- igraph::layout_nicely(ig)
     data <- visNetwork::toVisNetworkData(ig)
     if (community)
       data$nodes$group <- igraph::V(ig)$community
@@ -70,11 +92,9 @@ graph.vis <-
         ig,
         vertex.label = "",
         layout = ig$layout,
-        vertex.size = 1 + 600 / (100 + length(V(ig))),
-        vertex.color = igraph::V(ig)$color,
-        mark.groups = ig$mark.group
+        vertex.size = 1 + 600 / (100 + length(igraph::V(ig))),
+        vertex.color = igraph::V(ig)$color
       )
-    View(vs)
     list(graph = ig,
          betweenness = bt,
          network = vs)

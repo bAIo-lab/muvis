@@ -11,7 +11,7 @@ plot(data, vars, levels = 5, pie = F)
 
 \item{vars}{a vector of length one or two including the name (or index) of a (tow) column(s) of data.}
 
-\item{levels}{an integer to indicate the maximum levels of categorical variables. The default is 7.}
+\item{levels}{an integer to indicate the maximum levels of categorical variables. The default is 5.}
 
 \item{pie}{a logical variable. If TRUE the function returns a pie chart for one variable.}
 }

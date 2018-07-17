@@ -9,9 +9,9 @@ data.preproc(data, is.cat = NULL, levels = 10)
 \arguments{
 \item{data}{an arbitrary dataset.}
 
-\item{is.cat}{A list containing boolean elements related to dataset variables. (For each categorical variable it is TRUE) (Default = NA)}
+\item{is.cat}{A list containing boolean elements related to dataset variables. (For each categorical variable it is TRUE) (Default = NULL)}
 
-\item{levels}{an integer to indicate the maximum levels of categorical variables. The default is 10. (It will be used when "is.cat" list in NA)}
+\item{levels}{an integer to indicate the maximum levels of categorical variables. The default is 10. (It will be used when "is.cat" list in NULL)}
 }
 \value{
 a normalized dataframe with no missing data of continuous and (or) categorical measurements.

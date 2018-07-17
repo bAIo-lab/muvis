@@ -4,7 +4,7 @@
 \alias{min.forest}
 \title{construct and visualize a minimum forest based on Chow-Liu algorithm}
 \usage{
-min.forest(data, stat = "BIC", community = TRUE, plot = TRUE, levels = NA)
+min.forest(data, stat = "BIC", community = TRUE, plot = TRUE)
 }
 \arguments{
 \item{data}{a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.}
@@ -14,8 +14,6 @@ min.forest(data, stat = "BIC", community = TRUE, plot = TRUE, levels = NA)
 \item{community}{a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.}
 
 \item{plot}{(default = TRUE)}
-
-\item{levels}{an integer to indicate the maximum levels of categorical variables. The default is 10.}
 }
 \value{
 a list containing:

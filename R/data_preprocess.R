@@ -21,13 +21,21 @@
 data.preproc <- function(data,
                          is.cat = NULL,
                          levels = 10) {
+  data <- data.frame(data)
   is.cat.f <- function(var) {
     !length(unique(var)) > levels
   }
 
   is.categorical <- function(x, is.cat) {
     x <- data.frame(x)
-    x <- apply(x, 2, as.numeric)
+    ls <- c(1:ncol(x))
+    ls <- ls[sapply(ls, function(i) (!(is.numeric(x[i]) | is.cat[i])))]
+    x <- x[-ls]
+    is.cat <- is.cat[-ls]
+    x <- sapply(x, as.factor)
+    x <- data.frame(x)
+    x <- sapply(x, as.numeric)
+    x <- data.frame(x)
     if (sum(is.cat) != 0) {
       if (sum(is.cat) > 1)
         binding <- apply(data.frame(x[, is.cat]) , 2, as.factor)

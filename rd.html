@@ -80,8 +80,7 @@
           <li><a href="#plot">plot</a></li>
           <li><a href="#dim.reduce">dim.reduce</a></li>
           <li><a href="#graph.vis">graph.vis</a></li>
-          <li><a href="#is.categorical">is.categorical</a></li>
-          <li><a href="#simple.impute">simple.impute</a></li>
+          <li><a href="#data.preproc">data.preproc</a></li>
           </ul></li>
           </ul>
         </div>
@@ -90,7 +89,7 @@
       
 <div id="content-top"></div>
 <h1>
-Questionnaire Tools
+Questionnarie Tools
 </h1>
 <p>
 <strong>Authors:</strong> statCompTeam@bAIo-lab
@@ -803,59 +802,19 @@ Author
 </h4>
 <p>Elyas Heidari, Vahid Balazadeh</p>
 </div>
-<div id="is.categorical" class="section level2">
-<h2>is.categorical</h2>
-<a id="is.categorical_alias"></a>
+<div id="data.preproc" class="section level2">
+<h2>data.preproc</h2>
+<a id="data.preproc_alias"></a>
 <h3>
-Specify categorical and continuous variables in a dataset.
-</h3>
-<h4>
-Usage
-</h4>
-<pre class="r"><code><div>is.categorical(x, is.cat)</div></code></pre>
-<h4>
-Arguments
-</h4>
-<dl class="rd-dl">
-<dt>
-x
-</dt>
-<dd class="rd-dd">
-An arbitrary dataframe
-</dd>
-<dt>
-is.cat
-</dt>
-<dd class="rd-dd">
-A list containing boolean elements related to dataset variables (For each categorical variable it is TRUE)
-</dd>
-</dl>
-<h4>
-Value
-</h4>
-<p class="rd-p">
-<dl>
-A dataset with specified categorical and continuous variables.
-</dl>
-</p>
-<h4>
-Author
-</h4>
-<p>Elyas Heidari</p>
-</div>
-<div id="simple.impute" class="section level2">
-<h2>simple.impute</h2>
-<a id="simple.impute_alias"></a>
-<h3>
-simple missing-data imputation
+data preprocess
 </h3>
 <p class="rd-p">
-Imputes missing-data using mean value for continuous variables and mode value for categoricals.
+Specify categorical and continuous variables and imputes dataset missing-values.
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>simple.impute(data)</div></code></pre>
+<pre class="r"><code><div>data.preproc(data, is.cat&nbsp;=&nbsp;NULL, levels&nbsp;=&nbsp;10)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -865,6 +824,18 @@ data
 </dt>
 <dd class="rd-dd">
 an arbitrary dataset.
+</dd>
+<dt>
+is.cat
+</dt>
+<dd class="rd-dd">
+A list containing boolean elements related to dataset variables. (For each categorical variable it is TRUE) (Default = NA)
+</dd>
+<dt>
+levels
+</dt>
+<dd class="rd-dd">
+an integer to indicate the maximum levels of categorical variables. The default is 10. (It will be used when “is.cat” list in NA)
 </dd>
 </dl>
 <h4>
@@ -878,7 +849,7 @@ a normalized dataframe with no missing data of continuous and (or) categorical m
 <h4>
 Author
 </h4>
-<p>Vahid Balazadeh</p>
+<p>Elyas Heidari, Vahid Balazadeh</p>
 </div>
 </div>
 

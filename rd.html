@@ -89,7 +89,7 @@
       
 <div id="content-top"></div>
 <h1>
-Questionnarie Tools
+Questionnaire Tools
 </h1>
 <p>
 <strong>Authors:</strong> statCompTeam@bAIo-lab
@@ -493,7 +493,7 @@ Fits a minimum forest to data. Also visualizes the the minimum forest.
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>min.forest(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;TRUE, levels&nbsp;=&nbsp;NA)</div></code></pre>
+<pre class="r"><code><div>min.forest(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;TRUE)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -521,12 +521,6 @@ plot
 </dt>
 <dd class="rd-dd">
 (default = TRUE)
-</dd>
-<dt>
-levels
-</dt>
-<dd class="rd-dd">
-an integer to indicate the maximum levels of categorical variables. The default is 10.
 </dd>
 </dl>
 <h4>
@@ -829,13 +823,13 @@ an arbitrary dataset.
 is.cat
 </dt>
 <dd class="rd-dd">
-A list containing boolean elements related to dataset variables. (For each categorical variable it is TRUE) (Default = NA)
+A list containing boolean elements related to dataset variables. (For each categorical variable it is TRUE) (Default = NULL)
 </dd>
 <dt>
 levels
 </dt>
 <dd class="rd-dd">
-an integer to indicate the maximum levels of categorical variables. The default is 10. (It will be used when “is.cat” list in NA)
+an integer to indicate the maximum levels of categorical variables. The default is 10. (It will be used when “is.cat” list in NULL)
 </dd>
 </dl>
 <h4>

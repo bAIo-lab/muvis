@@ -17,7 +17,7 @@
 #'
 #'
 #'
-
+#'
 data.preproc <- function(data,
                          is.cat = NULL,
                          levels = 10) {
@@ -29,10 +29,14 @@ data.preproc <- function(data,
   is.categorical <- function(x, is.cat) {
     x <- data.frame(x)
     ls <- c(1:ncol(x))
-    ls <- ls[sapply(ls, function(i) (!(is.numeric(x[i]) | is.cat[i])))]
-    x <- x[-ls]
-    is.cat <- is.cat[-ls]
-    x <- sapply(x, as.factor)
+    t <- sapply(ls, function(i)
+      (!(is.numeric(x[, i]) | is.cat[i])))
+    if (sum(t) != 0) {
+      ls <- ls[t]
+      x <- x[-ls]
+      is.cat <- is.cat[-ls]
+    }
+    x[, is.cat] <- data.frame(sapply(x[, is.cat], as.factor))
     x <- data.frame(x)
     x <- sapply(x, as.numeric)
     x <- data.frame(x)

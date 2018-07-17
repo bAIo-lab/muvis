@@ -88,7 +88,10 @@ graph.vis <-
     } else {
       mark_list <- NULL
     }
-    colrs <- sample(colrs, community_n + 1)
+    if (community_n + 1 <= length(colrs))
+      colrs <- sample(colrs, community_n + 1)
+    else
+      colrs <- sample(colrs, community_n + 1, replace = T)
     igraph::V(ig)$color <- colrs[igraph::V(ig)$community]
     igraph::V(ig)$label_color <- colrs[community_n + 1]
     ig$layout <- igraph::layout_nicely(ig)

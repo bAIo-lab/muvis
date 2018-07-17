@@ -23,5 +23,4 @@ sections:
     - plot
     - dim.reduce
     - graph.vis
-    - is.categorical
-    - simple.impute
+    - data.preproc

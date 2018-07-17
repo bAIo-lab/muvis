@@ -6,8 +6,8 @@
 #'
 #'
 #' @param  data an arbitrary dataset.
-#' @param  is.cat A list containing boolean elements related to dataset variables. (For each categorical variable it is TRUE) (Default = NA)
-#' @param  levels an integer to indicate the maximum levels of categorical variables. The default is 10. (It will be used when "is.cat" list in NA)
+#' @param  is.cat A list containing boolean elements related to dataset variables. (For each categorical variable it is TRUE) (Default = NULL)
+#' @param  levels an integer to indicate the maximum levels of categorical variables. The default is 10. (It will be used when "is.cat" list in NULL)
 #'
 #' @author  Elyas Heidari, Vahid Balazadeh
 #'

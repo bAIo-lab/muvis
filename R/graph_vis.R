@@ -116,8 +116,16 @@ graph.vis <-
         vertex.size = 1 + 600 / (100 + length(igraph::V(ig))),
         vertex.color = igraph::V(ig)$color
       )
-    list(graph = ig,
-         betweenness = bt,
-         network = vs)
+    if (community) {
+      com <- igraph::V(ig)$community
+      names(com) <- names(igraph::V(ig))
+      list(graph = ig,
+          betweenness = bt,
+          network = vs, communities = com)
+    } else {
+      list(graph = ig,
+           betweenness = bt,
+           network = vs, communities)
+    }
 
   }

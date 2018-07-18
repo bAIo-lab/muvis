@@ -96,10 +96,20 @@ min.forest <-
     #     degree = 1,
     #     hover = T
     #   ))
-    list(
-      summary = mbG,
-      graph = val$graph,
-      betweenness = val$betweenness,
-      network = val$network
-    )
+    if (community) {
+      list(
+        summary = mbG,
+        graph = val$graph,
+        betweenness = val$betweenness,
+        network = val$network,
+        communities = val$communities
+      )
+    } else {
+      list(
+        summary = mbG,
+        graph = val$graph,
+        betweenness = val$betweenness,
+        network = val$network
+      )
+    }
   }

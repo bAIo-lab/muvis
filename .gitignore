@@ -2,7 +2,7 @@ inst/doc
 _gh-pages
 .Rproj.user
 #
-*.Rhistory
+.Rhistory
 data/
 
 .RData

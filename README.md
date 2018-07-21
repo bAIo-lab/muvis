@@ -1,25 +1,25 @@
-# Questools
-[![Build Status](https://travis-ci.org/bAIo-lab/Questools.svg?branch=master)](https://travis-ci.org/bAIo-lab/Questools)
+# muvis
+[![Build Status](https://travis-ci.org/bAIo-lab/muvis.svg?branch=master)](https://travis-ci.org/bAIo-lab/muvis)
 
-Questools is a visualization and analysis toolkit for Questionnaire datasets.  To use this package, you 
+muvis is a visualization and analysis toolkit for multivariate datasets.  To use this package, you 
 will need the R statistical computing environment (version 3.0 or later).
 
-We highly recommend installation of **Questools** through our github.
+We highly recommend installation of **muvis** through our github.
 For installation in R you can use devtools package:
 
 ```{r}
 install.packages("devtools")
-devtools::install_github("bAIo-lab/Questools")
-library(Questools)
+devtools::install_github("bAIo-lab/muvis")
+library(muvis)
 ```
 
 
-News and announcements for the **Questools** project will appear here:
+News and announcements for the **muvis** project will appear here:
 
-https://baio-lab.github.io/Questools/
+https://baio-lab.github.io/muvis/
 
 # Datasets
-It may be useful to test **Questools** on these datasets. Consider that these datasets have some missing values and must be replaced.
+It may be useful to test **muvis** on these datasets. Consider that these datasets have some missing values and must be replaced.
 
 * [Mice Protein Expression Data](https://archive.ics.uci.edu/ml/datasets/Mice+Protein+Expression)
 * [Ames Housing Data](http://ww2.amstat.org/publications/jse/v19n3/Decock/AmesHousing.xls) ([Documentation](http://ww2.amstat.org/publications/jse/v19n3/Decock/DataDocumentation.txt))

@@ -32,5 +32,6 @@ Imports:
     bnlearn,
     magrittr,
     utils,
-    methods
+    methods,
+    RColorBrewer
 Suggests: packagedocs

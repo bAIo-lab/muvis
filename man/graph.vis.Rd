@@ -4,7 +4,8 @@
 \alias{graph.vis}
 \title{graph visualization and community detection}
 \usage{
-graph.vis(graph, directed = F, community = T, betweenness = T, plot = T)
+graph.vis(graph, directed = F, community = T, betweenness = T, plot = T,
+  plot.community = T)
 }
 \arguments{
 \item{graph}{an arbitrary graph object in R.}
@@ -16,12 +17,15 @@ graph.vis(graph, directed = F, community = T, betweenness = T, plot = T)
 \item{betweenness}{(default = TRUE)}
 
 \item{plot}{(default = TRUE)}
+
+\item{plot.community}{If TRUE it plots each community separately (default = TRUE)}
 }
 \value{
 (If plot = TRUE it plots the noninteractive graph) A list contains:
 \item{graph}{an igraph object}
 \item{betweenness}{betweenness measurements of each edge. (if betweenness = TRUE)}
 \item{network}{a highcharter plot of the graph.}
+\item{communities}{a named vector of community number for each variable}
 }
 \description{
 Converts the graph to igraph, finds communities and plots.

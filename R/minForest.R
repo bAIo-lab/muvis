@@ -36,7 +36,10 @@
 #' @importFrom igraph make_undirected_graph betweenness fastgreedy.community membership
 #' @importFrom visNetwork toVisNetworkData visNetwork visOptions visEdges
 #' @importFrom igraph V
+#' @importFrom magrittr %>%
 #'
+#'
+
 min.forest <-
   function(data,
            stat = "BIC",
@@ -66,7 +69,6 @@ min.forest <-
     e <- unlist(e)
     e <- as.character(e)
     title = paste0("<p>", paste("statistic =", mbG@statSeq), "</p>")
-    edges[, "title"] <- title
     g <- igraph::make_undirected_graph(e)
     val <-
       graph.vis(
@@ -90,18 +92,21 @@ min.forest <-
     #   groups <- groups[as.character(nodes$id)]
     #   groups -> nodes$group
     # }
-    # vn <- visNetwork::visNetwork(nodes, edges, height = "500px", width = "100%")  %>%
-    #   visNetwork::visOptions(highlightNearest = list(
-    #     enabled = T,
-    #     degree = 1,
-    #     hover = T
-    #   ))
+    vnet <- val$network
+    edges <-  vnet$x$edges
+    edges[, "title"] <- title
+    vn <- visNetwork::visNetwork(vnet$x$nodes, edges, height = "500px", width = "100%")  %>%
+      visNetwork::visOptions(highlightNearest = list(
+        enabled = T,
+        degree = 1,
+        hover = T
+      ))
     if (community) {
       list(
         summary = mbG,
         graph = val$graph,
         betweenness = val$betweenness,
-        network = val$network,
+        network = vn,
         communities = val$communities
       )
     } else {
@@ -109,7 +114,7 @@ min.forest <-
         summary = mbG,
         graph = val$graph,
         betweenness = val$betweenness,
-        network = val$network
+        network = vn
       )
     }
   }

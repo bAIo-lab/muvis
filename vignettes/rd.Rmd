@@ -1,20 +1,20 @@
 ---
-title: "Questools Documentation"
-subtitle: "Questionnaire Tools"
+title: "muvis Documentation"
+subtitle: "multivariate analysis and visualization"
 author: "statCompTeam@bAIo-lab"
 copyright: "statCompTeam@bAIo-lab"
 output:
   packagedocs::package_docs_rd:
     toc: true
     toc_collapse: false
-redirect: http://bAIo-lab.github.io/Questools/rd.html
+redirect: http://bAIo-lab.github.io/muvis/rd.html
 vignette: |
-  %\VignetteIndexEntry{Questools Package Reference}
+  %\VignetteIndexEntry{muvis Package Reference}
   %\VignetteEngine{packagedocs::redirect}
 navpills: |
   <li><a href='index.html'>Docs</a></li>
   <li class="active"><a href='rd.html'>Package Ref</a></li>
-  <li><a href='https://github.com/bAIo-lab/Questools'>Github <i class='fa fa-github'></i></a></li>
+  <li><a href='https://github.com/bAIo-lab/muvis'>Github <i class='fa fa-github'></i></a></li>
 ---
 
 ```{r auto-gen-child, child="auto-generated-rd.Rmd"}

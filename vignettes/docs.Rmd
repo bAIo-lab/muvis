@@ -1,20 +1,20 @@
 ---
-title: "Questools Documentation"
-subtitle: "Questionnaire Tools"
+title: "muvis Documentation"
+subtitle: "multivariate analysis and visualization"
 author: "statCompTeam@bAIo-lab"
 copyright: "statCompTeam@bAIo-lab"
 output:
   packagedocs::package_docs:
     toc: true
     toc_collapse: false
-redirect: http://bAIo-lab.github.io/Questools
+redirect: http://bAIo-lab.github.io/muvis
 vignette: |
-  %\VignetteIndexEntry{Questools Documentation}
+  %\VignetteIndexEntry{muvis Documentation}
   %\VignetteEngine{packagedocs::redirect}
 navpills: |
   <li class="active"><a href='index.html'>Docs</a></li>
   <li><a href='rd.html'>Package Ref</a></li>
-  <li><a href='https://github.com/bAIo-lab/Questools'>Github <i class='fa fa-github'></i></a></li>
+  <li><a href='https://github.com/bAIo-lab/muvis'>Github <i class='fa fa-github'></i></a></li>
 ---
 
 ```{r global_options, include=FALSE}
@@ -25,27 +25,21 @@ knitr::opts_chunk$set(comment = NA)
 rdl <- function(x) packagedocs::rd_link(deparse(substitute(x)))
 ```
 
-# Questools
+# muvis
 
-Questools is a visualization and analysis toolkit for Questionnaire datasets.  To use this package, you 
+muvis is a visualization and analysis toolkit for multivariate datasets.  To use this package, you 
 will need the R statistical computing environment (version 3.0 or later).
-```{r echo=FALSE}
-library("jpeg")
-jj <- readJPEG("./figure/ques.jpeg",native=TRUE)
-graphics::plot(0:1,0:1,type="n",ann=FALSE,axes=FALSE)
-rasterImage(jj,0,0,1,1)
-```
 
 ## Installation and import
-Questools can be installed through github:
+muvis can be installed through github:
 ```{r package, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
-devtools::install_github("bAIo-lab/Questools")
-library(Questools)
+devtools::install_github("bAIo-lab/muvis")
+library(muvis)
 ```
 
 ```{r package_real, echo=TRUE, message=FALSE, warning=FALSE, include=FALSE}
-devtools::install_github("bAIo-lab/Questools", dependencies=F)
-library(Questools)
+devtools::install_github("bAIo-lab/muvis", dependencies=F)
+library(muvis)
 ```
 
 ```{r include=FALSE}
@@ -53,66 +47,73 @@ library(dplyr)
 library(kableExtra)
 ```
 
+# NHANES Dataset
+
 ## Dateset
-We'll use a health Questionnaire dataset to work with Questools. The dataset contains 291 variables, including 36 continuous (i.e., laboratory measurements), and 255 categorical variables (i.e., questions) having no missing data.
+We'll use National Health and Nutrition Examination Survey (NHANES), 2005-2006 dataset to work with `muvis`. The original dataset contains more than 7,000 variables and nearly 10,000 samples which we selected 4600 random samples and 135 variables, including continuous (i.e., laboratory measurements), and categorical variables (i.e., questions). For more details about variable names and samples visit website- <https://www.icpsr.umich.edu/icpsrweb/ICPSR/studies/25504/summary>
 ```{r dataset}
-data <- read.csv("../../data.csv")
+nhanes_data <- read.csv("../data/data.csv")
+kableExtra::kable(head(nhanes_data)) %>%
+  kable_styling() %>%
+  scroll_box(width = "100%", height = "200px")
+```
+
+## data.preproc
+The dataset has some missing values. We'll use `data.preproc` to impute missing values and to specify categorical and continuous variables (Setting level = 20). The first 62 columns are continuous.
+```{r preprocess}
+data <- data.preproc(nhanes_data, levels = 20)
 kableExtra::kable(head(data)) %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = "200px")
 ```
 
-
 ## dim.reduce
 Use `dim.reduce` to visualize the continuous variables in 2 dimensions with tsne. 
 ```{r dim, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
-dim.reduce(data[,1:36], method = "tsne") -> plt
+dim.reduce(data[,1:62], method = "tsne") -> plt
 #plt
 ```
 
 ## ggm
 Use `ggm` to construct a Gaussian Graphical Model with glasso and significance test method.
 ```{r ggm, echo=TRUE, message=FALSE, warning=FALSE}
-ggm(data[,1:36], significance = 0.05, rho = 0.1, community = TRUE, methods = c("glasso", "sin")) -> g
+ggm(data[,1:62], significance = 0.05, rho = 0.1, community = TRUE, methods = c("glasso", "sin"), plot = F) -> g
 g$network
-g
+g$betweenness
 ```
 
 ## bn
-Use `bn` to learn the structure of a Bayesian network fitting data with `si.hito.pc` as a Constraint-based algorithm, `mmhc` as a Hybrid algorithm, and `tabu` as a Score-based algorithm. Repeat the bootstrap sampling 100 times. (very time consuming)
-```{r bn, echo=TRUE, message=FALSE, warning=FALSE}
-bn(data = data[,1:36], C.alg = c("si.hiton.pc"), S.alg = c("mmhc", "tabu"), blacklist = data.frame(to = "BMI", to = "Age"), R = 10, community = FALSE, str.thresh = 0.9, dir.thresh = 0.5) -> n
-n$network
-n
+Use `bn` to learn the structure of a Bayesian network fitting data.
+```{r bn, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
+b <- bn(data = data[,1:62])
+b$network
+b$betweenness
+b$communities
 ```
 
 ## min.forest
 Employ `min.forest` with BIC to construct a mixed-interaction model fitting the data.
 ```{r mf, echo=TRUE, message=FALSE, warning=FALSE}
-min.forest(data, stat = "BIC", community = TRUE) -> mf
+mf <- min.forest(data, plot = F)
 mf$network
-mf
+mf$betweenness
+mf$communities  
 ```
 
-## div
-Use `div` with 1000 times of permutation to find the most deferentially answered questions between people with answer "1" to the test 62 and people with answer "2" to the test 62. (Test 62 is about cardiovascular diseases.)
-```{r div, echo=TRUE, message=FALSE, warning=FALSE}
-g1 <- which(data$test62 == "1") 
-g2 <- which(data$test62 == "2")
-div(data[37:dim(data)[2]], g1, g2, permute = 1000) -> KL
-KL$name <- row.names(KL)
-KL <- KL %>% arrange(desc(KL))
-kableExtra::kable(head(KL,n = 20)) %>%
-  kable_styling() %>%
-  scroll_box(width = "400px", height = "400px")
+## graph.vis
+Use `graph.vis` to find communities of an arbitrary graph object and plot them. (The graph "g$graph" here is the one resulted by `ggm` function)
+```{r graph_vis, echo=TRUE, message=FALSE, warning=FALSE}
+gval <- graph.vis(g$graph)
+gval$communities
 ```
-
-
 ## div2
-Use `div2` to find the most deferentially answered questions between people with relatively high BMI (relative to blood pressure) and people with high pressure (relative to BMI).
+Use `div2` to find the most deferentially categorical variables between people with relatively high Total Cholesterol (relative to vitamin E) and people with high Vitamin E (relative to Total Cholesterol).
+"LBXTC" is Total Cholesterol and "LBXVIE" is Vitamin E.
+Both "DSDCOUNT" and "DSD010" are questions about Dietary Supplements.
 
 ```{r div2, echo=TRUE, message=FALSE, warning=FALSE}
-div2(data[37:dim(data)[2]], var1 = data$BMI, var2 = data$BloodPreS, permute = 0) -> KL
+plot(data, vars = c("LBXTC", "LBXVIE"))
+div2(data[63:dim(data)[2]], var1 = data$LBXTC, var2 = data$LBXVIE, permute = 1000) -> KL
 KL$name <- row.names(KL)
 KL <- KL %>% arrange(desc(KL))
 kableExtra::kable(head(KL, n = 20)) %>%
@@ -123,36 +124,36 @@ kableExtra::kable(head(KL, n = 20)) %>%
 
 ## plot
 Use `plot` for different visualizations. 
-`levels` is set to 10 to capture categorical variables.
+`levels` is set to 20 to capture categorical variables.
 
-Histogram for test 10:
+Histogram for PAD600 Question (About number of hours use computer last month. 0: less than hour, 1: one hour, ..., 5: five hour, 6: None):
 ```{r plot1, echo=TRUE, message=FALSE, warning=FALSE}
-plot(data, vars = c("test10"), levels = 10)
+plot(data, vars = c("PAD600"), levels = 20)
 ```
 
-Density plot for BMI:pl
+Density plot for BMXBMI (BMI):
 ```{r plot2, echo=TRUE, message=FALSE, warning=FALSE}
-plot(data, vars = c("BMI"), levels = 10)
+plot(data, vars = c("BMXBMI"), levels = 20)
 ```
 
-Boxplot of BMI for different answers of test 1:
+Boxplot of LBXTHG (Mercury amount in the blood) for different answers of DRD360 (Fish eaten during past 30 days. 1: Yes, 2: No, 3: Refused, 4: Don't know):
 ```{r plot3, echo=TRUE, message=FALSE, warning=FALSE}
-plot(data, vars = c("test1", "BMI"), levels = 10)
+plot(data, vars = c("LBXTHG", "DRD360"), levels = 20)
 ```
 
-Relative histogram of test 1 vs test 10:
+Relative histogram of DIQ010 (Having diabetes) vs PAD590 (Number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know):
 ```{r plot4, echo=TRUE, message=FALSE, warning=FALSE}
-plot(data, vars = c("test1", "test10"), levels = 10)
+plot(data, vars = c("DIQ010", "PAD590"), levels = 20)
 ```
 
-Scatter plot of Weight vs BMI:
+Scatter plot of BMXBMI (BMI) vs PEASCTM1 (Blood Pressure Time in seconds):
 ```{r plot5, echo=TRUE, message=FALSE, warning=FALSE}
-plot(data, vars = c("Weight", "BMI"), levels = 10)
+plot(data, vars = c("BMXBMI", "PEASCTM1"), levels = 20)
 ```
 
-Pie chart of test 1:
+Pie chart of PAD590 Question (About number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know):
 ```{r plot6, echo=TRUE, warning=FALSE}
-plot(data, vars = c("test1"), levels = 10, pie = TRUE)
+plot(data, vars = c("PAD590"), levels = 20, pie = TRUE)
 ```
 
 

@@ -5,10 +5,11 @@
 #' @description
 #' Calculates variable-wise Kullback-Leibler divergence between two groups of samples.
 #'
-#' @param  data a dataframe of categorical variables.
+#' @param  data a numerical dataframe with now missing value
 #' @param  g1 a vector of integers. Demonstrates the row indices of group 1.
 #' @param  g2 a vector of integers. Demonstrates the row indices of group 2.
 #' @param  permute an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
+#' @param  levels an integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish categorical variable.
 #'
 #' @details
 #' The function helps users to find out the variables with the most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements, we are interested in finding the most important variables in occurring cardiovascular disease.
@@ -30,17 +31,30 @@
 #' @importFrom magrittr %>%
 
 
-div <- function(data, g1, g2, permute = 0) {
-  kl.calc <- function(g1, g2, data) {
-    1:dim(data)[2] %>% purrr::map(function(x)
-      freq(data[, x], g1, g2)) %>% purrr::map(function(x)
-        abs(entropy::KL.plugin(x$g1, x$g2)) + abs(entropy::KL.plugin(x$g2, x$g1))) -> to.ret
+div <- function(data,
+                g1,
+                g2,
+                permute = 0,
+                levels = 5) {
+  is.cat <- function(var) {
+    !length(unique(var)) > levels
+  }
+  kl.calc <- function(data, g1, g2) {
+    1:dim(data)[2] %>% map(function(x)
+      freq(data[, x], g1, g2))  %>% map(function(x)
+        abs(KL.plugin(x$g1, x$g2)) + abs(KL.plugin(x$g2, x$g1))) -> to.ret
     unlist(to.ret)
   }
   freq <- function(vec, g1, g2) {
+    if (!is.cat(vec))
+      vec <-
+        cut(vec,
+            breaks = seq((min(vec) - .0000001), (max(vec) + .0000001), (max(vec) - min(vec) + .0000002) /
+                           levels),
+            labels = 1:levels)
     to.ret <- list(g1 = c(), g2 = c())
-    levels(factor(vec)) %>% purrr::map(function(x)
-      list(g1 = max(1, sum(vec[g1] == x)), g2 = max(1, sum(vec[g2] == x)))) %>% purrr::map(function(x)
+    levels(factor(vec)) %>% map(function(x)
+      list(g1 = max(1, sum(vec[g1] == x)), g2 = max(1, sum(vec[g2] == x)))) %>% map(function(x)
         to.ret <<-
           list(
             g1 = c(to.ret$g1, x$g1),
@@ -51,22 +65,19 @@ div <- function(data, g1, g2, permute = 0) {
   p.val <- function(x, vec) {
     which(sort(vec, decreasing = T) < x)[1] / length(vec)
   }
-  # inja!
-  data <- data[, colSums(data.matrix(data), na.rm = T) > 5000]
   data <- data.frame(data)
   g1.g2 <- c(g1, g2)
-  # inja!
   kl <-
-    kl.calc(g1.g2[1:length(g1)], g1.g2[(length(g1) + 1):length(g1.g2)], data)
+    kl.calc(data, g1.g2[1:length(g1)], g1.g2[(length(g1) + 1):length(g1.g2)])
   if (permute > 0) {
     kl.df <- data.frame()
-    1:100 %>% purrr::map(function(x)
-      permute::shuffle(g1.g2)) %>% purrr::map(function(x)
-        list(g1 = x[1:length(g1)], g2 = x[(length(g1) + 1):length(x)])) %>% purrr::map(function(f)
-          kl.calc(f[[1]], f[[2]], data)) %>% purrr::map(function(x)
+    1:permute %>% map(function(x)
+      shuffle(g1.g2)) %>% map(function(x)
+        list(g1 = x[1:length(g1)], g2 = x[(length(g1) + 1):length(x)])) %>% map(function(f)
+          kl.calc(data, f[[1]], f[[2]])) %>% map(function(x)
             kl.df <<- rbind(kl.df, x)) -> na
-
-    1:dim(kl.df)[2] %>% purrr::map(function(i)
+    
+    1:dim(kl.df)[2] %>% map(function(i)
       p.val(kl[i], kl.df[, i])) -> kls
     return(data.frame(
       KL = kl,

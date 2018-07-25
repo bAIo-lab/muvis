@@ -8,6 +8,9 @@ warnings_are_errors: no
 before_install:
   - sudo apt-get install libgsl0-dev
 after_success:
+   - Rscript -e "install.packages(\"kableExtra\")"
+   - Rscript -e "install.packages(\"bnlearn\")"
+   - Rscript -e "packagedocs::deploy_travis()"
 
 env:
   global:

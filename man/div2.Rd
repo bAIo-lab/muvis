@@ -2,12 +2,12 @@
 % Please edit documentation in R/KL_2.R
 \name{div2}
 \alias{div2}
-\title{calculating Kullback-Leibler divergence for each categorical variable between two different groups of samples.}
+\title{calculating Kullback-Leibler divergence for each categorical variable between two different groups of samples}
 \usage{
-div2(data, var1, var2, permute = 0, frac = 0.05)
+div2(data, var1, var2, permute = 0, frac = 0.05, levels = 5)
 }
 \arguments{
-\item{data}{a dataframe of categorical variables.}
+\item{data}{a numeric dataframe including no missing value}
 
 \item{var1}{a vector of continuous values indicating the first variable. (the order of values should be the same as the order of rows in data)}
 
@@ -16,6 +16,8 @@ div2(data, var1, var2, permute = 0, frac = 0.05)
 \item{permute}{an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.}
 
 \item{frac}{a double value between 0 and 1 which indicates the fraction of outliers in the fit model. That is, the threshold to recognize a datapoint as an outlier of the fit line.}
+
+\item{levels}{an integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish categorical variable.}
 }
 \value{
 if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.

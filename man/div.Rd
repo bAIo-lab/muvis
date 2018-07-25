@@ -4,16 +4,18 @@
 \alias{div}
 \title{calculate variable-wise Kullback-Leibler divergence}
 \usage{
-div(data, g1, g2, permute = 0)
+div(data, g1, g2, permute = 0, levels = 5)
 }
 \arguments{
-\item{data}{a dataframe of categorical variables.}
+\item{data}{a numerical dataframe with now missing value}
 
 \item{g1}{a vector of integers. Demonstrates the row indices of group 1.}
 
 \item{g2}{a vector of integers. Demonstrates the row indices of group 2.}
 
 \item{permute}{an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.}
+
+\item{levels}{an integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish categorical variable.}
 }
 \value{
 if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.

@@ -4,7 +4,7 @@
 \alias{graph.vis}
 \title{graph visualization and community detection}
 \usage{
-graph.vis(graph, directed = F, community = T, betweenness = T, plot = T)
+graph.vis(graph, directed = F, community = T, betweenness = T, plot = F)
 }
 \arguments{
 \item{graph}{an arbitrary graph object in R.}
@@ -15,7 +15,7 @@ graph.vis(graph, directed = F, community = T, betweenness = T, plot = T)
 
 \item{betweenness}{(default = TRUE)}
 
-\item{plot}{(default = TRUE)}
+\item{plot}{(default = FALSE)}
 }
 \value{
 (If plot = TRUE it plots the noninteractive graph) A list contains:

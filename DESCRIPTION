@@ -33,5 +33,6 @@ Imports:
     magrittr,
     utils,
     methods,
-    RColorBrewer
+    grDevices,
+    qgraph
 Suggests: packagedocs

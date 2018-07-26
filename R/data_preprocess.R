@@ -23,7 +23,7 @@ data.preproc <- function(data,
                          levels = 10) {
   data <- data.frame(data)
   is.cat.f <- function(var) {
-    !length(unique(var)) > levels
+    !length(unique(var[!is.na(var)])) > levels
   }
 
   is.categorical <- function(x, is.cat) {

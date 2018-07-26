@@ -10,7 +10,7 @@
 #' @param  significance A cutoff for edge significance (default = 0.05). To be used only when the method "significance" is used.
 #' @param  rho (Non-negative) regularization parameter for glasso (default = 0.1). To be used only when the method "glasso" is used.
 #' @param  community (default = TRUE)
-#' @param  plot (default = TRUE)
+#' @param  plot (default = FALSE)
 #'
 #' @details The function combines the methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse estimation of the inverse covariance matrix.
 #'
@@ -51,7 +51,7 @@ ggm <-
            methods = c("glasso"),
            rho = 0.1,
            community = TRUE,
-           plot = TRUE) {
+           plot = FALSE) {
     model <- gRim::cmod(~ . ^ ., data = data)
     S <- stats::cov.wt (data, method = "ML")$cov
     PC <- gRbase::cov2pcor(S)

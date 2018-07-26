@@ -16,7 +16,7 @@
 #' @param str.thresh a double between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.
 #' @param dir.thresh a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.
 #' @param community a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
-#' @param plot (default = TRUE)
+#' @param plot (default = FALSE)
 #'
 #'
 #'
@@ -59,7 +59,7 @@ bn <-
            str.thresh = 0,
            dir.thresh = 0,
            community = T,
-           plot = T) {
+           plot = F) {
     data <- data.matrix(data)
     data <- data.frame(data)
     if (m == 0) {

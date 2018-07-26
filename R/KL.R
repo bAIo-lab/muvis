@@ -37,7 +37,7 @@ div <- function(data,
                 permute = 0,
                 levels = 5) {
   is.cat <- function(var) {
-    !length(unique(var)) > levels
+    !length(unique(var[!is.na(var)])) > levels
   }
   kl.calc <- function(data, g1, g2) {
     1:dim(data)[2] %>% map(function(x)
@@ -76,7 +76,7 @@ div <- function(data,
         list(g1 = x[1:length(g1)], g2 = x[(length(g1) + 1):length(x)])) %>% map(function(f)
           kl.calc(data, f[[1]], f[[2]])) %>% map(function(x)
             kl.df <<- rbind(kl.df, x)) -> na
-    
+
     1:dim(kl.df)[2] %>% map(function(i)
       p.val(kl[i], kl.df[, i])) -> kls
     return(data.frame(

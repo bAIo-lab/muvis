@@ -22,7 +22,7 @@
 #' @return if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.
 #'
 #'
-#' @export
+#' @export div.vars
 #'
 #' @importFrom purrr map
 #' @importFrom permute shuffle
@@ -31,7 +31,7 @@
 #' @importFrom magrittr %>%
 
 
-div <- function(data,
+div.vars <- function(data,
                 g1,
                 g2,
                 permute = 0,
@@ -85,5 +85,5 @@ div <- function(data,
       p.value = unlist(kls)
     ))
   }
-  return(data.frame(KL = kl, row.names = colnames(data)))
+  return(sort(data.frame(KL = kl, row.names = colnames(data)), decreasing = T))
 }

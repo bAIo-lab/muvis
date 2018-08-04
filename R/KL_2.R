@@ -15,7 +15,7 @@
 #'
 #' @return  if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.
 #'
-#' @export
+#' @export violating.vars
 #'
 #' @importFrom purrr map
 #' @importFrom entropy KL.plugin
@@ -26,7 +26,7 @@
 
 
 
-div2 <- function(data, var1, var2, permute = 0, frac = 0.05, levels = 5) {
+violating.vars <- function(data, var1, var2, permute = 0, frac = 0.05, levels = 5) {
   is.cat <- function(var) {
     !length(unique(var[!is.na(var)])) > levels
   }
@@ -37,7 +37,7 @@ div2 <- function(data, var1, var2, permute = 0, frac = 0.05, levels = 5) {
     unlist(to.ret)
   }
   freq <- function(vec, g1, g2) {
-    if (!is.cat(vec))
+    if (is.factor(vec))
       vec <-
         cut(vec,
             breaks = seq((min(vec) - .0000001), (max(vec) + .0000001), (max(vec) - min(vec) + .0000002) /
@@ -56,6 +56,8 @@ div2 <- function(data, var1, var2, permute = 0, frac = 0.05, levels = 5) {
   p.val <- function(x, vec) {
     which(sort(vec, decreasing = T) < x)[1] / length(vec)
   }
+  print(var1)
+  print(var2)
   lm <- lm(var1~var2)
   sm <- summary(lm)
   res <- residuals(lm)
@@ -78,7 +80,7 @@ div2 <- function(data, var1, var2, permute = 0, frac = 0.05, levels = 5) {
       p.val(kl[i], kl.df[, i])) -> kls
     return(data.frame(KL = kl, row.names = colnames(data), p.value = unlist(kls)))
   }
-  return(data.frame(KL = kl, row.names = colnames(data)))
+  return(sort(data.frame(KL = kl, row.names = colnames(data)), decreasing = T))
 }
 
 

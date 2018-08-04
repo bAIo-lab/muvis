@@ -38,7 +38,7 @@
 #'
 #'
 #'
-#' @export
+#'
 #'
 #' @importFrom purrr map
 #' @importFrom utils View

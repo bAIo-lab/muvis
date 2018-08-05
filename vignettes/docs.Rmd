@@ -105,7 +105,7 @@ mf$betweenness
 ## graph.vis
 Use `graph.vis` to find communities of an arbitrary graph object and plot them. (The graph "mf$graph" here is the one resulted by `minforest` function)
 ```{r graph_vis, echo=TRUE, message=FALSE, warning=FALSE}
-mf.val <- graph.vis(g$graph, plot = T, plot_community = T)
+mf.val <- graph.vis(mf$graph, plot = T, plot.community = T)
 mf.val$communities
 ```
 ## violating.vars

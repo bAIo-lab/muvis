@@ -73,14 +73,12 @@
           <ul>
           <li><a href="#package-functions">Package Functions</a><ul>
           <li><a href="#data.preproc">data.preproc</a></li>
-          <li><a href="#dim.reduce">dim.reduce</a></li>
           <li><a href="#ggm">ggm</a></li>
           <li><a href="#min.forest">min.forest</a></li>
-          <li><a href="#bn">bn</a></li>
-          <li><a href="#div">div</a></li>
-          <li><a href="#div2">div2</a></li>
-          <li><a href="#plot">plot</a></li>
           <li><a href="#graph.vis">graph.vis</a></li>
+          <li><a href="#div.vars">div.vars</a></li>
+          <li><a href="#violating.vars">violating.vars</a></li>
+          <li><a href="#plot.assoc">plot.assoc</a></li>
           </ul></li>
           </ul>
         </div>
@@ -110,7 +108,7 @@ A collection of tools to preprocess, analyze, and visualize multivariate dataset
 Imports
 </h4>
 <p>
-visNetwork, gRbase, gRim, purrr, gRapHD, permute, graph, SIN, glasso, igraph, stats, entropy, dplyr, highcharter, limma, smallvis, bnlearn, magrittr, utils, methods, RColorBrewer
+visNetwork, gRbase, gRim, purrr, gRapHD, permute, graph, SIN, glasso, igraph, stats, entropy, dplyr, highcharter, limma, smallvis, bnlearn, magrittr, utils, methods, qgraph
 </p>
 <h4>
 Suggests
@@ -169,55 +167,6 @@ Author
 </h4>
 <p>Elyas Heidari, Vahid Balazadeh</p>
 </div>
-<div id="dim.reduce" class="section level2">
-<h2>dim.reduce</h2>
-<a id="dim.reduce_alias"></a>
-<h3>
-Dimensionality reduction and visualization.
-</h3>
-<p class="rd-p">
-Reduce dimensionality with a method in { tsne, umap, repeated tsne, Momenton umap, L-BFGS umap, Early Exaggeration tsne, and Late Exaggeration tsne}.
-</p>
-<h4>
-Usage
-</h4>
-<pre class="r"><code><div>dim.reduce(X, method&nbsp;=&nbsp;"tsne", verbose&nbsp;=&nbsp;TRUE)</div></code></pre>
-<h4>
-Arguments
-</h4>
-<dl class="rd-dl">
-<dt>
-X
-</dt>
-<dd class="rd-dd">
-a dataset to be reduced in dimension.
-</dd>
-<dt>
-method
-</dt>
-<dd class="rd-dd">
-a character string as the name of the method. Available values are “tsne” (the default), “tsne_rep”, “tsne_early”, “tsne_late”, “umap”, “umap_mom”, “umap_l_bfgs”.
-</dd>
-<dt>
-verbose
-</dt>
-<dd class="rd-dd">
-a logical value. If TRUE (the default) the details will be printed.
-</dd>
-</dl>
-<h4>
-Value
-</h4>
-<p class="rd-p">
-<dl>
-a plot of data points in the 2 dimensional space.
-</dl>
-</p>
-<h4>
-Author
-</h4>
-<p>Elyas Heidari with a refrence smallvis package</p>
-</div>
 <div id="ggm" class="section level2">
 <h2>ggm</h2>
 <a id="ggm_alias"></a>
@@ -230,7 +179,7 @@ Fit a Gaussian Graphical Model to continuous-valued dataset employing a subset o
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>ggm(data, threshold&nbsp;=&nbsp;0.05, significance&nbsp;=&nbsp;0.05, methods&nbsp;=&nbsp;c("glasso"), rho&nbsp;=&nbsp;0.1, community&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;TRUE)</div></code></pre>
+<pre class="r"><code><div>ggm(data, methods&nbsp;=&nbsp;c("glasso"), community&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;FALSE, ...)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -242,28 +191,10 @@ data
 A normalized dataframe or matrix with no missing data of continuous measurements.
 </dd>
 <dt>
-threshold
-</dt>
-<dd class="rd-dd">
-A threshold for partial correlation thresholding method (default = 0.05). To be used only when the method “threshold” is used.
-</dd>
-<dt>
-significance
-</dt>
-<dd class="rd-dd">
-A cutoff for edge significance (default = 0.05). To be used only when the method “significance” is used.
-</dd>
-<dt>
 methods
 </dt>
 <dd class="rd-dd">
 (default = “glasso”)
-</dd>
-<dt>
-rho
-</dt>
-<dd class="rd-dd">
-(Non-negative) regularization parameter for glasso (default = 0.1). To be used only when the method “glasso” is used.
 </dd>
 <dt>
 community
@@ -275,7 +206,13 @@ community
 plot
 </dt>
 <dd class="rd-dd">
-(default = TRUE)
+(default = FALSE)
+</dd>
+<dt>
+…
+</dt>
+<dd class="rd-dd">
+Fit a Gaussian Graphical Model to continuous-valued dataset employing a subset of methods from stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, or glasso. Also visualizes the fitted Graphical Model.
 </dd>
 </dl>
 <h4>
@@ -345,7 +282,7 @@ Fits a minimum forest to data. Also visualizes the the minimum forest.
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>min.forest(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;TRUE)</div></code></pre>
+<pre class="r"><code><div>min.forest(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;FALSE)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -372,7 +309,7 @@ a logical value. If TRUE (the default) the network will be colored into communit
 plot
 </dt>
 <dd class="rd-dd">
-(default = TRUE)
+(default = FALSE)
 </dd>
 </dl>
 <h4>
@@ -424,88 +361,52 @@ Author
 </h4>
 <p>Elyas Heidari</p>
 </div>
-<div id="bn" class="section level2">
-<h2>bn</h2>
-<a id="bn_alias"></a>
+<div id="graph.vis" class="section level2">
+<h2>graph.vis</h2>
+<a id="graph.vis_alias"></a>
 <h3>
-construct and visualize a Bayesian (directed) Network
+graph visualization and community detection
 </h3>
 <p class="rd-p">
-Fits a Bayesian network (a directed acyclic graph) to variables and performs bootstrapping. The function also visualizes the structure of the Bayesian network and decompose the graph into the underlying communities.
+Converts the graph to an igraph object, finds communities and plots it
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>bn(data, C.alg&nbsp;=&nbsp;NULL, S.alg&nbsp;=&nbsp;c("mmhc"), blacklist&nbsp;=&nbsp;NULL, whitelist&nbsp;=&nbsp;NULL, R&nbsp;=&nbsp;10, m&nbsp;=&nbsp;0, str.thresh&nbsp;=&nbsp;0, dir.thresh&nbsp;=&nbsp;0, community&nbsp;=&nbsp;T, plot&nbsp;=&nbsp;T)</div></code></pre>
+<pre class="r"><code><div>graph.vis(graph, directed&nbsp;=&nbsp;F, community&nbsp;=&nbsp;T, betweenness&nbsp;=&nbsp;T, plot&nbsp;=&nbsp;F, ...)</div></code></pre>
 <h4>
 Arguments
 </h4>
 <dl class="rd-dl">
 <dt>
-data
+graph
 </dt>
 <dd class="rd-dd">
-a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
+an arbitrary graph object in R
 </dd>
 <dt>
-C.alg
+directed
 </dt>
 <dd class="rd-dd">
-a vector of Constraint-based and Local Discovery algorithms from {“gs”, “mmpc”, “si.hiton.pc”}. Default is NULL.
-</dd>
-<dt>
-S.alg
-</dt>
-<dd class="rd-dd">
-a vector of Score-based and Hybrid algorithms from {“pc.stable”, “hc”, “tabu”, “mmhc”, “aracne”}. The default is “mmhc”.
-</dd>
-<dt>
-blacklist
-</dt>
-<dd class="rd-dd">
-a two-column dataframe which includes edges to be excluded from the network.
-</dd>
-<dt>
-whitelist
-</dt>
-<dd class="rd-dd">
-a two-column dataframe which includes edges to be included from the network.
-</dd>
-<dt>
-R
-</dt>
-<dd class="rd-dd">
-an integer to demonstrate the number of runs of bootstrap sampling. The default value is 10.
-</dd>
-<dt>
-m
-</dt>
-<dd class="rd-dd">
-an integer to demonstrate the number of rows to be sampled from dataset in each bootstrap sampling. The default value is the number of rows in data.
-</dd>
-<dt>
-str.thresh
-</dt>
-<dd class="rd-dd">
-a double between 0 and 1 indicating the threshold value for an association to be considered in the network. The default value is 0.
-</dd>
-<dt>
-dir.thresh
-</dt>
-<dd class="rd-dd">
-a double between 0 and 1 indicating the threshold value for a direction of an edge to be considered in the network. The default value is 0.
+TRUE if the graph is directed (default = FALSE)
 </dd>
 <dt>
 community
 </dt>
 <dd class="rd-dd">
-a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
+if TRUE finds the communities (default = TRUE)
+</dd>
+<dt>
+betweenness
+</dt>
+<dd class="rd-dd">
+if TRUE calculate betweenness for the nodes (default = TRUE)
 </dd>
 <dt>
 plot
 </dt>
 <dd class="rd-dd">
-(default = TRUE)
+if TRUE plots the graph and communities (default = FALSE)
 </dd>
 </dl>
 <h4>
@@ -513,44 +414,49 @@ Value
 </h4>
 <p class="rd-p">
 <dl>
-returns a list including a dataframe including the edges of the network with their strength and strength of directions and a highcharter plot.
+(If plot = TRUE it plots the noninteractive graph and communities) A list contains:
+<dt>
+graph
+</dt>
+<dd>
+an igraph object
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+betweenness
+</dt>
+<dd>
+betweenness measurements of each node (if betweenness = TRUE)
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+network
+</dt>
+<dd>
+a highcharter plot of the graph
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+communities
+</dt>
+<dd>
+a named vector of community number for each variable (if communities = TRUE)
+</dd>
+</p>
+<p class="rd-p">
 </dl>
-</p>
-<h4>
-Details
-</h4>
-<p class="rd-p">
-The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
-</p>
-<h4>
-References
-</h4>
-<p class="rd-p">
-Nagarajan R, Scutari M, Lebre S (2013). “Bayesian Networks in R with Applications in Systems Biology”. Springer.
-</p>
-<p class="rd-p">
-Scutari M (2010). “Learning Bayesian Networks with the bnlearn R Package”. Journal of Statistical Software, 35(3), 1-22. URL <a href="http://www.jstatsoft.org/v35/i03/" class="uri">http://www.jstatsoft.org/v35/i03/</a>.
-</p>
-<p class="rd-p">
-Scutari M (20107). “Bayesian Network Constraint-Based Structure Learning Algorithms: Parallel and Optimized Implementations in the bnlearn R Package”. Journal of Statistical Software, 77(2), 1-20. URL <a href="http://www.jstatsoft.org/v77/i02/" class="uri">http://www.jstatsoft.org/v77/i02/</a>.
-</p>
-<p class="rd-p">
-Koller D, Friedman N (2009). Probabilistic Graphical Models: Principles and Techniques. MIT Press.
-</p>
-<p class="rd-p">
-Korb K, Nicholson AE (2010). Bayesian Artificial Intelligence. Chapman &amp; Hall/CRC, 2nd edition.
-</p>
-<p class="rd-p">
-Pearl J (1988). Probabilistic Reasoning in Intelligent Systems: Networks of Plausible Inference. Morgan Kaufmann.
 </p>
 <h4>
 Author
 </h4>
-<p>Elyas Heidari</p>
+<p>Elyas Heidari, Vahid Balazadeh</p>
 </div>
-<div id="div" class="section level2">
-<h2>div</h2>
-<a id="div_alias"></a>
+<div id="div.vars" class="section level2">
+<h2>div.vars</h2>
+<a id="div.vars_alias"></a>
 <h3>
 calculate variable-wise Kullback-Leibler divergence
 </h3>
@@ -560,7 +466,7 @@ Calculates variable-wise Kullback-Leibler divergence between two groups of sampl
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>div(data, g1, g2, permute&nbsp;=&nbsp;0, levels&nbsp;=&nbsp;5)</div></code></pre>
+<pre class="r"><code><div>div.vars(data, g1, g2, permute&nbsp;=&nbsp;0, levels&nbsp;=&nbsp;5)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -615,9 +521,9 @@ Author
 </h4>
 <p>Elyas Heidari</p>
 </div>
-<div id="div2" class="section level2">
-<h2>div2</h2>
-<a id="div2_alias"></a>
+<div id="violating.vars" class="section level2">
+<h2>violating.vars</h2>
+<a id="violating.vars_alias"></a>
 <h3>
 calculating Kullback-Leibler divergence for each categorical variable between two different groups of samples
 </h3>
@@ -627,7 +533,7 @@ Calculates variable-wise Kullback-Leibler divergence between two groups of sampl
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>div2(data, var1, var2, permute&nbsp;=&nbsp;0, frac&nbsp;=&nbsp;0.05, levels&nbsp;=&nbsp;5)</div></code></pre>
+<pre class="r"><code><div>violating.vars(data, var1, var2, permute&nbsp;=&nbsp;0, frac&nbsp;=&nbsp;0.05, levels&nbsp;=&nbsp;5)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -682,9 +588,9 @@ Author
 </h4>
 <p>Elyas Heidari</p>
 </div>
-<div id="plot" class="section level2">
-<h2>plot</h2>
-<a id="plot_alias"></a>
+<div id="plot.assoc" class="section level2">
+<h2>plot.assoc</h2>
+<a id="plot.assoc_alias"></a>
 <h3>
 interactive plot
 </h3>
@@ -694,7 +600,7 @@ Plots one or a pair of variables.
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>plot(data, vars, levels&nbsp;=&nbsp;5, pie&nbsp;=&nbsp;F)</div></code></pre>
+<pre class="r"><code><div>"plot"(data, vars, levels&nbsp;=&nbsp;5, pie&nbsp;=&nbsp;F)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -771,99 +677,6 @@ two categorical variables: plots a relative histogram showing distribution of on
 Author
 </h4>
 <p>Elyas Heidari</p>
-</div>
-<div id="graph.vis" class="section level2">
-<h2>graph.vis</h2>
-<a id="graph.vis_alias"></a>
-<h3>
-graph visualization and community detection
-</h3>
-<p class="rd-p">
-Converts the graph to igraph, finds communities and plots.
-</p>
-<h4>
-Usage
-</h4>
-<pre class="r"><code><div>graph.vis(graph, directed&nbsp;=&nbsp;F, community&nbsp;=&nbsp;T, betweenness&nbsp;=&nbsp;T, plot&nbsp;=&nbsp;T)</div></code></pre>
-<h4>
-Arguments
-</h4>
-<dl class="rd-dl">
-<dt>
-graph
-</dt>
-<dd class="rd-dd">
-an arbitrary graph object in R.
-</dd>
-<dt>
-directed
-</dt>
-<dd class="rd-dd">
-TRUE if the graph is directed (default = FALSE)
-</dd>
-<dt>
-community
-</dt>
-<dd class="rd-dd">
-(default = TRUE)
-</dd>
-<dt>
-betweenness
-</dt>
-<dd class="rd-dd">
-(default = TRUE)
-</dd>
-<dt>
-plot
-</dt>
-<dd class="rd-dd">
-(default = TRUE)
-</dd>
-</dl>
-<h4>
-Value
-</h4>
-<p class="rd-p">
-<dl>
-(If plot = TRUE it plots the noninteractive graph) A list contains:
-<dt>
-graph
-</dt>
-<dd>
-an igraph object
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-betweenness
-</dt>
-<dd>
-betweenness measurements of each edge. (if betweenness = TRUE)
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-network
-</dt>
-<dd>
-a highcharter plot of the graph.
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-communities
-</dt>
-<dd>
-a named vector of community number for each variable
-</dd>
-</p>
-<p class="rd-p">
-</dl>
-</p>
-<h4>
-Author
-</h4>
-<p>Elyas Heidari, Vahid Balazadeh</p>
 </div>
 </div>
 

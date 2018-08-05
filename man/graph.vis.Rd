@@ -4,28 +4,29 @@
 \alias{graph.vis}
 \title{graph visualization and community detection}
 \usage{
-graph.vis(graph, directed = F, community = T, betweenness = T, plot = F)
+graph.vis(graph, directed = F, community = T, betweenness = T, plot = F,
+  ...)
 }
 \arguments{
-\item{graph}{an arbitrary graph object in R.}
+\item{graph}{an arbitrary graph object in R}
 
 \item{directed}{TRUE if the graph is directed (default = FALSE)}
 
-\item{community}{(default = TRUE)}
+\item{community}{if TRUE finds the communities (default = TRUE)}
 
-\item{betweenness}{(default = TRUE)}
+\item{betweenness}{if TRUE calculate betweenness for the nodes (default = TRUE)}
 
-\item{plot}{(default = FALSE)}
+\item{plot}{if TRUE plots the graph and communities (default = FALSE)}
 }
 \value{
-(If plot = TRUE it plots the noninteractive graph) A list contains:
+(If plot = TRUE it plots the noninteractive graph and communities) A list contains:
 \item{graph}{an igraph object}
-\item{betweenness}{betweenness measurements of each edge. (if betweenness = TRUE)}
-\item{network}{a highcharter plot of the graph.}
-\item{communities}{a named vector of community number for each variable}
+\item{betweenness}{betweenness measurements of each node (if betweenness = TRUE)}
+\item{network}{a highcharter plot of the graph}
+\item{communities}{a named vector of community number for each variable (if communities = TRUE)}
 }
 \description{
-Converts the graph to igraph, finds communities and plots.
+Converts the graph to an igraph object, finds communities and plots it
 }
 \author{
 Elyas Heidari, Vahid Balazadeh

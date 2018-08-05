@@ -66,16 +66,16 @@ ggm <-
     S <- stats::cov.wt (data, method = "ML")$cov
     PC <- gRbase::cov2pcor(S)
     othermodels <- list()
-    if ("aic" %in% methods) {
+    if ("aic" %in% tolower(methods)) {
       othermodels$aic <- aic <- gRbase::stepwise(model)
     }
-    if ("bic" %in% methods) {
+    if ("bic" %in% tolower(methods)) {
       othermodels$bic <- gRbase::stepwise(model, k = log(nrow(data)))
     }
-    if ("test" %in% methods) {
+    if ("test" %in% tolower(methods)) {
       othermodels$test <- gRbase::stepwise(model, criterion = "test")
     }
-    if ("threshold" %in% methods) {
+    if ("threshold" %in% tolower(methods)) {
       Z <- abs(PC)
       Z[Z < threshold] <- 0
       diag(Z) <- 0
@@ -83,12 +83,12 @@ ggm <-
       g.thresh <-  methods::as(Z, "graphNEL")
       thresh <- gRim::cmod(g.thresh, data = data)
     }
-    if ("sin" %in% methods) {
+    if ("sin" %in% tolower(methods)) {
       psin <- SIN::sinUG(S, n = nrow(data))
       othermodels$gsin <-
         methods::as(SIN::getgraph(psin, significance), "graphNEL")
     }
-    if ("glasso" %in% methods) {
+    if ("glasso" %in% tolower(methods)) {
       C <- stats::cov2cor(S)
       res.lasso <- glasso::glasso(C, rho = rho)
       AM <- abs(res.lasso$wi) > threshold

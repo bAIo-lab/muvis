@@ -33,6 +33,5 @@ Imports:
     magrittr,
     utils,
     methods,
-    grDevices,
     qgraph
 Suggests: packagedocs

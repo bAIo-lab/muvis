@@ -79,11 +79,11 @@ div.vars <- function(data,
 
     1:dim(kl.df)[2] %>% map(function(i)
       p.val(kl[i], kl.df[, i])) -> kls
-    return(data.frame(
+    return(sort(data.frame(
       KL = kl,
       row.names = colnames(data),
       p.value = unlist(kls)
-    ))
+    ), decreasing = T))
   }
   return(sort(data.frame(KL = kl, row.names = colnames(data)), decreasing = T))
 }

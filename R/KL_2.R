@@ -37,7 +37,7 @@ violating.vars <- function(data, var1, var2, permute = 0, frac = 0.05, levels = 
     unlist(to.ret)
   }
   freq <- function(vec, g1, g2) {
-    if (is.factor(vec))
+    if (!is.cat(vec))
       vec <-
         cut(vec,
             breaks = seq((min(vec) - .0000001), (max(vec) + .0000001), (max(vec) - min(vec) + .0000002) /
@@ -56,8 +56,6 @@ violating.vars <- function(data, var1, var2, permute = 0, frac = 0.05, levels = 
   p.val <- function(x, vec) {
     which(sort(vec, decreasing = T) < x)[1] / length(vec)
   }
-  print(var1)
-  print(var2)
   lm <- lm(var1~var2)
   sm <- summary(lm)
   res <- residuals(lm)
@@ -78,7 +76,7 @@ violating.vars <- function(data, var1, var2, permute = 0, frac = 0.05, levels = 
 
     1:dim(kl.df)[2] %>% map(function(i)
       p.val(kl[i], kl.df[, i])) -> kls
-    return(data.frame(KL = kl, row.names = colnames(data), p.value = unlist(kls)))
+    return(sort(data.frame(KL = kl, row.names = colnames(data), p.value = unlist(kls)), decreasing = T))
   }
   return(sort(data.frame(KL = kl, row.names = colnames(data)), decreasing = T))
 }

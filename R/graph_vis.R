@@ -2,29 +2,28 @@
 #'
 #'
 #' @description
-#' Converts the graph to igraph, finds communities and plots.
+#' Converts the graph to an igraph object, finds communities and plots it
 #'
-#' @param graph an arbitrary graph object in R.
+#' @param graph an arbitrary graph object in R
 #' @param directed TRUE if the graph is directed (default = FALSE)
-#' @param community (default = TRUE)
-#' @param betweenness (default = TRUE)
-#' @param plot (default = FALSE)
+#' @param community if TRUE finds the communities (default = TRUE)
+#' @param betweenness if TRUE calculate betweenness for the nodes (default = TRUE)
+#' @param plot if TRUE plots the graph and communities (default = FALSE)
 #'
 #'
 #' @author  Elyas Heidari, Vahid Balazadeh
 #'
-#' @return (If plot = TRUE it plots the noninteractive graph) A list contains:
+#' @return (If plot = TRUE it plots the noninteractive graph and communities) A list contains:
 #' \item{graph}{an igraph object}
-#' \item{betweenness}{betweenness measurements of each edge. (if betweenness = TRUE)}
-#' \item{network}{a highcharter plot of the graph.}
-#' \item{communities}{a named vector of community number for each variable}
+#' \item{betweenness}{betweenness measurements of each node (if betweenness = TRUE)}
+#' \item{network}{a highcharter plot of the graph}
+#' \item{communities}{a named vector of community number for each variable (if communities = TRUE)}
 #'
 #' @export graph.vis
 #'
 #' @importFrom  visNetwork toVisNetworkData visNetwork visOptions
-#' @importFrom  igraph cluster_louvain betweenness membership V layout_with_fr induced.subgraph as_adjacency_matrix
+#' @importFrom  igraph cluster_louvain betweenness membership V layout_with_fr induced.subgraph as_adjacency_matrix degree as.undirected
 #' @importFrom  methods as
-#' @importFrom  grDevices rainbow
 #' @importFrom  magrittr %>%
 #' @importFrom  qgraph qgraph
 
@@ -33,29 +32,56 @@ graph.vis <-
            directed = F,
            community = T,
            betweenness = T,
-           plot = F) {
+           plot = F,
+           ...) {
+    arguments = list(...)
+
+    usr_groups <- arguments$groups
+
+    plot.community <- arguments$plot.community
+    if(is.null(plot.community))
+      plot.community = F
+
+    usr_layout <- arguments$layout
+    if(is.null(usr_layout))
+      usr_layout <- "spring"
+
+    label.norm <- arguments$label.norm
+    if(is.null(label.norm))
+      label.norm <- "OOOOOOO
+    "
     plot_community <- function(graph, community_num) {
       t <- igraph::V(graph)$community == community_num
       v <-  igraph::V(graph)[t]
       sub_graph <- igraph::induced.subgraph(graph, v)
       qgraph::qgraph(
         igraph::as_adjacency_matrix(sub_graph),
-        groups=as.factor(igraph::V(sub_graph)$community),
-        layout="spring",
+        groups = as.factor(igraph::V(sub_graph)$community),
+        layout = usr_layout,
         color = igraph::V(sub_graph)$color,
-        label.norm = "OOOO",
-        labels = names(igraph::V(sub_graph)))
+        label.norm = label.norm,
+        labels = names(igraph::V(sub_graph)),
+        vsize = max(1, 0.5 + 320 / (length(
+          igraph::V(sub_graph)
+        ) + 50)),
+        filename = paste(arguments$filename, community_num, sep = ""),
+        filetype = arguments$filetype
+      )
 
     }
+
     ig <- methods::as(graph, "igraph")
 
     if (betweenness) {
+      not_sort_bt <-
+        igraph::betweenness(ig, igraph::V(ig), directed = directed)
       bt <-
-        sort(igraph::betweenness(ig, igraph::V(ig), directed = directed),
+        sort(not_sort_bt,
              decreasing = T)
     } else {
       bt <- NULL
     }
+
     community_n <- 1
     if (community) {
       fc <- igraph::cluster_louvain(igraph::as.undirected(ig))
@@ -64,11 +90,32 @@ graph.vis <-
 
     }
 
+    if (!is.null(usr_groups)) {
+      igraph::V(ig)$community <- usr_groups
+      community_n <- length(unique(usr_groups))
+    }
+
     data <- visNetwork::toVisNetworkData(ig)
+    if (betweenness)
+      nodes_title <-
+      paste0("<p> Degree = ",
+             igraph::degree(ig),
+             "</br> Betweenness = ",
+             not_sort_bt,
+             "</p>")
+    else
+      nodes_title <-
+      paste0("<p> Degree = ", igraph::degree(ig), "</p>")
+
+    node_value <- igraph::degree(ig)
     if (community)
       data$nodes$group <- igraph::V(ig)$community
+
+    nodes = data$nodes
+    nodes[, "title"] <- nodes_title
+    nodes[, "value"] <- node_value
     vs <-
-      visNetwork::visNetwork(nodes = data$nodes, edges = data$edges)  %>%
+      visNetwork::visNetwork(nodes = nodes, edges = data$edges)  %>%
       visNetwork::visOptions(highlightNearest = list(
         enabled = TRUE,
         degree = 1,
@@ -78,14 +125,19 @@ graph.vis <-
       vs <- vs %>% visNetwork::visEdges(arrows = "to")
 
     if (plot) {
-      gg <- qgraph::qgraph(igraph::as_adjacency_matrix(ig),
-                     groups=as.factor(igraph::V(ig)$community),
-                     layout="spring", palette = "ggplot2",
-                     vsize =  8*exp(-length(igraph::V(ig))/80)+ 0.5)
+      gg <- qgraph::qgraph(
+        igraph::as_adjacency_matrix(ig),
+        groups = as.factor(igraph::V(ig)$community),
+        layout = usr_layout,
+        palette = "ggplot2",
+        vsize = max(1, 0.5 + 320 / (length(igraph::V(ig)) + 50)),
+        filetype = arguments$filetype,
+        filename = arguments$filename
+      )
       igraph::V(ig)$color <- gg$graphAttributes$Nodes$color
     }
     if (community) {
-      if (plot) {
+      if (plot && plot.community) {
         for (i in 1:community_n)
           plot_community(ig, i)
       }

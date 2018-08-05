@@ -11,7 +11,7 @@
 #' @param plot if TRUE plots the graph and communities (default = FALSE)
 #'
 #'
-#' @author  Elyas Heidari, Vahid Balazadeh
+#' @author  Elyas Heidari, Vahid Balazadeh with a reference qgraph package.
 #'
 #' @return (If plot = TRUE it plots the noninteractive graph and communities) A list contains:
 #' \item{graph}{an igraph object}

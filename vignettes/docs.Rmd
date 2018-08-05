@@ -129,32 +129,34 @@ kableExtra::kable(head(KL, n = 20)) %>%
 Use `plot.assoc` for different visualizations. 
 `levels` is set to 15 to capture categorical variables.
 
-Histogram for PAD600 Question (About number of hours use computer last month. 0: less than hour, 1: one hour, ..., 5: five hour, 6: None):
+Histogram for "PAD600" Question (about number of hours use computer last month. 0: less than hour, 1: one hour, ..., 5: five hour, 6: None):
 ```{r plot1, echo=TRUE, message=FALSE, warning=FALSE}
 plot.assoc(data, vars = c("PAD600"), levels = 15)
 ```
 
-Density plot for BMXBMI (BMI):
+Density plot for "RIDAGEYR" (age):
 ```{r plot2, echo=TRUE, message=FALSE, warning=FALSE}
 plot.assoc(data, vars = c("RIDAGEYR"), levels = 15)
 ```
 
-Boxplot of LBXTHG (Mercury amount in the blood) for different answers of DRD360 (Fish eaten during past 30 days. 1: Yes, 2: No, 3: Refused, 4: Don't know):
+Boxplot of "LBXTHG" (indicating total mercury amount in the blood (ug/L)) for different answers of "DRD360" (fish eaten during past 30 days. 1: Yes, 2: No, 3: Refused, 4: Don't know):
 ```{r plot3, echo=TRUE, message=FALSE, warning=FALSE}
+edges[edges$from == "DRD360" | edges$to == "DRD360", ]
 plot.assoc(data, vars = c("LBXTHG", "DRD360"), levels = 15)
 ```
 
-Relative histogram of DIQ010 (Having diabetes) vs PAD590 (Number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know):
-```{r plot4, echo=TRUE, message=FALSE, warning=FALSE}
-plot.assoc(data, vars = c("DIQ010", "PAD590"), levels = 15)
-```
+<!-- Relative histogram of DIQ010 (Having diabetes) vs PAD590 (Number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know): -->
+<!-- ```{r plot4, echo=TRUE, message=FALSE, warning=FALSE} -->
+<!-- plot.assoc(data, vars = c("DIQ010", "PAD590"), levels = 15) -->
+<!-- ``` -->
 
-Scatter plot of BMXBMI (BMI) vs PEASCTM1 (Blood Pressure Time in seconds):
+Scatter plot of "LBXHGB" (hemoglobin amount in the blood (g/dL)) and "LBXSIR" (refrigerated Iron in the blood (ug/dL)):
 ```{r plot5, echo=TRUE, message=FALSE, warning=FALSE}
-plot.assoc(data, vars = c("BMXBMI", "PEASCTM1"), levels = 15)
+edges[edges$from == "LBXHGB" | edges$to == "LBXHGB", ]
+plot.assoc(data, vars = c("LBXHGB", "LBXSIR"), levels = 15)
 ```
 
-Pie chart of PAD590 Question (About number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know):
+Pie chart of "PAD590" Question (about number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know):
 ```{r plot6, echo=TRUE, warning=FALSE}
 plot.assoc(data, vars = c("PAD590"), levels = 15, pie = TRUE)
 ```

@@ -5,6 +5,7 @@ Author: statCompTeam@bAIo-lab
 Maintainer: statCompTeam@bAIo-lab <sharifi.statComp@gmail.com>
 Description:  A collection of tools to preprocess, analyze, and visualize multivariate datasets, including both continuous and categorical variables, e.g., genotype-phenotype datasets, etc.
 License: GPL-3
+Depends: R (>= 3.0)
 Encoding: UTF-8
 LazyData: true
 VignetteBuilder: packagedocs
@@ -33,5 +34,6 @@ Imports:
     magrittr,
     utils,
     methods,
-    qgraph
+    qgraph,
+    pcalg
 Suggests: packagedocs

@@ -7,6 +7,7 @@ cache: packages
 warnings_are_errors: no
 before_install:
   - sudo apt-get install libgsl0-dev
+  - sudo apt-get install libv8-3.14-dev
   - Rscript -e "install.packages(\"kableExtra\")"
   - Rscript -e "install.packages(\"bnlearn\")"
   - Rscript -e "devtools::install_github(\"jbkunst/highcharter\")"

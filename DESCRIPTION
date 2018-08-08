@@ -33,5 +33,5 @@ Imports:
     magrittr,
     utils,
     methods,
-    RColorBrewer
+    qgraph
 Suggests: packagedocs

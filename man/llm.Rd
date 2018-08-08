@@ -25,7 +25,7 @@ A list in which each element is the details of a specific fitted method.
 \item{network}{a highcharter plot of the  model.}
 }
 \description{
-Fits a Log Linear Model to categorical-valued dataset and visualizes the fitted Graphical Model.
+Fits a Log Linear Model to categorical-valued dataset and visualizes the fitted Log Linear Model.
 }
 \author{
 Elyas Heidari

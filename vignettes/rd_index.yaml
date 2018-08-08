@@ -16,11 +16,9 @@ sections:
   section_name: Package Functions
   topics:
     - data.preproc
-    - dim.reduce
     - ggm
     - min.forest
-    - bn
-    - div
-    - div2
-    - plot
     - graph.vis
+    - div.vars
+    - violating.vars
+    - plot.assoc

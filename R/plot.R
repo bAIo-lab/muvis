@@ -19,7 +19,7 @@
 #' \item{}{two continuous variables: plots a scatter plot of two variables.}
 #' \item{}{two categorical variables: plots a relative histogram showing distribution of one variable for each level of the other.}
 #'
-#' @export
+#' @export plot.assoc
 #'
 #' @importFrom dplyr pull group_by summarise summarize filter
 #' @importFrom highcharter highchart hc_xAxis hc_yAxis hc_add_series hc_chart hc_add_theme hc_theme_google hcpie hcboxplot hc_add_series_scatter hc_title hcaes
@@ -27,7 +27,7 @@
 #' @importFrom stats density
 
 
-plot <- function(data,
+plot.assoc <- function(data,
                  vars,
                  levels = 5,
                  pie = F) {

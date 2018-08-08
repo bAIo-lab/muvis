@@ -1,7 +1,7 @@
 #' construct and visualize Log Linear Model.
 #'
 #' @description
-#' Fits a Log Linear Model to categorical-valued dataset and visualizes the fitted Graphical Model.
+#' Fits a Log Linear Model to categorical-valued dataset and visualizes the fitted Log Linear Model.
 #'
 #' @param  data A normalized dataframe or matrix with no missing data of continuous measurements.
 #' @param  methods (default = "glasso")
@@ -11,7 +11,7 @@
 #'
 #' @author Elyas Heidari
 #'
-#' @export
+#'
 #'
 #' @return A list in which each element is the details of a specific fitted method.
 #' \item{graph}{an igraph object of the  model.}

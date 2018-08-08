@@ -50,110 +50,115 @@ library(kableExtra)
 # NHANES Dataset
 
 ## Dateset
-We'll use National Health and Nutrition Examination Survey (NHANES), 2005-2006 dataset to work with `muvis`. The original dataset contains more than 7,000 variables and nearly 10,000 samples which we selected 4600 random samples and 135 variables, including continuous (i.e., laboratory measurements), and categorical variables (i.e., questions). For more details about variable names and samples visit website- <https://www.icpsr.umich.edu/icpsrweb/ICPSR/studies/25504/summary>
+We'll use National Health and Nutrition Examination Survey (NHANES), 2005-2006 dataset to work with `muvis`. The original dataset contains more than 7,000 variables and nearly 10,000 samples which we selected 4461 samples and 161 variables, including Id variable ("SEQN"), continuous (i.e., laboratory measurements), and categorical variables (i.e., questions). For more details about variable names and samples visit website- <https://www.icpsr.umich.edu/icpsrweb/ICPSR/studies/25504/summary>
+
 ```{r dataset}
 nhanes_data <- read.csv("../data/data.csv")
+nhanes_data$SEQN <- NULL
 kableExtra::kable(head(nhanes_data)) %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = "200px")
 ```
 
 ## data.preproc
-The dataset has some missing values. We'll use `data.preproc` to impute missing values and to specify categorical and continuous variables (Setting level = 20). The first 62 columns are continuous.
+The dataset has some missing values. We'll use `data.preproc` to impute missing values and to specify categorical and continuous variables (Setting level = 15). The first 74 columns are continuous.
 ```{r preprocess}
-data <- data.preproc(nhanes_data, levels = 20)
+data <- data.preproc(nhanes_data, levels = 15)
 kableExtra::kable(head(data)) %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = "200px")
 ```
 
-## dim.reduce
-Use `dim.reduce` to visualize the continuous variables in 2 dimensions with tsne. 
-```{r dim, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
-dim.reduce(data[,1:62], method = "tsne") -> plt
-#plt
-```
+<!-- ## dim.reduce -->
+<!-- Use `dim.reduce` to visualize the continuous variables in 2 dimensions with tsne.  -->
+<!-- ```{r dim, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE} -->
+<!-- dim.reduce(data[,1:63], method = "tsne") -> plt -->
+<!-- #plt -->
+<!-- ``` -->
 
 ## ggm
 Use `ggm` to construct a Gaussian Graphical Model with glasso and significance test method.
 ```{r ggm, echo=TRUE, message=FALSE, warning=FALSE}
-ggm(data[,1:62], significance = 0.05, rho = 0.1, community = TRUE, methods = c("glasso", "sin"), plot = F) -> g
+ggm(data[,1:74], significance = 0.05, rho = 0.1, community = TRUE, methods = c("glasso", "sin"), plot = F) -> g
 g$network
 g$betweenness
+g$communities
 ```
 
-## bn
-Use `bn` to learn the structure of a Bayesian network fitting data.
-```{r bn, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE}
-b <- bn(data = data[,1:62])
-b$network
-b$betweenness
-b$communities
-```
+<!-- ## bn -->
+<!-- Use `bn` to learn the structure of a Bayesian network fitting data. -->
+<!-- ```{r bn, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE} -->
+<!-- b <- bn(data = data[,1:63]) -->
+<!-- b$network -->
+<!-- b$betweenness -->
+<!-- b$communities -->
+<!-- ``` -->
 
 ## min.forest
 Employ `min.forest` with BIC to construct a mixed-interaction model fitting the data.
 ```{r mf, echo=TRUE, message=FALSE, warning=FALSE}
-mf <- min.forest(data, plot = F)
+mf <- min.forest(data, stat = "BIC", community = T, plot = F)
 mf$network
 mf$betweenness
-mf$communities  
 ```
 
 ## graph.vis
-Use `graph.vis` to find communities of an arbitrary graph object and plot them. (The graph "g$graph" here is the one resulted by `ggm` function)
+Use `graph.vis` to find communities of an arbitrary graph object and plot them. (The graph "mf$graph" here is the one resulted by `minforest` function)
 ```{r graph_vis, echo=TRUE, message=FALSE, warning=FALSE}
-gval <- graph.vis(g$graph)
-gval$communities
+mf.val <- graph.vis(mf$graph, plot = T, plot.community = T)
+mf.val$communities
 ```
-## div2
-Use `div2` to find the most deferentially categorical variables between people with relatively high Total Cholesterol (relative to vitamin E) and people with high Vitamin E (relative to Total Cholesterol).
-"LBXTC" is Total Cholesterol and "LBXVIE" is Vitamin E.
-Both "DSDCOUNT" and "DSD010" are questions about Dietary Supplements.
+## violating.vars
+Use `violating.vars` to find the most deferentially variables between people with relatively high Total Cholesterol (relative to vitamin E) and people with high Vitamin E (relative to Total Cholesterol).
+"LBXTC" is Total Cholesterol and "LBXVIE" is Vitamin E. Here we use the function to find just the categorical variables.
+"DSD010" is a questions about Dietary Supplements.
 
 ```{r div2, echo=TRUE, message=FALSE, warning=FALSE}
-plot(data, vars = c("LBXTC", "LBXVIE"))
-div2(data[63:dim(data)[2]], var1 = data$LBXTC, var2 = data$LBXVIE, permute = 1000) -> KL
+edges <- mf$network$x$edges
+edges[edges$from == "LBXTC" | edges$to == "LBXTC", ]
+plot.assoc(data, vars = c("LBXTC", "LBXVIE"))
+violating.vars(data[75:dim(data)[2]], var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = 15) -> KL
 KL$name <- row.names(KL)
-KL <- KL %>% arrange(desc(KL))
 kableExtra::kable(head(KL, n = 20)) %>%
   kable_styling() %>%
   scroll_box(width = "300px", height = "400px")
 ```
 
 
-## plot
-Use `plot` for different visualizations. 
-`levels` is set to 20 to capture categorical variables.
+## plot.assoc
+Use `plot.assoc` for different visualizations. 
+`levels` is set to 15 to capture categorical variables.
 
-Histogram for PAD600 Question (About number of hours use computer last month. 0: less than hour, 1: one hour, ..., 5: five hour, 6: None):
+Histogram for "PAD600" Question (about number of hours use computer last month. 0: less than hour, 1: one hour, ..., 5: five hour, 6: None):
 ```{r plot1, echo=TRUE, message=FALSE, warning=FALSE}
-plot(data, vars = c("PAD600"), levels = 20)
+plot.assoc(data, vars = c("PAD600"), levels = 15)
 ```
 
-Density plot for BMXBMI (BMI):
+Density plot for "RIDAGEYR" (age):
 ```{r plot2, echo=TRUE, message=FALSE, warning=FALSE}
-plot(data, vars = c("BMXBMI"), levels = 20)
+plot.assoc(data, vars = c("RIDAGEYR"), levels = 15)
 ```
 
-Boxplot of LBXTHG (Mercury amount in the blood) for different answers of DRD360 (Fish eaten during past 30 days. 1: Yes, 2: No, 3: Refused, 4: Don't know):
+Boxplot of "LBXTHG" (indicating total mercury amount in the blood (ug/L)) for different answers of "DRD360" (fish eaten during past 30 days. 1: Yes, 2: No, 3: Refused, 4: Don't know):
 ```{r plot3, echo=TRUE, message=FALSE, warning=FALSE}
-plot(data, vars = c("LBXTHG", "DRD360"), levels = 20)
+edges[edges$from == "DRD360" | edges$to == "DRD360", ]
+plot.assoc(data, vars = c("LBXTHG", "DRD360"), levels = 15)
 ```
 
-Relative histogram of DIQ010 (Having diabetes) vs PAD590 (Number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know):
-```{r plot4, echo=TRUE, message=FALSE, warning=FALSE}
-plot(data, vars = c("DIQ010", "PAD590"), levels = 20)
-```
+<!-- Relative histogram of DIQ010 (Having diabetes) vs PAD590 (Number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know): -->
+<!-- ```{r plot4, echo=TRUE, message=FALSE, warning=FALSE} -->
+<!-- plot.assoc(data, vars = c("DIQ010", "PAD590"), levels = 15) -->
+<!-- ``` -->
 
-Scatter plot of BMXBMI (BMI) vs PEASCTM1 (Blood Pressure Time in seconds):
+Scatter plot of "LBXHGB" (hemoglobin amount in the blood (g/dL)) and "LBXSIR" (refrigerated Iron in the blood (ug/dL)):
 ```{r plot5, echo=TRUE, message=FALSE, warning=FALSE}
-plot(data, vars = c("BMXBMI", "PEASCTM1"), levels = 20)
+edges[edges$from == "LBXHGB" | edges$to == "LBXHGB", ]
+plot.assoc(data, vars = c("LBXHGB", "LBXSIR"), levels = 15)
 ```
 
-Pie chart of PAD590 Question (About number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know):
+Pie chart of "PAD590" Question (about number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know):
 ```{r plot6, echo=TRUE, warning=FALSE}
-plot(data, vars = c("PAD590"), levels = 20, pie = TRUE)
+plot.assoc(data, vars = c("PAD590"), levels = 15, pie = TRUE)
 ```
 
 

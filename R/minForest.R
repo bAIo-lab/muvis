@@ -2,14 +2,14 @@
 #'
 #'
 #' @description
-#' Fits a minimum forest to data.
-#' Also visualizes the the minimum forest.
+#' Fits a minimum forest to data and visualizes it.
 #'
 #'
-#' @param  data a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
-#' @param  stat measure to be minimized: LR, AIC, or BIC (the default). Default is BIC. It can also be a user-defined function with the format: FUN(model, dataset, previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.
-#' @param  community a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
-#' @param  plot (default = FALSE)
+#' @param data A normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
+#' @param stat Measure to be minimized: LR, AIC, or BIC (the default). The default is BIC. It can also be a user-defined function with the format: FUN (model, dataset, previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.
+#' @param community A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)
+#' @param betweenness A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)
+#' @param plot A logical value to show if the graph should be plotted. (default = FALSE)
 #'
 #'
 #' @details
@@ -24,12 +24,13 @@
 #'
 #'
 #' @return a list containing:
-#' \item{}{a gRapHD object which is the fit model.}
-#' \item{}{betweenness measurements for each node.}
-#' \item{}{the highcharter plot of the network.}
+#' \item{summary}{a gRapHD object which is the fit model.}
+#' \item{graph}{an igraph object.}
+#' \item{betweenness}{betweenness measurements of each node.}
+#' \item{network}{a visNetwork plot of the graph.}
+#' \item{communities}{a named vector indicating the community of each node.}
 #'
-#' @usage min.forest(data, stat = "BIC", community = TRUE, plot = FALSE)
-#' @export min.forest
+#' @export mini.forest
 #'
 #'
 #' @importFrom gRapHD minForest neighbourhood stepw
@@ -40,11 +41,13 @@
 #'
 #'
 
-min.forest <-
+mini.forest <-
   function(data,
            stat = "BIC",
            community = TRUE,
+           betweenness = TRUE,
            plot = FALSE) {
+
     my.forest <- gRapHD::minForest(data, homog = F, stat = stat)
     nby <-
       gRapHD::neighbourhood(my.forest, orig = 1, rad = 2000)$v[, 1]
@@ -78,20 +81,7 @@ min.forest <-
         plot = plot,
         directed = F
       )
-    # bc <- igraph::betweenness(
-    #   g,
-    #   v = igraph::V(g),
-    #   directed = F,
-    #   weights = NULL,
-    #   nobigint = TRUE,
-    #   normalized = FALSE
-    # )
-    # if (community) {
-    #   fc <- igraph::fastgreedy.community(g)
-    #   groups <- igraph::membership(fc)
-    #   groups <- groups[as.character(nodes$id)]
-    #   groups -> nodes$group
-    # }
+
     vnet <- val$network
     edges <-  vnet$x$edges
     edges[, "title"] <- title

@@ -2,18 +2,18 @@
 #'
 #'
 #' @description
-#' Calculates variable-wise Kullback-Leibler divergence between two groups of samples which violate the linear relationship between two continuous variables.
+#' Calculates variable-wise Kullback-Leibler divergence between the two groups of samples which violate the linear relationship between two continuous variables.
 #'
-#' @param  data a numeric dataframe including no missing value
-#' @param  var1 a vector of continuous values indicating the first variable. (the order of values should be the same as the order of rows in data)
-#' @param  var2 a vector of continuous values indicating the second variable. (the order of values should be the same as the order of rows in data)
-#' @param  permute an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
-#' @param  frac a double value between 0 and 1 which indicates the fraction of outliers in the fit model. That is, the threshold to recognize a datapoint as an outlier of the fit line.
-#' @param  levels an integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish categorical variable.
+#' @param  data A numeric dataframe including no missing value
+#' @param  var1 A vector of continuous values indicating the first variable. (the order of values should be the same as the order of rows in data)
+#' @param  var2 A vector of continuous values indicating the second variable. (the order of values should be the same as the order of rows in data)
+#' @param  permute An integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
+#' @param  frac A double value between 0 and 1 which indicates the fraction of outliers in the fit model. That is, the threshold to recognize a data point as an outlier of the fit line.
+#' @param  levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
 #'
 #' @author  Elyas Heidari
 #'
-#' @return  if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.
+#' @return  If permute = 0 returns a dataframe including sorted Kullback-Liebler (KL) divergence. If permute > 0 returns a dataframe including p.values and sorted KL divergence.
 #'
 #' @export violating.vars
 #'
@@ -23,7 +23,6 @@
 #' @importFrom magrittr %>%
 #' @importFrom stats residuals
 #' @importFrom utils head tail
-
 
 
 violating.vars <- function(data, var1, var2, permute = 0, frac = 0.05, levels = 5) {

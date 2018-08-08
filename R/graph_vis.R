@@ -2,24 +2,33 @@
 #'
 #'
 #' @description
-#' Converts the graph to an igraph object, finds communities and plots it
+#' Converts the graph to an igraph object, finds communities and plots it using qgraph package.
 #'
-#' @param graph an arbitrary graph object in R
-#' @param directed TRUE if the graph is directed (default = FALSE)
-#' @param community if TRUE finds the communities (default = TRUE)
-#' @param betweenness if TRUE calculate betweenness for the nodes (default = TRUE)
-#' @param plot if TRUE plots the graph and communities (default = FALSE)
+#' @param graph An arbitrary graph object in R.
+#' @param directed Set it TRUE when the graph is directed. (default = FALSE)
+#' @param community A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)
+#' @param betweenness A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)
+#' @param plot A logical value to show if the graph should be plotted. (default = FALSE)
+#' @param ... Any additional arguments described below.
 #'
 #'
-#' @author  Elyas Heidari, Vahid Balazadeh with a reference qgraph package.
+#' @author  Elyas Heidari, Vahid Balazadeh
 #'
-#' @return (If plot = TRUE it plots the noninteractive graph and communities) A list contains:
-#' \item{graph}{an igraph object}
-#' \item{betweenness}{betweenness measurements of each node (if betweenness = TRUE)}
-#' \item{network}{a highcharter plot of the graph}
-#' \item{communities}{a named vector of community number for each variable (if communities = TRUE)}
+#' @return If plot = TRUE it plots the non-interactive graph (If plot.community = TRUE plots communities too) also returns a list contains:
+#' \item{graph}{an igraph object.}
+#' \item{betweenness}{betweenness measurements of each node.}
+#' \item{network}{a visNetwork plot of the graph.}
+#' \item{communities}{a named vector indicating the community of each node.}
 #'
 #' @export graph.vis
+#'
+#' @section Additional arguments:
+#' \describe{
+#' \item{groups}{A list that indicates which community each node is. The automatic community detection will be ignored when it is set.}
+#' \item{plot.community}{Logical indicating if communities should be plotted. Defaults to FALSE.}
+#' \item{filename}{Name of the plot file without extension. (qgraph function argument)}
+#' \item{filetype}{A character indicates the file type to save the plots in. (qgraph function argument)}
+#' }
 #'
 #' @importFrom  visNetwork toVisNetworkData visNetwork visOptions
 #' @importFrom  igraph cluster_louvain betweenness membership V layout_with_fr induced.subgraph as_adjacency_matrix degree as.undirected
@@ -39,17 +48,9 @@ graph.vis <-
     usr_groups <- arguments$groups
 
     plot.community <- arguments$plot.community
-    if(is.null(plot.community))
+    if (is.null(plot.community))
       plot.community = F
 
-    usr_layout <- arguments$layout
-    if(is.null(usr_layout))
-      usr_layout <- "spring"
-
-    label.norm <- arguments$label.norm
-    if(is.null(label.norm))
-      label.norm <- "OOOOOOO
-    "
     plot_community <- function(graph, community_num) {
       t <- igraph::V(graph)$community == community_num
       v <-  igraph::V(graph)[t]
@@ -57,13 +58,11 @@ graph.vis <-
       qgraph::qgraph(
         igraph::as_adjacency_matrix(sub_graph),
         groups = as.factor(igraph::V(sub_graph)$community),
-        layout = usr_layout,
+        layout = "spring",
         color = igraph::V(sub_graph)$color,
-        label.norm = label.norm,
+        label.norm = "OOOOOOO",
         labels = names(igraph::V(sub_graph)),
-        vsize = max(1, 0.5 + 320 / (length(
-          igraph::V(sub_graph)
-        ) + 50)),
+        vsize = max(1, 0.5 + 320 / (length(igraph::V(sub_graph)) + 50)),
         filename = paste(arguments$filename, community_num, sep = ""),
         filetype = arguments$filetype
       )
@@ -128,14 +127,17 @@ graph.vis <-
       gg <- qgraph::qgraph(
         igraph::as_adjacency_matrix(ig),
         groups = as.factor(igraph::V(ig)$community),
-        layout = usr_layout,
+        layout = "spring",
         palette = "ggplot2",
-        vsize = max(1, 0.5 + 320 / (length(igraph::V(ig)) + 50)),
+        vsize = max(1, 0.5 + 320 / (length(igraph::V(
+          ig
+        )) + 50)),
         filetype = arguments$filetype,
         filename = arguments$filename
       )
       igraph::V(ig)$color <- gg$graphAttributes$Nodes$color
     }
+
     if (community) {
       if (plot && plot.community) {
         for (i in 1:community_n)

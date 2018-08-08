@@ -1,41 +1,41 @@
-#' data preprocess
+#' preprocess the data
 #'
 #'
 #' @description
-#' Specify categorical and continuous variables and imputes dataset missing-values.
+#' Specify categorical and continuous variables and impute the missing values.
 #'
 #'
-#' @param  data an arbitrary dataset.
-#' @param  is.cat A list containing boolean elements related to dataset variables. (For each categorical variable it is TRUE) (Default = NULL)
-#' @param  levels an integer to indicate the maximum levels of categorical variables. The default is 10. (It will be used when "is.cat" list in NULL)
+#' @param  data An arbitrary dataset (For example data.frame or matrix).
+#' @param  is.cat A boolean list specifies which variables are categorical. (default = NULL)
+#' @param  levels An integer number indicates the maximum levels of categorical variables and it is used when "is.cat" in NULL. (default = 5)
 #'
 #' @author  Elyas Heidari, Vahid Balazadeh
 #'
 #'
-#' @return a normalized dataframe with no missing data of continuous and (or) categorical measurements.
+#' @return A normalized data.frame object with specified continuous and (or) categorical variables and no missing values.
 #' @export data.preproc
 #'
-#'
-#'
-#'
+
 data.preproc <- function(data,
                          is.cat = NULL,
                          levels = 10) {
-  data <- data.frame(data)
-  is.cat.f <- function(var) {
+  is.cat <- function(var) {
     !length(unique(var[!is.na(var)])) > levels
   }
 
-  is.categorical <- function(x, is.cat) {
+
+  cont.cat.spec <- function(x, is.cat) {
     x <- data.frame(x)
     ls <- c(1:ncol(x))
     t <- sapply(ls, function(i)
       (!(is.numeric(x[, i]) | is.cat[i])))
+
     if (sum(t) != 0) {
       ls <- ls[t]
       x <- x[-ls]
       is.cat <- is.cat[-ls]
     }
+
     x[, is.cat] <- data.frame(sapply(x[, is.cat], as.factor))
     x <- data.frame(x)
     x <- sapply(x, as.numeric)
@@ -50,7 +50,7 @@ data.preproc <- function(data,
 
       x <- data.frame(x)
       binding <- data.frame(binding)
-      x <- cbind(x[, !is.cat] , binding)
+      x <- cbind(x[,!is.cat] , binding)
     }
     x
   }
@@ -61,14 +61,12 @@ data.preproc <- function(data,
     ux[which.max(tabulate(match(x, ux)))]
   }
 
-  # a function to impute NAs in a categorial vector with the mode of the vector
   impute.factor <- function(x) {
     x <- as.factor(as.character(x))
     x[is.na(x)] = Mode(x)
     x
   }
 
-  # a function to impute NAs in a continuous vector with the mean of the vector
   impute.continuous <- function(x) {
     x <- as.numeric(x)
     x[is.na(x)] = mean(x, na.rm = T)
@@ -76,11 +74,15 @@ data.preproc <- function(data,
   }
 
 
-  if (is.null(is.cat))
-    data <- is.categorical(data, sapply(data, is.cat.f))
-  else
-    data <- is.categorical(data, is.cat)
+  data <- data.frame(data)
 
+  # Specify categorical and continuous variables
+  if (is.null(is.cat))
+    data <- cont.cat.spec(data, sapply(data, is.cat))
+  else
+    data <- cont.cat.spec(data, is.cat)
+
+  # Impute the dataset
   data.frame(lapply(data, function(x)
     if (is.numeric(x) == T)
       impute.continuous(x)

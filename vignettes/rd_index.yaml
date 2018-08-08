@@ -17,8 +17,8 @@ sections:
   topics:
     - data.preproc
     - ggm
-    - min.forest
+    - mini.forest
     - graph.vis
     - div.vars
     - violating.vars
-    - plot.assoc
+    - plt.assoc

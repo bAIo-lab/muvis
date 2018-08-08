@@ -53,9 +53,9 @@ library(kableExtra)
 We'll use National Health and Nutrition Examination Survey (NHANES), 2005-2006 dataset to work with `muvis`. The original dataset contains more than 7,000 variables and nearly 10,000 samples which we selected 4461 samples and 161 variables, including Id variable ("SEQN"), continuous (i.e., laboratory measurements), and categorical variables (i.e., questions). For more details about variable names and samples visit website- <https://www.icpsr.umich.edu/icpsrweb/ICPSR/studies/25504/summary>
 
 ```{r dataset}
-nhanes_data <- read.csv("../data/data.csv")
-nhanes_data$SEQN <- NULL
-kableExtra::kable(head(nhanes_data)) %>%
+data("Nhanes")
+Nhanes$SEQN <- NULL
+kableExtra::kable(head(Nhanes)) %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = "200px")
 ```
@@ -63,7 +63,7 @@ kableExtra::kable(head(nhanes_data)) %>%
 ## data.preproc
 The dataset has some missing values. We'll use `data.preproc` to impute missing values and to specify categorical and continuous variables (Setting level = 15). The first 74 columns are continuous.
 ```{r preprocess}
-data <- data.preproc(nhanes_data, levels = 15)
+data <- data.preproc(Nhanes, levels = 15)
 kableExtra::kable(head(data)) %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = "200px")
@@ -94,10 +94,10 @@ g$communities
 <!-- b$communities -->
 <!-- ``` -->
 
-## min.forest
-Employ `min.forest` with BIC to construct a mixed-interaction model fitting the data.
+## mini.forest
+Employ `mini.forest` with BIC to construct a mixed-interaction model fitting the data.
 ```{r mf, echo=TRUE, message=FALSE, warning=FALSE}
-mf <- min.forest(data, stat = "BIC", community = T, plot = F)
+mf <- mini.forest(data, stat = "BIC", community = T, plot = F)
 mf$network
 mf$betweenness
 ```
@@ -116,7 +116,7 @@ Use `violating.vars` to find the most deferentially variables between people wit
 ```{r div2, echo=TRUE, message=FALSE, warning=FALSE}
 edges <- mf$network$x$edges
 edges[edges$from == "LBXTC" | edges$to == "LBXTC", ]
-plot.assoc(data, vars = c("LBXTC", "LBXVIE"))
+plt.assoc(data, vars = c("LBXTC", "LBXVIE"))
 violating.vars(data[75:dim(data)[2]], var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = 15) -> KL
 KL$name <- row.names(KL)
 kableExtra::kable(head(KL, n = 20)) %>%
@@ -125,40 +125,40 @@ kableExtra::kable(head(KL, n = 20)) %>%
 ```
 
 
-## plot.assoc
-Use `plot.assoc` for different visualizations. 
+## plt.assoc
+Use `plt.assoc` for different visualizations. 
 `levels` is set to 15 to capture categorical variables.
 
 Histogram for "PAD600" Question (about number of hours use computer last month. 0: less than hour, 1: one hour, ..., 5: five hour, 6: None):
 ```{r plot1, echo=TRUE, message=FALSE, warning=FALSE}
-plot.assoc(data, vars = c("PAD600"), levels = 15)
+plt.assoc(data, vars = c("PAD600"), levels = 15)
 ```
 
 Density plot for "RIDAGEYR" (age):
 ```{r plot2, echo=TRUE, message=FALSE, warning=FALSE}
-plot.assoc(data, vars = c("RIDAGEYR"), levels = 15)
+plt.assoc(data, vars = c("RIDAGEYR"), levels = 15)
 ```
 
 Boxplot of "LBXTHG" (indicating total mercury amount in the blood (ug/L)) for different answers of "DRD360" (fish eaten during past 30 days. 1: Yes, 2: No, 3: Refused, 4: Don't know):
 ```{r plot3, echo=TRUE, message=FALSE, warning=FALSE}
 edges[edges$from == "DRD360" | edges$to == "DRD360", ]
-plot.assoc(data, vars = c("LBXTHG", "DRD360"), levels = 15)
+plt.assoc(data, vars = c("LBXTHG", "DRD360"), levels = 15)
 ```
 
 <!-- Relative histogram of DIQ010 (Having diabetes) vs PAD590 (Number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know): -->
 <!-- ```{r plot4, echo=TRUE, message=FALSE, warning=FALSE} -->
-<!-- plot.assoc(data, vars = c("DIQ010", "PAD590"), levels = 15) -->
+<!-- plt.assoc(data, vars = c("DIQ010", "PAD590"), levels = 15) -->
 <!-- ``` -->
 
 Scatter plot of "LBXHGB" (hemoglobin amount in the blood (g/dL)) and "LBXSIR" (refrigerated Iron in the blood (ug/dL)):
 ```{r plot5, echo=TRUE, message=FALSE, warning=FALSE}
 edges[edges$from == "LBXHGB" | edges$to == "LBXHGB", ]
-plot.assoc(data, vars = c("LBXHGB", "LBXSIR"), levels = 15)
+plt.assoc(data, vars = c("LBXHGB", "LBXSIR"), levels = 15)
 ```
 
 Pie chart of "PAD590" Question (about number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know):
 ```{r plot6, echo=TRUE, warning=FALSE}
-plot.assoc(data, vars = c("PAD590"), levels = 15, pie = TRUE)
+plt.assoc(data, vars = c("PAD590"), levels = 15, pie = TRUE)
 ```
 
 

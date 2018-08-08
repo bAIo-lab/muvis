@@ -2,22 +2,22 @@
 % Please edit documentation in R/data_preprocess.R
 \name{data.preproc}
 \alias{data.preproc}
-\title{data preprocess}
+\title{preprocess the data}
 \usage{
 data.preproc(data, is.cat = NULL, levels = 10)
 }
 \arguments{
-\item{data}{an arbitrary dataset.}
+\item{data}{An arbitrary dataset (For example data.frame or matrix).}
 
-\item{is.cat}{A list containing boolean elements related to dataset variables. (For each categorical variable it is TRUE) (Default = NULL)}
+\item{is.cat}{A boolean list specifies which variables are categorical. (default = NULL)}
 
-\item{levels}{an integer to indicate the maximum levels of categorical variables. The default is 10. (It will be used when "is.cat" list in NULL)}
+\item{levels}{An integer number indicates the maximum levels of categorical variables and it is used when "is.cat" in NULL. (default = 5)}
 }
 \value{
-a normalized dataframe with no missing data of continuous and (or) categorical measurements.
+A normalized data.frame object with specified continuous and (or) categorical variables and no missing values.
 }
 \description{
-Specify categorical and continuous variables and imputes dataset missing-values.
+Specify categorical and continuous variables and impute the missing values.
 }
 \author{
 Elyas Heidari, Vahid Balazadeh

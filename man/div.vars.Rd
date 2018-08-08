@@ -4,28 +4,28 @@
 \alias{div.vars}
 \title{calculate variable-wise Kullback-Leibler divergence}
 \usage{
-div.vars(data, g1, g2, permute = 0, levels = 5)
+div.vars(data, group1, group2, permute = 0, levels = 5)
 }
 \arguments{
-\item{data}{a numerical dataframe with now missing value}
+\item{data}{A numerical dataframe with now missing value.}
 
-\item{g1}{a vector of integers. Demonstrates the row indices of group 1.}
+\item{group1}{A vector of integers. Demonstrates the row indices of group 1.}
 
-\item{g2}{a vector of integers. Demonstrates the row indices of group 2.}
+\item{group2}{A vector of integers. Demonstrates the row indices of group 2.}
 
-\item{permute}{an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.}
+\item{permute}{An integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.}
 
-\item{levels}{an integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish categorical variable.}
+\item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.}
 }
 \value{
-if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including KL divergence and p.values.
+if permute = 0 returns a dataframe including sorted Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including p.values and sorted KL divergence.
 }
 \description{
-Calculates variable-wise Kullback-Leibler divergence between two groups of samples.
+Calculates variable-wise Kullback-Leibler divergence between the two groups of samples.
 }
 \details{
 The function helps users to find out the variables with the most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements, we are interested in finding the most important variables in occurring cardiovascular disease.
-The function is able to carry out permutation test to calculate the p_value for each variable.
+The function is able to carry out the permutation test to calculate the p_value for each variable.
 }
 \author{
 Elyas Heidari

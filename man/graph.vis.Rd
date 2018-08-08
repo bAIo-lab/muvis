@@ -8,26 +8,38 @@ graph.vis(graph, directed = F, community = T, betweenness = T, plot = F,
   ...)
 }
 \arguments{
-\item{graph}{an arbitrary graph object in R}
+\item{graph}{An arbitrary graph object in R.}
 
-\item{directed}{TRUE if the graph is directed (default = FALSE)}
+\item{directed}{Set it TRUE when the graph is directed. (default = FALSE)}
 
-\item{community}{if TRUE finds the communities (default = TRUE)}
+\item{community}{A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)}
 
-\item{betweenness}{if TRUE calculate betweenness for the nodes (default = TRUE)}
+\item{betweenness}{A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)}
 
-\item{plot}{if TRUE plots the graph and communities (default = FALSE)}
+\item{plot}{A logical value to show if the graph should be plotted. (default = FALSE)}
+
+\item{...}{Any additional arguments described below.}
 }
 \value{
-(If plot = TRUE it plots the noninteractive graph and communities) A list contains:
-\item{graph}{an igraph object}
-\item{betweenness}{betweenness measurements of each node (if betweenness = TRUE)}
-\item{network}{a highcharter plot of the graph}
-\item{communities}{a named vector of community number for each variable (if communities = TRUE)}
+If plot = TRUE it plots the non-interactive graph (If plot.community = TRUE plots communities too) also returns a list contains:
+\item{graph}{an igraph object.}
+\item{betweenness}{betweenness measurements of each node.}
+\item{network}{a visNetwork plot of the graph.}
+\item{communities}{a named vector indicating the community of each node.}
 }
 \description{
-Converts the graph to an igraph object, finds communities and plots it
+Converts the graph to an igraph object, finds communities and plots it using qgraph package.
 }
+\section{Additional arguments}{
+
+\describe{
+\item{groups}{A list that indicates which community each node is. The automatic community detection will be ignored when it is set.}
+\item{plot.community}{Logical indicating if communities should be plotted. Defaults to FALSE.}
+\item{filename}{Name of the plot file without extension. (qgraph function argument)}
+\item{filetype}{A character indicates the file type to save the plots in. (qgraph function argument)}
+}
+}
+
 \author{
 Elyas Heidari, Vahid Balazadeh
 }

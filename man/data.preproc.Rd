@@ -4,7 +4,7 @@
 \alias{data.preproc}
 \title{preprocess the data}
 \usage{
-data.preproc(data, is.cat = NULL, levels = 10)
+data.preproc(data, is.cat = NULL, levels = 5)
 }
 \arguments{
 \item{data}{An arbitrary dataset (For example data.frame or matrix).}

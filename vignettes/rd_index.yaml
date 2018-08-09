@@ -16,9 +16,12 @@ sections:
   section_name: Package Functions
   topics:
     - data.preproc
+    - dime.reduce
     - ggm
     - mini.forest
+    - dgm
     - graph.vis
     - div.vars
     - violating.vars
+    - test.assoc
     - plt.assoc

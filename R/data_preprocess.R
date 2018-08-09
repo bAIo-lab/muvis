@@ -18,12 +18,7 @@
 
 data.preproc <- function(data,
                          is.cat = NULL,
-                         levels = 10) {
-  is.cat <- function(var) {
-    !length(unique(var[!is.na(var)])) > levels
-  }
-
-
+                         levels = 5) {
   cont.cat.spec <- function(x, is.cat) {
     x <- data.frame(x)
     ls <- c(1:ncol(x))

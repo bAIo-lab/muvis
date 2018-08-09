@@ -20,41 +20,46 @@
 #' @importFrom purrr map
 #' @importFrom entropy KL.plugin
 #' @importFrom permute shuffle
-#' @importFrom magrittr %>%
+#' @importFrom dplyr %>%
 #' @importFrom stats residuals
 #' @importFrom utils head tail
 
 
 violating.vars <- function(data, var1, var2, permute = 0, frac = 0.05, levels = 5) {
+
   is.cat <- function(var) {
-    !length(unique(var[!is.na(var)])) > levels
+    return(!length(unique(var[!is.na(var)])) > levels)
   }
-  kl.calc <- function(data, g1, g2) {
+
+  kl.calc <- function(data, group1, group2) {
     1:dim(data)[2] %>% map(function(x)
-      freq(data[, x], g1, g2))  %>% map(function(x)
-        abs(KL.plugin(x$g1, x$g2)) + abs(KL.plugin(x$g2, x$g1))) -> to.ret
-    unlist(to.ret)
+      freq(data[, x], group1, group2))  %>% map(function(x)
+        abs(KL.plugin(x$group1, x$group2)) + abs(KL.plugin(x$group2, x$group1))) -> to.ret
+    return(unlist(to.ret))
   }
-  freq <- function(vec, g1, g2) {
+  freq <- function(vec, group1, group2) {
     if (!is.cat(vec))
       vec <-
         cut(vec,
             breaks = seq((min(vec) - .0000001), (max(vec) + .0000001), (max(vec) - min(vec) + .0000002) /
                            levels),
             labels = 1:levels)
-    to.ret <- list(g1 = c(), g2 = c())
+    to.ret <- list(group1 = c(), group2 = c())
     levels(factor(vec)) %>% map(function(x)
-      list(g1 = max(1, sum(vec[g1] == x)), g2 = max(1, sum(vec[g2] == x)))) %>% map(function(x)
+      list(group1 = max(1, sum(vec[group1] == x)), group2 = max(1, sum(vec[group2] == x)))) %>% map(function(x)
         to.ret <<-
           list(
-            g1 = c(to.ret$g1, x$g1),
-            g2 = c(to.ret$g2, x$g2)
+            group1 = c(to.ret$group1, x$group1),
+            group2 = c(to.ret$group2, x$group2)
           )) -> na
-    to.ret
+    return(to.ret)
   }
+
   p.val <- function(x, vec) {
-    which(sort(vec, decreasing = T) < x)[1] / length(vec)
+    return(which(sort(vec, decreasing = T) < x)[1] / length(vec))
   }
+
+
   lm <- lm(var1~var2)
   sm <- summary(lm)
   res <- residuals(lm)

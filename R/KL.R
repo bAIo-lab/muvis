@@ -28,7 +28,7 @@
 #' @importFrom permute shuffle
 #' @importFrom dplyr pull
 #' @importFrom entropy KL.plugin
-#' @importFrom magrittr %>%
+#' @importFrom dplyr %>%
 
 
 
@@ -38,13 +38,14 @@ div.vars <- function(data,
                 permute = 0,
                 levels = 5) {
   is.cat <- function(var) {
-    !length(unique(var[!is.na(var)])) > levels
+    return(!length(unique(var[!is.na(var)])) > levels)
   }
+
   kl.calc <- function(data, group1, group2) {
     1:dim(data)[2] %>% map(function(x)
       freq(data[, x], group1, group2))  %>% map(function(x)
         abs(KL.plugin(x$group1, x$group2)) + abs(KL.plugin(x$group2, x$group1))) -> to.ret
-    unlist(to.ret)
+    return(unlist(to.ret))
   }
   freq <- function(vec, group1, group2) {
     if (!is.cat(vec))
@@ -61,11 +62,14 @@ div.vars <- function(data,
             group1 = c(to.ret$group1, x$group1),
             group2 = c(to.ret$group2, x$group2)
           )) -> na
-    to.ret
+    return(to.ret)
   }
+
   p.val <- function(x, vec) {
-    which(sort(vec, decreasing = T) < x)[1] / length(vec)
+    return(which(sort(vec, decreasing = T) < x)[1] / length(vec))
   }
+
+
   data <- data.frame(data)
   group1.group2 <- c(group1, group2)
   kl <-

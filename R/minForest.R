@@ -37,7 +37,7 @@
 #' @importFrom igraph make_undirected_graph betweenness fastgreedy.community membership
 #' @importFrom visNetwork toVisNetworkData visNetwork visOptions visEdges
 #' @importFrom igraph V
-#' @importFrom magrittr %>%
+#' @importFrom dplyr %>%
 #'
 #'
 

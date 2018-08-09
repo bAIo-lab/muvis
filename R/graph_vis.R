@@ -33,7 +33,7 @@
 #' @importFrom  visNetwork toVisNetworkData visNetwork visOptions
 #' @importFrom  igraph cluster_louvain betweenness membership V layout_with_fr induced.subgraph as_adjacency_matrix degree as.undirected
 #' @importFrom  methods as
-#' @importFrom  magrittr %>%
+#' @importFrom  dplyr %>%
 #' @importFrom  qgraph qgraph
 
 graph.vis <-
@@ -43,6 +43,10 @@ graph.vis <-
            betweenness = T,
            plot = F,
            ...) {
+    is.cat <- function(var) {
+      return(!length(unique(var[!is.na(var)])) > levels)
+    }
+
     arguments = list(...)
 
     usr_groups <- arguments$groups

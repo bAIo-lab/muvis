@@ -1,54 +1,58 @@
-library(muvis)
-library(heatmaply)
-df <- read.csv("data.csv")
-df1 <- readxl::read_xlsx("D Mining Sample NA.xlsx")
+#' Test for association between each paired variables and construct heatmap using heatmaply package.
+#'
+#' @description
+#' Tests for association between each paired variables:
+#' \describe{
+#' \item{Categorical-Categorical}{Using pearson's chi-squared test (chisq.test function from stats package).}
+#' \item{Continuous-Continuous}{Using correlation test (cor.test function from stats package).}
+#' \item{Categorical-Continuous}{Using analysis of variance model (aov function from stats package).}
+#' }
+#' Also adjusts p.values using Benjamini & Hochberg method (p.adjust function from stats package) and constructs heatmap using heatmaply function.
+#'
+#' @param data a dataframe. It is strongly recommended that the dataframe has no missing data and is preprocessed.
+#' @param vars a list including the name (or index) of columns of data.
+#' @param levels an integer to indicate the maximum levels of categorical variables. The default is 5.
+#' @param plot Logical indicating if the heatmap should be constructed. Defaults to FALSE.
+#'
+#' @details This provides a wrapper to \code{chisq.test}, \code{cor.test}, \code{aov}, \code{p.adjust} from \code{stats} package to test association between variables
+#' And a wrapper to \code{heatmaply} package to construct heatmap.
+#'
+#'
+#' @author Elyas Heidari
+#'
+#' @return If plot = FALSE, returns a matrix containing p.values of tests between each two variables. Otherwise returns A list which contains:
+#' \item{matrix}{A matrix containing p.values of tests between each two variables.}
+#' \item{heatmap}{A plotly object containing heatmap related to matrix.}
+#'
+#' @export
+#'
+#' @importFrom stats p.adjust
+#' @importFrom heatmaply heatmaply
+#' @importFrom graphics layout
 
 
-
-
-test.assoc <- function(data, vars, levels){
-  test.pair <- function(var1, var2){
-    is.cat <- function(var) {
-      !length(unique(var)) > levels
-    }
-    var1.is.cat <- is.cat(var1)
-    var2.is.cat <- is.cat(var2)
-    if(!var1.is.cat & !var2.is.cat){
-      ct <- cor.test(var1, var2)
-      ct <- ct$p.value
-    }
-    if(var1.is.cat & var2.is.cat){
-      ct <- chisq.test(var1, var2)
-      ct <- ct$p.value
-    }
-    if(var1.is.cat & !var2.is.cat){
-      ct <- aov(var2 ~ var1, data=data.frame(var1 = var1 , var2 = var2))
-      ct <- summary(ct)[[1]][["Pr(>F)"]][1]
-    }
-    if(!var1.is.cat & var2.is.cat){
-      ct <- aov(var1 ~ var2, data=data.frame(var1 = var1 , var2 = var2))
-      ct <- summary(ct)[[1]][["Pr(>F)"]][1]
-    }
-    ct
-  }
+test.assoc <- function(data,
+                       vars,
+                       levels = 5,
+                       plot = FALSE) {
   to.ret <- matrix(NA, ncol = length(vars), nrow = length(vars))
-  for(i in 1:length(vars)){
-    for(j in 1:length(vars)){
-      if(i == j)
-        next 
-      to.ret[i,j] <- test.pair(data[,vars[i]], data[,vars[j]])
+  for (i in 1:length(vars)) {
+    for (j in 1:length(vars)) {
+      if (i == j)
+        next
+      to.ret[i, j] <- test.pair(data, vars[i], vars[j])
     }
   }
-  to.ret <- p.adjust(to.ret, method = "BH")
+
+  to.ret <- stats::p.adjust(to.ret, method = "BH")
   to.ret <- matrix(to.ret, ncol = length(vars), nrow = length(vars))
+
   rownames(to.ret) <- colnames(to.ret) <- vars
-  heat.map <- heatmaply(to.ret) %>% layout(margin = list(l = 130, b = 40))
-  list(matrix = to.ret, heatmap = heat.map)
+  if (plot) {
+    heat.map <-
+      heatmaply::heatmaply(to.ret) %>% graphics::layout(margin = list(l = 130, b = 40))
+    return(list(matrix = to.ret, heatmap = heat.map))
+  } else {
+    return(matrix = to.ret)
+  }
 }
-
-
-
-
-test.assoc(df, colnames(df)[1:50], 10) -> corr
-
-

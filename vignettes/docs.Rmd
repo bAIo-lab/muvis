@@ -27,7 +27,7 @@ rdl <- function(x) packagedocs::rd_link(deparse(substitute(x)))
 
 # muvis
 
-muvis is a visualization and analysis toolkit for multivariate datasets.  To use this package, you 
+muvis is a visualization and analysis toolkit for multivariate datasets. To use this package, you 
 will need the R statistical computing environment (version 3.0 or later).
 
 ## Installation and import
@@ -37,8 +37,8 @@ devtools::install_github("bAIo-lab/muvis")
 library(muvis)
 ```
 
-```{r package_real, echo=TRUE, message=FALSE, warning=FALSE, include=FALSE}
-devtools::install_github("bAIo-lab/muvis", dependencies=F)
+```{r package_real, echo=TRUE, message=FALSE, warning=FALSE, include=FALSE, }
+# devtools::install_github("bAIo-lab/muvis", dependencies=F)
 library(muvis)
 ```
 
@@ -116,8 +116,8 @@ Use `violating.vars` to find the most deferentially variables between people wit
 ```{r div2, echo=TRUE, message=FALSE, warning=FALSE}
 edges <- mf$network$x$edges
 edges[edges$from == "LBXTC" | edges$to == "LBXTC", ]
-plt.assoc(data, vars = c("LBXTC", "LBXVIE"))
-violating.vars(data[75:dim(data)[2]], var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = 15) -> KL
+plt.assoc(data, vars = c("LBXTC", "LBXVIE"), levels = 15, interactive = T)
+violating.vars(data[75:160], var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = 15) -> KL
 KL$name <- row.names(KL)
 kableExtra::kable(head(KL, n = 20)) %>%
   kable_styling() %>%
@@ -131,18 +131,18 @@ Use `plt.assoc` for different visualizations.
 
 Histogram for "PAD600" Question (about number of hours use computer last month. 0: less than hour, 1: one hour, ..., 5: five hour, 6: None):
 ```{r plot1, echo=TRUE, message=FALSE, warning=FALSE}
-plt.assoc(data, vars = c("PAD600"), levels = 15)
+plt.assoc(data, vars = c("PAD600"), levels = 15, interactive = F)
 ```
 
 Density plot for "RIDAGEYR" (age):
 ```{r plot2, echo=TRUE, message=FALSE, warning=FALSE}
-plt.assoc(data, vars = c("RIDAGEYR"), levels = 15)
+plt.assoc(data, vars = c("RIDAGEYR"), levels = 15, interactive = F)
 ```
 
 Boxplot of "LBXTHG" (indicating total mercury amount in the blood (ug/L)) for different answers of "DRD360" (fish eaten during past 30 days. 1: Yes, 2: No, 3: Refused, 4: Don't know):
 ```{r plot3, echo=TRUE, message=FALSE, warning=FALSE}
 edges[edges$from == "DRD360" | edges$to == "DRD360", ]
-plt.assoc(data, vars = c("LBXTHG", "DRD360"), levels = 15)
+plt.assoc(data, vars = c("LBXTHG", "DRD360"), levels = 15, interactive = F)
 ```
 
 <!-- Relative histogram of DIQ010 (Having diabetes) vs PAD590 (Number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know): -->
@@ -153,13 +153,13 @@ plt.assoc(data, vars = c("LBXTHG", "DRD360"), levels = 15)
 Scatter plot of "LBXHGB" (hemoglobin amount in the blood (g/dL)) and "LBXSIR" (refrigerated Iron in the blood (ug/dL)):
 ```{r plot5, echo=TRUE, message=FALSE, warning=FALSE}
 edges[edges$from == "LBXHGB" | edges$to == "LBXHGB", ]
-plt.assoc(data, vars = c("LBXHGB", "LBXSIR"), levels = 15)
+plt.assoc(data, vars = c("LBXHGB", "LBXSIR"), levels = 15, interactive = F)
 ```
 
-Pie chart of "PAD590" Question (about number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know):
-```{r plot6, echo=TRUE, warning=FALSE}
-plt.assoc(data, vars = c("PAD590"), levels = 15, pie = TRUE)
-```
+<!-- Pie chart of "PAD590" Question (about number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know): -->
+<!-- ```{r plot6, echo=TRUE, warning=FALSE} -->
+<!-- plt.assoc(data, vars = c("PAD590"), levels = 15, pie = TRUE) -->
+<!-- ``` -->
 
 
 

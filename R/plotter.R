@@ -145,15 +145,17 @@ plt.assoc <- function(data,
         pt$t2 <- limma::strsplit2(pt$Var1, "\\.")[, 2]
         pt %>% dplyr::filter(pt$t1 != 0 & pt$t2 != 0) -> pt
         pt %>% dplyr::group_by(pt$t1) %>% dplyr::summarize(Freq = sum(pt$Freq)) -> pt1
-        rownames(pt1) <- pt1$t1
+        t1 <- NULL
+        Freq <- NULL
+        t2 <- NULL
         pt2 <- pt
         to.ret <-
           highcharter::hchart(pt2,
                               "column",
                               highcharter::hcaes(
-                                x = limma::strsplit2(pt$Var1, "\\.")[, 1],
-                                y = pt2$Freq,
-                                group = limma::strsplit2(pt$Var1, "\\.")[, 2]
+                                x = t1,
+                                y = Freq,
+                                group = t2
                               )) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
           highcharter::hc_title(text = paste("Relative histogram of", paste(vars[1], vars[2], sep = "-"))) %>% highcharter::hc_xAxis(title = list(text = vars[1])) %>% highcharter::hc_yAxis(title = list(text = "number"))
       }
@@ -177,8 +179,10 @@ plt.assoc <- function(data,
       }
       if (!var1.is.cat & !var2.is.cat) {
         d <- data.frame(v1 = var1, v2 = var2)
+        v1 <- NULL
+        v2 <- NULL
         to.ret <-
-          highcharter::hchart(d, "scatter", highcharter::hcaes(x = var1, y = var2)) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
+          highcharter::hchart(d, "scatter", highcharter::hcaes(x = v1, y = v2)) %>% highcharter::hc_add_theme(highcharter::hc_theme_google()) %>%
           highcharter::hc_title(text = paste("Scatter plot of", paste(vars[1], vars[2], sep = "-"))) %>% highcharter::hc_xAxis(title = list(text = vars[1])) %>% highcharter::hc_yAxis(title = list(text = vars[2]))
       }
     }

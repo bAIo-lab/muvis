@@ -10,7 +10,6 @@ before_install:
   - sudo apt-get install libv8-3.14-dev
   - Rscript -e "install.packages(\"kableExtra\")"
   - Rscript -e "install.packages(\"bnlearn\")"
-  - Rscript -e "devtools::install_github(\"jbkunst/highcharter\")"
 after_success:
   - Rscript -e "packagedocs::deploy_travis()"
 

@@ -25,6 +25,7 @@
 #'
 #'
 #' @return a list containing:
+#' \item{significanse}{A data.frame containing edges with p-statistics and p.values.}
 #' \item{summary}{a gRapHD object which is the fit model.}
 #' \item{graph}{an igraph object.}
 #' \item{betweenness}{betweenness measurements of each node.}
@@ -93,9 +94,13 @@ min_forest <-
     test_matrix <- test_assoc(data, vnet$x$nodes$id, levels = levels)
     e_names <- rbind(edges$from, edges$to)
     p_values <- apply(e_names, 2, function(x) test_matrix[x[1], x[2]])
-    title = paste0("<p>", paste("Significance =", p_values), "</p>")
+    title = paste0("<p>", paste("P.value =", p_values), "</p>")
     edges[, "statistics"] <- statistics
     edges[, "title"] <- title
+
+    significance <- data.frame(edges$from, edges$to)
+    significance$statistics <- statistics
+    significance$p.value <- p_values
 
     vn <- visNetwork::visNetwork(vnet$x$nodes, edges, height = "500px", width = "100%")  %>%
       visNetwork::visOptions(highlightNearest = list(
@@ -105,6 +110,7 @@ min_forest <-
       ))
     if (community) {
       list(
+        significance = significance,
         summary = mbG,
         graph = val$graph,
         betweenness = val$betweenness,
@@ -113,6 +119,7 @@ min_forest <-
       )
     } else {
       list(
+        significance = significance,
         summary = mbG,
         graph = val$graph,
         betweenness = val$betweenness,

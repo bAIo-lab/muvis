@@ -22,6 +22,7 @@ min_forest(data, stat = "BIC", community = TRUE, betweenness = TRUE,
 }
 \value{
 a list containing:
+\item{significanse}{A data.frame containing edges with p-statistics and p.values.}
 \item{summary}{a gRapHD object which is the fit model.}
 \item{graph}{an igraph object.}
 \item{betweenness}{betweenness measurements of each node.}

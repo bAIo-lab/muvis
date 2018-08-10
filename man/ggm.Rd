@@ -24,6 +24,7 @@ ggm(data, methods = c("glasso"), community = TRUE, betweenness = TRUE,
 }
 \value{
 A list in which each element is the details of a specific fitting method.
+\item{significanse}{A data.frame containing edges with p.values.}
 \item{graph}{an igraph object of the graphical model.}
 \item{betweenness}{betweenness measurements of each node.}
 \item{network}{a visNetwork plot of the graph.}

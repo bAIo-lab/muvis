@@ -26,6 +26,7 @@ dgm(data, alpha = 1e-05, dtype = "gaussian", community = TRUE,
 }
 \value{
 A list in which each element is the details of a specific fitted dtype.
+\item{significanse}{A data.frame containing edges with p.values.}
 \item{graph}{an igraph object of the graphical model.}
 \item{betweenness}{betweenness measurements of each node.}
 \item{communities}{a named vector indicating the community of each node.}

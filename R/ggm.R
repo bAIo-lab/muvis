@@ -29,6 +29,7 @@
 #' }
 #'
 #' @return A list in which each element is the details of a specific fitting method.
+#' \item{significanse}{A data.frame containing edges with p.values.}
 #' \item{graph}{an igraph object of the graphical model.}
 #' \item{betweenness}{betweenness measurements of each node.}
 #' \item{network}{a visNetwork plot of the graph.}
@@ -114,11 +115,46 @@ ggm <-
     }
     othermodels <- othermodels %>% purrr::map(methods::as, "igraph")
     commonedges <- do.call(igraph::intersection, othermodels)
-    graph_vis(
+    val <- graph_vis(
       commonedges,
       community = community,
       plot = plot,
       betweenness = T,
       directed = F
     )
+
+    vnet <- val$network
+    edges <- vnet$x$edges
+
+    test_matrix <- test_assoc(data, vnet$x$nodes$id, levels = levels)
+    e_names <- rbind(edges$from, edges$to)
+    p_values <- apply(e_names, 2, function(x) test_matrix[x[1], x[2]])
+    title = paste0("<p>", paste("p.value =", p_values), "</p>")
+    edges[, "title"] <- title
+
+    significance <- data.frame(edges$from, edges$to)
+    significance$p.value <- p_values
+
+    vn <- visNetwork::visNetwork(vnet$x$nodes, edges, height = "500px", width = "100%")  %>%
+      visNetwork::visOptions(highlightNearest = list(
+        enabled = T,
+        degree = 1,
+        hover = T
+      ))
+    if (community) {
+      list(
+        significance = significance,
+        graph = val$graph,
+        betweenness = val$betweenness,
+        network = vn,
+        communities = val$communities
+      )
+    } else {
+      list(
+        significance = significance,
+        graph = val$graph,
+        betweenness = val$betweenness,
+        network = vn
+      )
+    }
   }

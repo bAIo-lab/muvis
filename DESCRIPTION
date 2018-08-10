@@ -30,6 +30,7 @@ Imports:
     dplyr,
     limma,
     smallvis,
+    highcharter,
     bnlearn,
     utils,
     methods,

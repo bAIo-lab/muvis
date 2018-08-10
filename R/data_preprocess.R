@@ -19,6 +19,10 @@
 data.preproc <- function(data,
                          is.cat = NULL,
                          levels = 5) {
+  is.cat.function <- function(var) {
+    return(!length(unique(var[!is.na(var)])) > levels)
+  }
+
   cont.cat.spec <- function(x, is.cat) {
     x <- data.frame(x)
     ls <- c(1:ncol(x))
@@ -73,7 +77,7 @@ data.preproc <- function(data,
 
   # Specify categorical and continuous variables
   if (is.null(is.cat))
-    data <- cont.cat.spec(data, sapply(data, is.cat))
+    data <- cont.cat.spec(data, sapply(data, is.cat.function))
   else
     data <- cont.cat.spec(data, is.cat)
 

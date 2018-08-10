@@ -9,6 +9,7 @@
 #' @param community A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)
 #' @param betweenness A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)
 #' @param plot A logical value to show if the graph should be plotted. (default = FALSE)
+#' @param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
 #' @param ... Any additional arguments described below.
 #'
 #' @details The function combines the methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse estimation of the inverse covariance matrix.
@@ -56,7 +57,12 @@ ggm <-
            community = TRUE,
            betweenness = TRUE,
            plot = FALSE,
+           levels = NULL,
            ...) {
+
+    if (!is.null(levels))
+      data <- data_preproc(data, levels = levels)
+
     arguments <- list(...)
     threshold <- arguments$threshold
     significance <- arguments$significance
@@ -108,7 +114,7 @@ ggm <-
     }
     othermodels <- othermodels %>% purrr::map(methods::as, "igraph")
     commonedges <- do.call(igraph::intersection, othermodels)
-    graph.vis(
+    graph_vis(
       commonedges,
       community = community,
       plot = plot,

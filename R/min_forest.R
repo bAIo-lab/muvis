@@ -1,8 +1,8 @@
-#' construct and visualize a minimum forest based on Chow-Liu algorithm
+#' construct and visualize a minimal forest based on Chow-Liu algorithm
 #'
 #'
 #' @description
-#' Fits a minimum forest to data and visualizes it.
+#' Fits a minimal forest to data and visualizes it.
 #'
 #'
 #' @param data A normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
@@ -10,6 +10,7 @@
 #' @param community A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)
 #' @param betweenness A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)
 #' @param plot A logical value to show if the graph should be plotted. (default = FALSE)
+#' @param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
 #'
 #'
 #' @details
@@ -30,7 +31,7 @@
 #' \item{network}{a visNetwork plot of the graph.}
 #' \item{communities}{a named vector indicating the community of each node.}
 #'
-#' @export mini.forest
+#' @export
 #'
 #'
 #' @importFrom gRapHD minForest neighbourhood stepw
@@ -41,13 +42,16 @@
 #'
 #'
 
-mini.forest <-
+min_forest <-
   function(data,
            stat = "BIC",
            community = TRUE,
            betweenness = TRUE,
-           plot = FALSE) {
+           plot = FALSE,
+           levels = NULL) {
 
+    if (!is.null(levels))
+      data <- data_preproc(data, levels = levels)
     my.forest <- gRapHD::minForest(data, homog = F, stat = stat)
     nby <-
       gRapHD::neighbourhood(my.forest, orig = 1, rad = 2000)$v[, 1]
@@ -71,10 +75,11 @@ mini.forest <-
     }
     e <- unlist(e)
     e <- as.character(e)
-    title = paste0("<p>", paste("statistic =", mbG@statSeq), "</p>")
+
+    statistics = mbG@statSeq
     g <- igraph::make_undirected_graph(e)
     val <-
-      graph.vis(
+      graph_vis(
         g,
         community = community,
         betweenness = T,
@@ -84,7 +89,14 @@ mini.forest <-
 
     vnet <- val$network
     edges <-  vnet$x$edges
+
+    test_matrix <- test_assoc(data, vnet$x$nodes$id, levels = levels)
+    e_names <- rbind(edges$from, edges$to)
+    p_values <- apply(e_names, 2, function(x) test_matrix[x[1], x[2]])
+    title = paste0("<p>", paste("Significance =", p_values), "</p>")
+    edges[, "statistics"] <- statistics
     edges[, "title"] <- title
+
     vn <- visNetwork::visNetwork(vnet$x$nodes, edges, height = "500px", width = "100%")  %>%
       visNetwork::visOptions(highlightNearest = list(
         enabled = T,

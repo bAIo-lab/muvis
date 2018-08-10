@@ -1,4 +1,4 @@
-#' calculating Kullback-Leibler divergence for each categorical variable between two different groups of samples
+#' Calculate Violating Variable-wise Kullback-Leibler divergence
 #'
 #'
 #' @description
@@ -9,13 +9,13 @@
 #' @param  var2 A vector of continuous values indicating the second variable. (the order of values should be the same as the order of rows in data)
 #' @param  permute An integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
 #' @param  frac A double value between 0 and 1 which indicates the fraction of outliers in the fit model. That is, the threshold to recognize a data point as an outlier of the fit line.
-#' @param  levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
+#' @param  levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
 #'
 #' @author  Elyas Heidari
 #'
 #' @return  If permute = 0 returns a dataframe including sorted Kullback-Liebler (KL) divergence. If permute > 0 returns a dataframe including p.values and sorted KL divergence.
 #'
-#' @export violating.vars
+#' @export
 #'
 #' @importFrom purrr map
 #' @importFrom entropy KL.plugin
@@ -25,10 +25,13 @@
 #' @importFrom utils head tail
 
 
-violating.vars <- function(data, var1, var2, permute = 0, frac = 0.05, levels = 5) {
+VVKL <- function(data, var1, var2, permute = 0, frac = 0.05, levels = NULL) {
 
   is.cat <- function(var) {
-    return(!length(unique(var[!is.na(var)])) > levels)
+    if(is.null(levels))
+      return(is.factor(var))
+    else
+      return(!length(unique(var[!is.na(var)])) > levels)
   }
 
   kl.calc <- function(data, group1, group2) {

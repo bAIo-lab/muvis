@@ -9,6 +9,7 @@
 #' @param  community A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)
 #' @param  betweenness A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)
 #' @param  plot A logical value to show if the graph should be plotted. (default = TRUE)
+#' @param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
 #' @param  ... Remaining parameters of skleton function.
 #'
 #' @details There is no specific distribution needed for the data. The parameter dtype will be used for determining the data type to be provided as the input of the function. However, it is highly recommended to use "guassian" data type for both continuous and ordinal discrete data.
@@ -42,7 +43,12 @@ dgm <-
            community = TRUE,
            betweenness = TRUE,
            plot = TRUE,
+           levels = NULL,
            ...) {
+
+    if (!is.null(levels))
+      data <- data_preproc(data, levels = levels)
+
     if (dtype == "gaussian") {
       S.data <- stats::cov.wt(data, dtype = "ML")$cov
       C.data <- stats::cov2cor(S.data)
@@ -54,7 +60,7 @@ dgm <-
                         alpha = alpha,
                         ...)
       graph::nodes(skeleton.data@graph) <- names(data)
-      to.ret <- graph.vis(skeleton.data@graph, directed = T)
+      to.ret <- graph_vis(skeleton.data@graph, directed = T)
     }
     if (dtype == "discrete") {
       suffStat <- list(dm = data, adaptDF = T)
@@ -66,7 +72,7 @@ dgm <-
                         ...)
       graph::nodes(skeleton.data@graph) <- names(data)
       to.ret <-
-        graph.vis(
+        graphـvis(
           skeleton.data@graph,
           directed = T,
           community = community,

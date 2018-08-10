@@ -15,13 +15,14 @@ sections:
 -
   section_name: Package Functions
   topics:
-    - data.preproc
-    - dime.reduce
+    - data_preproc
+    - dim_reduce
     - ggm
-    - mini.forest
+    - min_forest
     - dgm
-    - graph.vis
-    - div.vars
-    - violating.vars
-    - test.assoc
-    - plt.assoc
+    - graph_vis
+    - VKL
+    - VVKL
+    - test_pair
+    - test_assoc
+    - plot_assoc

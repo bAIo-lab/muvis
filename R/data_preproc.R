@@ -7,16 +7,16 @@
 #'
 #' @param  data An arbitrary dataset (For example data.frame or matrix).
 #' @param  is.cat A boolean list specifies which variables are categorical. (default = NULL)
-#' @param  levels An integer number indicates the maximum levels of categorical variables and it is used when "is.cat" in NULL. (default = 5)
+#' @param  levels An integer number indicates the maximum levels of categorical variables. It is used when \code{is.cat} in NULL. (default = 5)
 #'
 #' @author  Elyas Heidari, Vahid Balazadeh
 #'
 #'
 #' @return A normalized data.frame object with specified continuous and (or) categorical variables and no missing values.
-#' @export data.preproc
+#' @export
 #'
 
-data.preproc <- function(data,
+data_preproc <- function(data,
                          is.cat = NULL,
                          levels = 5) {
   is.cat.function <- function(var) {

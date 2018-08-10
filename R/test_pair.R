@@ -11,6 +11,7 @@
 #' @param data A dataframe. It is strongly recommended that the dataframe has no missing data and is preprocessed.
 #' @param var1 First variable
 #' @param var2 Second variable
+#' @param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
 #'
 #' @details This provides a wrapper to \code{chisq.test}, \code{cor.test}, \code{aov}, \code{p.adjust} from \code{stats} package to test association between two variables
 #'
@@ -24,11 +25,15 @@
 #' @importFrom stats cor.test chisq.test aov
 
 
-test.pair <- function(data, var1, var2) {
+test_pair <- function(data, var1, var2, levels = NULL) {
 
   is.cat <- function(var) {
-    return(!length(unique(var[!is.na(var)])) > levels)
+    if(is.null(levels))
+      return(is.factor(var))
+    else
+      return(!length(unique(var[!is.na(var)])) > levels)
   }
+
 
   var1 <- data[, var1]
   var2 <- data[, var2]

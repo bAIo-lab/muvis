@@ -5,7 +5,7 @@
 \title{construct and visualize causal (directed) networks}
 \usage{
 dgm(data, alpha = 1e-05, dtype = "gaussian", community = TRUE,
-  betweenness = TRUE, plot = TRUE, ...)
+  betweenness = TRUE, plot = TRUE, levels = NULL, ...)
 }
 \arguments{
 \item{data}{A normalized dataframe or matrix with no missing data.}
@@ -19,6 +19,8 @@ dgm(data, alpha = 1e-05, dtype = "gaussian", community = TRUE,
 \item{betweenness}{A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)}
 
 \item{plot}{A logical value to show if the graph should be plotted. (default = TRUE)}
+
+\item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.}
 
 \item{...}{Remaining parameters of skleton function.}
 }

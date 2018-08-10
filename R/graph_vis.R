@@ -20,7 +20,7 @@
 #' \item{network}{a visNetwork plot of the graph.}
 #' \item{communities}{a named vector indicating the community of each node.}
 #'
-#' @export graph.vis
+#' @export
 #'
 #' @section Additional arguments:
 #' \describe{
@@ -36,17 +36,13 @@
 #' @importFrom  dplyr %>%
 #' @importFrom  qgraph qgraph
 
-graph.vis <-
+graph_vis <-
   function(graph,
            directed = F,
            community = T,
            betweenness = T,
            plot = F,
            ...) {
-    is.cat <- function(var) {
-      return(!length(unique(var[!is.na(var)])) > levels)
-    }
-
     arguments = list(...)
 
     usr_groups <- arguments$groups

@@ -22,7 +22,7 @@
 #' @import     ggplot2
 #' @importFrom smallvis smallvis
 
-dime.reduce <-
+dim_reduce <-
   function(data,
            method = "pca",
            annot1 = NULL,

@@ -6,7 +6,7 @@
 #'
 #' @param data A dataframe. It is strongly recommended that the dataframe has no missing data and is preprocessed.
 #' @param vars A vector of length one or two including the name (or index) of a (row) column(s) of data.
-#' @param levels An integer to indicate the maximum levels of categorical variables. The default is 5.
+#' @param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
 #' @param interactive Logical indicating if the output should be interactive. Defaults to FALSE.
 #'
 #'
@@ -20,26 +20,29 @@
 #' \item{Two categorical variables}{Plots a relative histogram showing distribution of one variable for each level of the other.}
 #' (Plots interactively If interactive = TRUE).
 #'
-#' @export plt.assoc
+#' @export
 #'
 #' @import     ggplot2
 #' @importFrom ggthemes theme_foundation
 #' @importFrom scales manual_pal
 #' @importFrom ggExtra ggMarginal
-#' @importFrom grid unit
+#' @importFrom grid unit grid.text gpar
 #' @importFrom dplyr pull group_by summarise summarize filter
 #' @importFrom highcharter highchart hc_xAxis hc_yAxis hc_add_series hc_chart hc_add_theme hc_theme_google hcpie hcboxplot hc_add_series_scatter hc_title hcaes
 #' @importFrom limma strsplit2
 #' @importFrom stats density cor.test chisq.test aov p.adjust
 #' @importFrom dplyr %>%
 
-plt.assoc <- function(data,
+plot_assoc <- function(data,
                        vars,
                        levels = 5,
                        interactive = FALSE) {
 
   is.cat <- function(var) {
-    return(!length(unique(var[!is.na(var)])) > levels)
+    if(is.null(levels))
+      return(is.factor(var))
+    else
+      return(!length(unique(var[!is.na(var)])) > levels)
   }
   theme_Publication <- function(base_size = 14) {
     (
@@ -195,8 +198,8 @@ plt.assoc <- function(data,
           ggplot2::geom_bar(alpha = 0.7) +
           ggplot2::labs(title = paste("Barplot for", vars[1], sep = " ")) +
           ggplot2::labs(x = vars[1]) +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 0.6)) + theme_Publication() + scale_fill_Publication() + ggplot2::guides(fill =
-                                                                                                                                                ggplot2::guide_legend(title = vars[1]))
+          ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 0.6)) + theme_Publication() + scale_fill_Publication() +
+          ggplot2::guides(fill = ggplot2::guide_legend(title = vars[1]))
       } else{
         ..density.. <- NULL
         to.ret <-
@@ -209,7 +212,10 @@ plt.assoc <- function(data,
     } else{
       var2 <- data[, vars[2]]
       var2.is.cat <- is.cat(var2)
+
       if (var1.is.cat & var2.is.cat) {
+        lbl <- paste("Pearson's chi-squared test p.value =", test_pair(data, vars[1], vars[2], levels = levels))
+
         to.ret <-
           ggplot2::ggplot(data) +
           ggplot2::geom_bar(alpha = 0.7,  ggplot2::aes(x = factor(data[, vars[1]]), fill = factor(data[, vars[1]]))) +
@@ -229,9 +235,12 @@ plt.assoc <- function(data,
           k <- k+1
         }
         grid::grid.draw(g)
+        grid::grid.text(lbl, x=0.5,  y=0.5, gp=grid::gpar(col="firebrick", fontsize=14, fontface="bold"), draw = T)
         cat_cat <- T
       }
       if (var1.is.cat & !var2.is.cat) {
+        lbl <- paste("ANOVA test p.value =", test_pair(data, vars[1], vars[2], levels = levels))
+        txt_grob <- grid::grid.text(lbl, x=0.5,  y=0.8, gp=grid::gpar(col="firebrick", fontsize=14, fontface="bold"), draw = F)
         to.ret <-
           ggplot2::ggplot(data, ggplot2::aes(
             x = factor(var1),
@@ -244,9 +253,12 @@ plt.assoc <- function(data,
           ggplot2::labs(x = vars[1],
                         y = vars[2],
                         color = vars[1]) +
+          ggplot2::annotation_custom(txt_grob) +
           theme_Publication() + scale_fill_Publication()
       }
       if (!var1.is.cat & var2.is.cat) {
+        lbl <- paste("ANOVA test p.value =", test_pair(data, vars[1], vars[2], levels = levels))
+        txt_grob <- grid::grid.text(lbl, x=0.5,  y=0.8, gp=grid::gpar(col="firebrick", fontsize=14, fontface="bold"), draw = F)
         to.ret <-
           ggplot2::ggplot(data, ggplot2::aes(
             x = factor(var2),
@@ -259,9 +271,12 @@ plt.assoc <- function(data,
           ggplot2::labs(x = vars[2],
                         y = vars[1],
                         color = vars[2]) +
+          ggplot2::annotation_custom(txt_grob) +
           theme_Publication() + scale_fill_Publication()
       }
       if (!var1.is.cat & !var2.is.cat) {
+        lbl <- paste("Correlation test p.value =", test_pair(data, vars[1], vars[2], levels = levels))
+        txt_grob <- grid::grid.text(lbl, x=0.5,  y=0.8, gp=grid::gpar(col="firebrick", fontsize=14, fontface="bold"), draw = F)
         g <- ggplot2::ggplot(data, ggplot2::aes(x = var1, y = var2)) +
           ggplot2::geom_jitter(color = "steelblue") +
           ggplot2::geom_smooth(method = "lm", se = TRUE, color = "black") +
@@ -269,10 +284,12 @@ plt.assoc <- function(data,
           ggplot2::labs(x = vars[1],
                         y = vars[2],
                         color = vars[1]) +
+          ggplot2::annotation_custom(txt_grob) +
           theme_Publication() + scale_fill_Publication()
 
+
         to.ret <-
-          ggExtra::ggMarginal(g, type = "histogram", fill = "transparent")
+          ggExtra::ggMarginal(g, type = "histogram", fill = "transparent", color = "black")
       }
     }
   }

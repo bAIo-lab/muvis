@@ -1,4 +1,4 @@
-#' calculate variable-wise Kullback-Leibler divergence
+#' Calculate Variable-wise Kullback-Leibler divergence
 #'
 #'
 #'
@@ -9,7 +9,7 @@
 #' @param  group1 A vector of integers. Demonstrates the row indices of group 1.
 #' @param  group2 A vector of integers. Demonstrates the row indices of group 2.
 #' @param  permute An integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
-#' @param  levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
+#' @param  levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
 #'
 #' @details
 #' The function helps users to find out the variables with the most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements, we are interested in finding the most important variables in occurring cardiovascular disease.
@@ -22,7 +22,7 @@
 #' @return if permute = 0 returns a dataframe including sorted Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including p.values and sorted KL divergence.
 #'
 #'
-#' @export div.vars
+#' @export
 #'
 #' @importFrom purrr map
 #' @importFrom permute shuffle
@@ -32,13 +32,16 @@
 
 
 
-div.vars <- function(data,
+VKL <- function(data,
                 group1,
                 group2,
                 permute = 0,
                 levels = 5) {
   is.cat <- function(var) {
-    return(!length(unique(var[!is.na(var)])) > levels)
+    if(is.null(levels))
+      return(is.factor(var))
+    else
+      return(!length(unique(var[!is.na(var)])) > levels)
   }
 
   kl.calc <- function(data, group1, group2) {

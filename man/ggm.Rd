@@ -5,7 +5,7 @@
 \title{construct and visualize Gaussian Graphical Models.}
 \usage{
 ggm(data, methods = c("glasso"), community = TRUE, betweenness = TRUE,
-  plot = FALSE, ...)
+  plot = FALSE, levels = NULL, ...)
 }
 \arguments{
 \item{data}{A normalized dataframe or matrix with no missing data of continuous measurements.}
@@ -17,6 +17,8 @@ ggm(data, methods = c("glasso"), community = TRUE, betweenness = TRUE,
 \item{betweenness}{A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)}
 
 \item{plot}{A logical value to show if the graph should be plotted. (default = FALSE)}
+
+\item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.}
 
 \item{...}{Any additional arguments described below.}
 }

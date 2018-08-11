@@ -35,12 +35,7 @@
 #' ## Using preprocessed data
 #' data <- data_preproc(Nhanes, levels = 15)
 #' data$SEQN <- NULL
-#' \donttest{
-#' prep_gauss_dgm <- dgm(data = data[sample(nrow(data), 100), ])
-#' }
-#' \dontshow{
 #' prep_gauss_dgm <- dgm(data = data[sample(nrow(data), 100), ], plot = TRUE)
-#' }
 #'
 #'
 #'

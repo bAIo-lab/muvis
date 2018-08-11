@@ -28,13 +28,7 @@
 #' @examples
 #' data("Nhanes")
 #' ## Using raw data
-#' \dontshow{
 #' mf <- min_forest(data = Nhanes[sample(nrow(Nhanes), 100), ], stat = "BIC", plot = TRUE, levels = 15)
-#' }
-#'
-#' \donttest{
-#' mf <- min_forest(data = Nhanes[sample(nrow(Nhanes), 100), ], stat = "BIC", plot = TRUE, levels = 15)
-#' }
 #'
 #' ## Using preprocessed data
 #' data <- data_preproc(Nhanes, levels = 15)

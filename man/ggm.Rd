@@ -57,14 +57,8 @@ glasso_ggm <- ggm(data = Nhanes[sample(nrow(Nhanes), 1000), ], methods = c("glas
 ## Using preprocessed data
 data <- data_preproc(Nhanes, levels = 15)
 data$SEQN <- NULL
-\dontshow{
 glasso_sin_ggm <- ggm(data = data[sample(nrow(data), 1000), 1:74], methods = c("glasso", "sin"),
 plot = TRUE, rho = 0.2, significance = 0.03)
-}
-\donttest{
-glasso_sin_ggm <- ggm(data = data[sample(nrow(data), 1000), 1:74], methods = c("glasso", "sin"),
-plot = FALSE, rho = 0.2, significance = 0.03)
-}
 
 }
 \references{

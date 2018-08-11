@@ -9,7 +9,7 @@
 # cur <- unlist(lapply(cur, function(x) x$topics))
 # cat(paste(setdiff(topics, cur), collapse = "\n"))
 knitr:
-  eval: true
+  eval: false
 
 sections:
 -

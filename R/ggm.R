@@ -42,14 +42,20 @@
 #' @examples
 #' data("Nhanes")
 #' ## Using raw data
-#' ## No need to choose the continuous variables (They will be detected automatically).
-#' ggm(data = Nhanes[sample(nrow(Nhanes), 1000), ], methods = c("glasso"), levels = 15)
+#' ## No need to choose the continuous variables (They will be detected automatically)
+#' glasso_ggm <- ggm(data = Nhanes[sample(nrow(Nhanes), 1000), ], methods = c("glasso"), levels = 15)
 #'
 #' ## Using preprocessed data
 #' data <- data_preproc(Nhanes, levels = 15)
 #' data$SEQN <- NULL
-#' ggm(data = data[sample(nrow(data), 1000), 1:74], methods = c("glasso", "sin"),
+#' \dontshow{
+#' glasso_sin_ggm <- ggm(data = data[sample(nrow(data), 1000), 1:74], methods = c("glasso", "sin"),
 #' plot = TRUE, rho = 0.2, significance = 0.03)
+#' }
+#' \donttest{
+#' glasso_sin_ggm <- ggm(data = data[sample(nrow(data), 1000), 1:74], methods = c("glasso", "sin"),
+#' plot = FALSE, rho = 0.2, significance = 0.03)
+#' }
 #'
 #' @importFrom  visNetwork toVisNetworkData visNetwork visOptions
 #' @importFrom  gRbase cov2pcor stepwise

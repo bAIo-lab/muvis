@@ -27,15 +27,20 @@
 #' data("Nhanes")
 #' ## Using raw data
 #' ## Using "gaussian" method for continuous data
-#' dgm(data = Nhanes[sample(nrow(Nhanes), 100), ], dtype = "gaussian", levels = 15)
+#' gaussian_dgm <- dgm(data = Nhanes[sample(nrow(Nhanes), 100), ], dtype = "gaussian", levels = 15)
 #'
 #' ## Using "discrete" method for categorical data
-#' dgm(data = Nhanes[sample(nrow(Nhanes), 100), ], dtype = "discrete", levels = 15)
+#' discrete_dgm <- dgm(data = Nhanes[sample(nrow(Nhanes), 100), ], dtype = "discrete", levels = 15)
 #'
 #' ## Using preprocessed data
 #' data <- data_preproc(Nhanes, levels = 15)
 #' data$SEQN <- NULL
-#' dgm(data = data[sample(nrow(data), 100), ], plot = TRUE)
+#' \donttest{
+#' prep_gauss_dgm <- dgm(data = data[sample(nrow(data), 100), ])
+#' }
+#' \dontshow{
+#' prep_gauss_dgm <- dgm(data = data[sample(nrow(data), 100), ], plot = TRUE)
+#' }
 #'
 #'
 #'

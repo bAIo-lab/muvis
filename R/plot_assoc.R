@@ -24,6 +24,7 @@
 #'
 #' @examples
 #' ## Preprocess the data
+#' \dontshow{
 #' data("Nhanes")
 #' data <- data_preproc(Nhanes, levels = 15)
 #'
@@ -50,6 +51,36 @@
 #'
 #' ## With raw data
 #' plot_assoc(Nhanes, vars = "RIDAGEYR", levels = 15)
+#' }
+#'
+#' \donttest{
+#' #' data("Nhanes")
+#' data <- data_preproc(Nhanes, levels = 15)
+#'
+#' ## Plot (non)interactive for:
+#' ## One categorical variable
+#' plot_assoc(data, vars = "PAD600")
+#' plot_assoc(data, vars = "SMD410", interactive = TRUE)
+#'
+#' ## One continuous variable
+#' plot_assoc(data, vars = "LBXTC")
+#' plot_assoc(data, vars = "BMXBMI", interactive = TRUE)
+#'
+#' ## One continuous and one categorical variable
+#' plot_assoc(data, vars = c("LBXTC", "RIAGENDR"))
+#' plot_assoc(data, vars = c("BMXBMI", "PAD600"), interactive = TRUE)
+#
+#' ##  Two continuous variables
+#' plot_assoc(data, vars = c("LBXTC", "BMXBMI"))
+#' plot_assoc(data, vars = c("LBXVIE", "LBXVIC"), interactive = TRUE)
+#'
+#' ## Two categorical variables
+#' plot_assoc(data, vars = c("SMD410", "PAD600"))
+#' plot_assoc(data, vars = c("PAD600", "SMD410"), interactive = TRUE)
+#'
+#' ## With raw data
+#' plot_assoc(Nhanes, vars = "RIDAGEYR", levels = 15)
+#' }
 #'
 #' @import     ggplot2
 #' @importFrom ggthemes theme_foundation

@@ -23,10 +23,10 @@
 #' data <- data_preproc(Nhanes, levels = 15)
 #' data$SEQN <- NULL
 #' # Set permute to calculate p.values
-#' VVKL(data, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = NULL)
+#' kl <- VVKL(data, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = NULL)
 #'
 #' ## Using raw data
-#' VVKL(Nhanes, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 0, levels = 15)
+#' kl <- VVKL(Nhanes, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 0, levels = 15)
 #' @importFrom purrr map
 #' @importFrom entropy KL.plugin
 #' @importFrom permute shuffle

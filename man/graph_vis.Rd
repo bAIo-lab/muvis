@@ -45,7 +45,13 @@ Converts the graph to an igraph object, finds communities and plots it using qgr
 ## Visualize Harman23.cor covariance matrix
 require(datasets)
 data("Harman23.cor")
+\donttest{
 graph_vis(Harman23.cor$cov, plot = TRUE, plot.community = TRUE)
+}
+
+\dontshow{
+graph_vis(Harman23.cor$cov, plot = TRUE, plot.community = TRUE)
+}
 
 }
 \author{

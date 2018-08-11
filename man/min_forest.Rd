@@ -38,13 +38,19 @@ Fits a minimal forest to data and visualizes it.
 The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
 }
 \examples{
-#' data("Nhanes")
+data("Nhanes")
 ## Using raw data
-min_forest(data = Nhanes[sample(nrow(Nhanes), 100), ], stat = "BIC", plot = TRUE, levels = 15)
+\dontshow{
+mf <- min_forest(data = Nhanes[sample(nrow(Nhanes), 100), ], stat = "BIC", plot = TRUE, levels = 15)
+}
+
+\donttest{
+mf <- min_forest(data = Nhanes[sample(nrow(Nhanes), 100), ], stat = "BIC", plot = TRUE, levels = 15)
+}
 
 ## Using preprocessed data
 data <- data_preproc(Nhanes, levels = 15)
-min_forest(data = data[sample(nrow(data), 100), ], stat = "BIC", plot = FALSE)
+mf <- min_forest(data = data[sample(nrow(data), 100), ], stat = "BIC", plot = FALSE)
 
 }
 \references{

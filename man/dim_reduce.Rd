@@ -34,10 +34,10 @@ Reduce dimensionality with a method in \{tsne, umap, pca\}.
 data("Nhanes")
 
 ## Using different methods on the raw data
-df <- Nhanes[sample(nrow(Nhanes), 100), ]
-dim_reduce(df, method = "pca", levels = 15)
-dim_reduce(df, method = "tsne", annot1 = df$BMXBMI, annot1.name = "BMI", levels = 15)
-dim_reduce(df, method = "umap", annot1 = df$LBXTC, annot1.name = "Total Cholesterol",
+df <- Nhanes[sample(nrow(Nhanes), 500), ]
+plt_pca <- dim_reduce(df, method = "pca", levels = 15)
+plt_tsne <- dim_reduce(df, method = "tsne", annot1 = df$BMXBMI, annot1.name = "BMI", levels = 15)
+plt_umap <- dim_reduce(df, method = "umap", annot1 = df$LBXTC, annot1.name = "Total Cholesterol",
 annot2 = as.factor(df$RIAGENDR), annot2.name = "Gender", levels = 15)
 }
 \author{

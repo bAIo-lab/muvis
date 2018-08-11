@@ -28,13 +28,13 @@
 #' data <- data_preproc(Nhanes, levels = 15)
 #' ## Find test p.values for:
 #' ## One continuous and one categorical variable
-#' test_pair(data, var1 = "LBXTC", var2 = "RIAGENDR")
+#' cont_cat_test <- test_pair(data, var1 = "LBXTC", var2 = "RIAGENDR")
 #
-#' ##  Two continuous variables
-#' test_pair(data, var1 = "LBXTC", var2 = "LBXVIE")
+#' ## Two continuous variables
+#' cont_cont_test <- test_pair(data, var1 = "LBXTC", var2 = "LBXVIE")
 #'
 #' ## Two categorical variables
-#' test_pair(data, var1 = "DIQ010", var2 = "SMD410")
+#' cat_cat_test <- test_pair(data, var1 = "DIQ010", var2 = "SMD410")
 #'
 #' @importFrom stats cor.test chisq.test aov
 

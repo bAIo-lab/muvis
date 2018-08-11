@@ -8,6 +8,8 @@
 #' @param  data An arbitrary dataset (For example data.frame or matrix).
 #' @param  is.cat A boolean list specifies which variables are categorical. (default = NULL)
 #' @param  levels An integer number indicates the maximum levels of categorical variables. It is used when \code{is.cat} in NULL. (default = 5)
+#' @param  detect.outliers Logical indicating if data outliers should be detected. If TRUE will replace outliers with NA. Defaults to FALSE.
+#' @param  alpha A number between (0, 1). Rows where the ratio of the NA values in them is more than alpha will be deleted.
 #'
 #' @author  Elyas Heidari, Vahid Balazadeh
 #'
@@ -23,13 +25,49 @@
 #' l[c(8, 9)] <- TRUE
 #' df <- data_preproc(mtcars, is.cat = l)
 #'
+#' ## Detect outliers
+#' df <- data_preproc(Nhanes, levels = 15, detect.outliers = TRUE, alpha = 0.4)
+#'
 #' @return A normalized data.frame object with specified continuous and (or) categorical variables and no missing values.
 #' @export
+#'
+#' @importFrom AnomalyDetection AnomalyDetectionVec
 #'
 
 data_preproc <- function(data,
                          is.cat = NULL,
-                         levels = 5) {
+                         levels = 5,
+                         detect.outliers = FALSE,
+                         alpha = 0.5) {
+
+  function(df) {
+    df <- data.frame(df)
+    column_anom_detect <- function(x) {
+      index <- c(1:length(x))
+      col_df <- data.frame(index, x)
+
+      na_row <- apply(col_df, 1, function(x)
+        is.na(x[2]))
+      na_df <- col_df[na_row,]
+      col_df <- col_df[!na_row,]
+      col_df <- col_df[order(col_df[, 2]),]
+      anm <- AnomalyDetection::AnomalyDetectionVec(
+        x = col_df[, 2],
+        period = nrow(col_df) / 5,
+        plot = F,
+        direction = "both"
+      )
+      col_df[anm$anoms$index, 2] <- NA
+
+      col_df <- rbind(col_df, na_df)
+
+      return(col_df[order(col_df[, 1]), 2])
+    }
+
+    return(data.frame(sapply(df, column_anom_detect)))
+
+  }
+
   is.cat.function <- function(var) {
     return(!length(unique(var[!is.na(var)])) > levels)
   }
@@ -91,6 +129,15 @@ data_preproc <- function(data,
     data <- cont.cat.spec(data, sapply(data, is.cat.function))
   else
     data <- cont.cat.spec(data, is.cat)
+
+  # Set outlier to NA
+  if (detect.outliers) {
+    cont_df <- data[, sapply(data, function(x) !is.factor(x))]
+    data <- cbind(df_anomaly_detector(cont_df), data[, sapply(data, is.factor)])
+  }
+
+  # Delete rows with more NA ratio more than alpha
+  data <- data[apply(data, 1, function(x) (sum(is.na(x)) / length(x)) <= alpha), ]
 
   # Impute the dataset
   data.frame(lapply(data, function(x)

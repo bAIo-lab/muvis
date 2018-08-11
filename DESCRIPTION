@@ -14,6 +14,7 @@ biocViews:
 remotes: cran/gRapHD, 
          jlmelville/smallvis/smallvis,
          jbkunst/highcharter
+         bAIo-lab/AnomalyDetection
 Imports:
     visNetwork,
     gRbase,
@@ -42,5 +43,6 @@ Imports:
     ggthemes,
     heatmaply,
     scales,
-    plotly
+    plotly,
+    AnomalyDetection
 Suggests: packagedocs

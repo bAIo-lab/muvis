@@ -27,7 +27,7 @@
 #' ## Visualize Harman23.cor covariance matrix
 #' require(datasets)
 #' data("Harman23.cor")
-#' graph_vis(Harman23.cor$cov, plot = TRUE, plot.community = TRUE)
+#' graph_vis(Harman23.cor$cov, plot = TRUE, plot.community = TRUE, plot.community.list = c(1, 2))
 #'
 #' @section Additional arguments:
 #' \describe{
@@ -35,6 +35,7 @@
 #' \item{plot.community}{Logical indicating if communities should be plotted. Defaults to FALSE.}
 #' \item{filename}{Name of the plot file without extension. (qgraph function argument)}
 #' \item{filetype}{A character indicates the file type to save the plots in. (qgraph function argument)}
+#' \item{plot.community.list}{A list indicates which communities should be plotted. When is not set, will plot all the communities.}
 #' }
 #'
 #' @importFrom  visNetwork toVisNetworkData visNetwork visOptions
@@ -55,8 +56,12 @@ graph_vis <-
     usr_groups <- arguments$groups
 
     plot.community <- arguments$plot.community
+
     if (is.null(plot.community))
       plot.community = F
+
+
+    plot.community.list <- arguments$plot.community.list
 
     plot_community <- function(graph, community_num) {
       t <- igraph::V(graph)$community == community_num
@@ -147,7 +152,10 @@ graph_vis <-
 
     if (community) {
       if (plot && plot.community) {
-        for (i in 1:community_n)
+        if (is.null(plot.community.list)){
+          plot.community.list <- c(1:community_n)
+        }
+        for (i in plot.community.list)
           plot_community(ig, i)
       }
       com <- igraph::V(ig)$community

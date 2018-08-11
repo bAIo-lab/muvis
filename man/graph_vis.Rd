@@ -37,6 +37,7 @@ Converts the graph to an igraph object, finds communities and plots it using qgr
 \item{plot.community}{Logical indicating if communities should be plotted. Defaults to FALSE.}
 \item{filename}{Name of the plot file without extension. (qgraph function argument)}
 \item{filetype}{A character indicates the file type to save the plots in. (qgraph function argument)}
+\item{plot.community.list}{A list indicates which communities should be plotted. When is not set, will plot all the communities.}
 }
 }
 
@@ -45,7 +46,7 @@ Converts the graph to an igraph object, finds communities and plots it using qgr
 ## Visualize Harman23.cor covariance matrix
 require(datasets)
 data("Harman23.cor")
-graph_vis(Harman23.cor$cov, plot = TRUE, plot.community = TRUE)
+graph_vis(Harman23.cor$cov, plot = TRUE, plot.community = TRUE, plot.community.list = c(1, 2))
 
 }
 \author{

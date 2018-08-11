@@ -1,8 +1,8 @@
 ---
 title: "muvis Documentation"
 subtitle: "multivariate analysis and visualization"
-author: "statCompTeam@bAIo-lab"
-copyright: "statCompTeam@bAIo-lab"
+author: statCompTeam@bAIo-lab
+copyright: statCompTeam@bAIo-lab
 output:
   packagedocs::package_docs:
     toc: true
@@ -55,15 +55,12 @@ We'll use National Health and Nutrition Examination Survey (NHANES), 2005-2006 d
 ```{r dataset}
 data("Nhanes")
 Nhanes$SEQN <- NULL
-kableExtra::kable(head(Nhanes)) %>%
-  kable_styling() %>%
-  scroll_box(width = "100%", height = "200px")
 ```
 
 ## data_preproc
 The dataset has some missing values. We'll use `data_preproc` to impute missing values and to specify categorical and continuous variables (Setting level = 15). The first 74 columns are continuous.
 ```{r preprocess}
-data <- data_preproc(Nhanes, levels = 15)
+data <- data_preproc(Nhanes, levels = 15, detect.outliers = T, alpha = .4)
 kableExtra::kable(head(data)) %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = "200px")
@@ -81,8 +78,7 @@ Use `ggm` to construct a Gaussian Graphical Model with glasso and significance t
 ```{r ggm, echo=TRUE, message=FALSE, warning=FALSE}
 ggm(data[,1:74], significance = 0.05, rho = 0.1, community = TRUE, methods = c("glasso", "sin"), plot = F, levels = NULL) -> g
 g$network
-g$betweenness
-g$communities
+g$communities[1:10]
 ```
 
 ## min_forest
@@ -90,7 +86,7 @@ Employ `min_forest` with BIC to construct a mixed-interaction model fitting the 
 ```{r mf, echo=TRUE, message=FALSE, warning=FALSE}
 mf <- min_forest(data, stat = "BIC", community = T, plot = F, levels = NULL)
 mf$network
-mf$betweenness
+mf$betweenness[1:10]
 ```
 
 <!-- ## should be dgm not bn -->
@@ -104,9 +100,9 @@ mf$betweenness
 
 ## graph_vis
 Use `graph_vis` to find communities of an arbitrary graph object and plot them. (The graph "mf$graph" here is the one resulted by `minforest` function.)
+Here we plot just the two first communities.
 ```{r graph_vis, echo=TRUE, message=FALSE, warning=FALSE}
-mf.val <- graph_vis(mf$graph, directed = F, community = T, betweenness = T, plot = T, plot.community = T)
-mf.val$communities
+mf.val <- graph_vis(mf$graph, directed = F, community = T, betweenness = T, plot = T, plot.community = T, plot.community.list = c(1,2))
 ```
 
 <!-- here should be the VKL --->
@@ -117,13 +113,13 @@ Use `VVKL` to find the most deferentially variables between people with relative
 
 ```{r div2, echo=TRUE, message=FALSE, warning=FALSE}
 edges <- mf$network$x$edges
-edges[edges$from == "LBXTC" | edges$to == "LBXTC", ]
+lbxtc_edges <- edges[edges$from == "LBXTC" | edges$to == "LBXTC", ]
+lbxtc_edges[1:5, ]
 plot_assoc(data, vars = c("LBXTC", "LBXVIE"), levels = NULL, interactive = T)
 VVKL(data[75:160], var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = NULL) -> KL
-KL$name <- row.names(KL)
-kableExtra::kable(head(KL, n = 20)) %>%
+kableExtra::kable(head(KL, n = 5)) %>%
   kable_styling() %>%
-  scroll_box(width = "300px", height = "400px")
+  scroll_box(width = "300px", height = "300px")
 ```
 
 <!---test_pair and test_assoc --->
@@ -155,7 +151,8 @@ plot_assoc(data, vars = c("LBXTHG", "DRD360"), levels = 15, interactive = F)
 
 Scatter plot of "LBXHGB" (hemoglobin amount in the blood (g/dL)) and "LBXSIR" (refrigerated Iron in the blood (ug/dL)):
 ```{r plot5, echo=TRUE, message=FALSE, warning=FALSE}
-edges[edges$from == "LBXHGB" | edges$to == "LBXHGB", ]
+lbxhgb_edges <- edges[edges$from == "LBXHGB" | edges$to == "LBXHGB", ]
+lbxhgb_edges[1:5, ]
 plot_assoc(data, vars = c("LBXHGB", "LBXSIR"), levels = 15, interactive = F)
 ```
 

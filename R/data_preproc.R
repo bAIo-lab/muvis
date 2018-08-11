@@ -40,7 +40,7 @@ data_preproc <- function(data,
                          detect.outliers = FALSE,
                          alpha = 0.5) {
 
-  function(df) {
+  df_anomaly_detector <- function(df) {
     df <- data.frame(df)
     column_anom_detect <- function(x) {
       index <- c(1:length(x))

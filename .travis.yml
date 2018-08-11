@@ -11,6 +11,7 @@ before_install:
   - Rscript -e "install.packages(\"kableExtra\")"
   - Rscript -e "install.packages(\"bnlearn\")"
 after_success:
+  - Rscript -e "devtools::install()"
   - Rscript -e "packagedocs::deploy_travis()"
 
 env:

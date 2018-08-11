@@ -4,10 +4,10 @@
 \alias{VKL}
 \title{Calculate Variable-wise Kullback-Leibler divergence}
 \usage{
-VKL(data, group1, group2, permute = 0, levels = 5)
+VKL(data, group1, group2, permute = 0, levels = NULL)
 }
 \arguments{
-\item{data}{A numerical dataframe with now missing value.}
+\item{data}{A numerical dataframe with no missing value.}
 
 \item{group1}{A vector of integers. Demonstrates the row indices of group 1.}
 

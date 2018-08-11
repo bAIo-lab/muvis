@@ -33,6 +33,19 @@ Also adjusts p.values using Benjamini & Hochberg method (p.adjust function from 
 This provides a wrapper to \code{chisq.test}, \code{cor.test}, \code{aov}, \code{p.adjust} from \code{stats} package to test association between variables
 And a wrapper to \code{heatmaply} package to construct heatmap.
 }
+\examples{
+data("Nhanes")
+## Using raw data
+df <- Nhanes[sample(nrow(Nhanes), 1000), ]
+test_assoc(data = df, vars = colnames(df), plot = FALSE, levels = 15)
+
+## Using preprocessed data
+data <- data_preproc(Nhanes, levels = 15)
+data$SEQN <- NULL
+## Outputs the heatmap too (plot = TRUE)
+test_assoc(data = data, vars = colnames(data[, 1:20]), plot = TRUE)
+
+}
 \author{
 Elyas Heidari
 }

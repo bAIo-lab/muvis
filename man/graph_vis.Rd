@@ -40,6 +40,14 @@ Converts the graph to an igraph object, finds communities and plots it using qgr
 }
 }
 
+\examples{
+
+## Visualize Harman23.cor covariance matrix
+require(datasets)
+data("Harman23.cor")
+graph_vis(Harman23.cor$cov, plot = TRUE, plot.community = TRUE)
+
+}
 \author{
 Elyas Heidari, Vahid Balazadeh
 }

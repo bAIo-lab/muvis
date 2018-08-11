@@ -25,6 +25,17 @@ If permute = 0 returns a dataframe including sorted Kullback-Liebler (KL) diverg
 \description{
 Calculates variable-wise Kullback-Leibler divergence between the two groups of samples which violate the linear relationship between two continuous variables.
 }
+\examples{
+data("Nhanes")
+## Using preprocessed data
+data <- data_preproc(Nhanes, levels = 15)
+data$SEQN <- NULL
+# Set permute to calculate p.values
+VVKL(data, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = NULL)
+
+## Using raw data
+VVKL(Nhanes, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 0, levels = 15)
+}
 \author{
 Elyas Heidari
 }

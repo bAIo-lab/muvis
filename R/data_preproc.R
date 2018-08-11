@@ -11,6 +11,17 @@
 #'
 #' @author  Elyas Heidari, Vahid Balazadeh
 #'
+#' @examples
+#' ## Using levels
+#' data("Nhanes")
+#' data_preproc(Nhanes, levels = 15)
+#'
+#' ## Using is.cat
+#' require(datasets)
+#' data("mtcars")
+#' l <- logical(11)
+#' l[c(8, 9)] <- TRUE
+#' data_preproc(mtcars, is.cat = l)
 #'
 #' @return A normalized data.frame object with specified continuous and (or) categorical variables and no missing values.
 #' @export

@@ -17,6 +17,16 @@
 #'
 #' @export
 #'
+#' @examples
+#' data("Nhanes")
+#' ## Using preprocessed data
+#' data <- data_preproc(Nhanes, levels = 15)
+#' data$SEQN <- NULL
+#' # Set permute to calculate p.values
+#' VVKL(data, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = NULL)
+#'
+#' ## Using raw data
+#' VVKL(Nhanes, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 0, levels = 15)
 #' @importFrom purrr map
 #' @importFrom entropy KL.plugin
 #' @importFrom permute shuffle
@@ -27,12 +37,17 @@
 
 VVKL <- function(data, var1, var2, permute = 0, frac = 0.05, levels = NULL) {
 
+  if (!is.null(levels))
+    data <- data_preproc(data, levels = levels)
+
   is.cat <- function(var) {
-    if(is.null(levels))
-      return(is.factor(var))
-    else
-      return(!length(unique(var[!is.na(var)])) > levels)
+    return(is.factor(var))
   }
+
+  if(is.null(levels))
+    lvl <- max(sapply(data, nlevels))
+  else
+    lvl <- levels
 
   kl.calc <- function(data, group1, group2) {
     1:dim(data)[2] %>% map(function(x)
@@ -41,12 +56,13 @@ VVKL <- function(data, var1, var2, permute = 0, frac = 0.05, levels = NULL) {
     return(unlist(to.ret))
   }
   freq <- function(vec, group1, group2) {
-    if (!is.cat(vec))
+    if (!is.cat(vec)){
       vec <-
         cut(vec,
             breaks = seq((min(vec) - .0000001), (max(vec) + .0000001), (max(vec) - min(vec) + .0000002) /
-                           levels),
-            labels = 1:levels)
+                           lvl),
+            labels = 1:lvl)
+    }
     to.ret <- list(group1 = c(), group2 = c())
     levels(factor(vec)) %>% map(function(x)
       list(group1 = max(1, sum(vec[group1] == x)), group2 = max(1, sum(vec[group2] == x)))) %>% map(function(x)

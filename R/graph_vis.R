@@ -22,6 +22,13 @@
 #'
 #' @export
 #'
+#' @examples
+#'
+#' ## Visualize Harman23.cor covariance matrix
+#' require(datasets)
+#' data("Harman23.cor")
+#' graph_vis(Harman23.cor$cov, plot = TRUE, plot.community = TRUE)
+#'
 #' @section Additional arguments:
 #' \describe{
 #' \item{groups}{A list that indicates which community each node is. The automatic community detection will be ignored when it is set.}

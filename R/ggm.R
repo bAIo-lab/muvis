@@ -9,7 +9,9 @@
 #' @param community A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)
 #' @param betweenness A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)
 #' @param plot A logical value to show if the graph should be plotted. (default = FALSE)
-#' @param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
+#' @param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
+#' Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
+#' If it is set, first will run \code{\link[muvis]{data_preproc}} to specify categorical and continuous variables.
 #' @param ... Any additional arguments described below.
 #'
 #' @details The function combines the methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse estimation of the inverse covariance matrix.
@@ -29,13 +31,25 @@
 #' }
 #'
 #' @return A list in which each element is the details of a specific fitting method.
-#' \item{significanse}{A data.frame containing edges with p.values.}
+#' \item{significance}{A data.frame containing edges with p.values.}
 #' \item{graph}{an igraph object of the graphical model.}
 #' \item{betweenness}{betweenness measurements of each node.}
 #' \item{network}{a visNetwork plot of the graph.}
 #' \item{communities}{a named vector indicating the community of each node.}
 #'
 #' @export
+#'
+#' @examples
+#' data("Nhanes")
+#' ## Using raw data
+#' ## No need to choose the continuous variables (They will be detected automatically).
+#' ggm(data = Nhanes[sample(nrow(Nhanes), 1000), ], methods = c("glasso"), levels = 15)
+#'
+#' ## Using preprocessed data
+#' data <- data_preproc(Nhanes, levels = 15)
+#' data$SEQN <- NULL
+#' ggm(data = data[sample(nrow(data), 1000), 1:74], methods = c("glasso", "sin"),
+#' plot = TRUE, rho = 0.2, significance = 0.03)
 #'
 #' @importFrom  visNetwork toVisNetworkData visNetwork visOptions
 #' @importFrom  gRbase cov2pcor stepwise
@@ -48,6 +62,7 @@
 #' @importFrom  stats C cov.wt
 #' @importFrom  methods as
 #' @importFrom  graph nodes
+#' @importFrom  dplyr %>%
 
 
 
@@ -60,9 +75,15 @@ ggm <-
            plot = FALSE,
            levels = NULL,
            ...) {
-
     if (!is.null(levels))
       data <- data_preproc(data, levels = levels)
+
+    is.cat <- function(var) {
+      return(is.factor(var))
+    }
+
+    data <- data[, sapply(data, function(x)
+      ! is.cat(x))]
 
     arguments <- list(...)
     threshold <- arguments$threshold
@@ -78,7 +99,7 @@ ggm <-
     if (is.null(rho))
       rho = 0.1
 
-    model <- gRim::cmod( ~ . ^ ., data = data)
+    model <- gRim::cmod(~ . ^ ., data = data)
     S <- stats::cov.wt (data, method = "ML")$cov
     PC <- gRbase::cov2pcor(S)
     othermodels <- list()
@@ -126,16 +147,20 @@ ggm <-
     vnet <- val$network
     edges <- vnet$x$edges
 
-    test_matrix <- test_assoc(data, vnet$x$nodes$id, levels = levels)
+    test_matrix <-
+      test_assoc(data, vnet$x$nodes$id, levels = levels)
     e_names <- rbind(edges$from, edges$to)
-    p_values <- apply(e_names, 2, function(x) test_matrix[x[1], x[2]])
+    p_values <-
+      apply(e_names, 2, function(x)
+        test_matrix[x[1], x[2]])
     title = paste0("<p>", paste("p.value =", p_values), "</p>")
     edges[, "title"] <- title
 
     significance <- data.frame(edges$from, edges$to)
     significance$p.value <- p_values
 
-    vn <- visNetwork::visNetwork(vnet$x$nodes, edges, height = "500px", width = "100%")  %>%
+    vn <-
+      visNetwork::visNetwork(vnet$x$nodes, edges, height = "500px", width = "100%")  %>%
       visNetwork::visOptions(highlightNearest = list(
         enabled = T,
         degree = 1,

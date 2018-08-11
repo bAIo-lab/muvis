@@ -13,7 +13,7 @@
 #' @param var2 Second variable
 #' @param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
 #'
-#' @details This provides a wrapper to \code{chisq.test}, \code{cor.test}, \code{aov}, \code{p.adjust} from \code{stats} package to test association between two variables
+#' @details This provides a wrapper to \code{chisq.test}, \code{cor.test}, \code{aov} from \code{stats} package to test association between two variables
 #'
 #'
 #' @author Elyas Heidari
@@ -21,6 +21,20 @@
 #' @return P.value of test between the two variables.
 #'
 #' @export
+#'
+#' @examples
+#' ## Preprocess the data
+#' data("Nhanes")
+#' data <- data_preproc(Nhanes, levels = 15)
+#' ## Find test p.values for:
+#' ## One continuous and one categorical variable
+#' test_pair(data, var1 = "LBXTC", var2 = "RIAGENDR")
+#
+#' ##  Two continuous variables
+#' test_pair(data, var1 = "LBXTC", var2 = "LBXVIE")
+#'
+#' ## Two categorical variables
+#' test_pair(data, var1 = "DIQ010", var2 = "SMD410")
 #'
 #' @importFrom stats cor.test chisq.test aov
 
@@ -45,7 +59,7 @@ test_pair <- function(data, var1, var2, levels = NULL) {
   }
 
   if (var1.is.cat & var2.is.cat) {
-    ct <- stats::chisq.test(var1, var2)
+    ct <- stats::chisq.test(var1, var2, simulate.p.value = TRUE)
     ct <- ct$p.value
   }
   if (var1.is.cat & !var2.is.cat) {

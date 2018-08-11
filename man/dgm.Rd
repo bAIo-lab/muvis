@@ -5,12 +5,12 @@
 \title{construct and visualize causal (directed) networks}
 \usage{
 dgm(data, alpha = 1e-05, dtype = "gaussian", community = TRUE,
-  betweenness = TRUE, plot = TRUE, levels = NULL, ...)
+  betweenness = TRUE, plot = FALSE, levels = NULL, ...)
 }
 \arguments{
 \item{data}{A normalized dataframe or matrix with no missing data.}
 
-\item{alpha}{A threshold for partial correlation thresholding dtype (default = 0.05). To be used only when the dtype "threshold" is used.}
+\item{alpha}{significance level (number in (0,1)) for the individual conditional independence tests. Defaults to 1e-5.}
 
 \item{dtype}{Either "guassian" for continuous/ordinal discrete data or "discrete" for discrete/nominal data. (default = "gaussian") See details for more description.}
 
@@ -18,9 +18,11 @@ dgm(data, alpha = 1e-05, dtype = "gaussian", community = TRUE,
 
 \item{betweenness}{A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)}
 
-\item{plot}{A logical value to show if the graph should be plotted. (default = TRUE)}
+\item{plot}{A logical value to show if the graph should be plotted. (default = FLASE)}
 
-\item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.}
+\item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
+Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
+If it is set, first will run \code{\link[muvis]{data_preproc}} to specify categorical and continuous variables.}
 
 \item{...}{Remaining parameters of skleton function.}
 }
@@ -37,6 +39,23 @@ A wrapper of skeleton function in pcalg package. Estimates the skeleton of a Dir
 }
 \details{
 There is no specific distribution needed for the data. The parameter dtype will be used for determining the data type to be provided as the input of the function. However, it is highly recommended to use "guassian" data type for both continuous and ordinal discrete data.
+}
+\examples{
+data("Nhanes")
+## Using raw data
+## Using "gaussian" method for continuous data
+dgm(data = Nhanes[sample(nrow(Nhanes), 100), ], dtype = "gaussian", levels = 15)
+
+## Using "discrete" method for categorical data
+dgm(data = Nhanes[sample(nrow(Nhanes), 100), ], dtype = "discrete", levels = 15)
+
+## Using preprocessed data
+data <- data_preproc(Nhanes, levels = 15)
+data$SEQN <- NULL
+dgm(data = data[sample(nrow(data), 100), ], plot = TRUE)
+
+
+
 }
 \references{
 D. Colombo and M.H. Maathuis (2014).Order-independent constraint-based causal structure learning. Journal of Machine Learning Research 15 3741-3782.

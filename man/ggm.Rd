@@ -18,13 +18,15 @@ ggm(data, methods = c("glasso"), community = TRUE, betweenness = TRUE,
 
 \item{plot}{A logical value to show if the graph should be plotted. (default = FALSE)}
 
-\item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.}
+\item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
+Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
+If it is set, first will run \code{\link[muvis]{data_preproc}} to specify categorical and continuous variables.}
 
 \item{...}{Any additional arguments described below.}
 }
 \value{
 A list in which each element is the details of a specific fitting method.
-\item{significanse}{A data.frame containing edges with p.values.}
+\item{significance}{A data.frame containing edges with p.values.}
 \item{graph}{an igraph object of the graphical model.}
 \item{betweenness}{betweenness measurements of each node.}
 \item{network}{a visNetwork plot of the graph.}
@@ -46,6 +48,19 @@ The function combines the methods to construct the model, that is, the edge set 
 }
 }
 
+\examples{
+data("Nhanes")
+## Using raw data
+## No need to choose the continuous variables (They will be detected automatically).
+ggm(data = Nhanes[sample(nrow(Nhanes), 1000), ], methods = c("glasso"), levels = 15)
+
+## Using preprocessed data
+data <- data_preproc(Nhanes, levels = 15)
+data$SEQN <- NULL
+ggm(data = data[sample(nrow(data), 1000), 1:74], methods = c("glasso", "sin"),
+plot = TRUE, rho = 0.2, significance = 0.03)
+
+}
 \references{
 Højsgaard, S., Edwards, D., & Lauritzen, S. (2012). Graphical Models with R. Springer US. \url{https://doi.org/10.1007/978-1-4614-2299-0}
 

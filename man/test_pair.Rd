@@ -27,7 +27,21 @@ Tests for association between two variables:
 }
 }
 \details{
-This provides a wrapper to \code{chisq.test}, \code{cor.test}, \code{aov}, \code{p.adjust} from \code{stats} package to test association between two variables
+This provides a wrapper to \code{chisq.test}, \code{cor.test}, \code{aov} from \code{stats} package to test association between two variables
+}
+\examples{
+## Preprocess the data
+data("Nhanes")
+data <- data_preproc(Nhanes, levels = 15)
+## Find test p.values for:
+## One continuous and one categorical variable
+test_pair(data, var1 = "LBXTC", var2 = "RIAGENDR")
+##  Two continuous variables
+test_pair(data, var1 = "LBXTC", var2 = "LBXVIE")
+
+## Two categorical variables
+test_pair(data, var1 = "DIQ010", var2 = "SMD410")
+
 }
 \author{
 Elyas Heidari

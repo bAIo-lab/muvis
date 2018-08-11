@@ -4,12 +4,15 @@
 #' @description
 #' Reduce dimensionality with a method in \{tsne, umap, pca\}.
 #'
-#' @param data a dataset to be reduced in dimension.
+#' @param data   A normalized dataframe or matrix with no missing data to be reduced in dimension.
 #' @param method a character string as the name of the method. Available values are "pca" (the default), "tsne", "umap".
 #' @param annot1 Defaults to NULL.
 #' @param annot1.name Defaults to "annot1".
 #' @param annot2 Defaults to NULL.
 #' @param annot2.name Defaults to "annot2".
+#'@param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
+#' Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
+#' If it is set, first will run \code{\link[muvis]{data_preproc}} to specify categorical and continuous variables.
 #'
 #'
 #' @author Elyas Heidari
@@ -17,6 +20,15 @@
 #'
 #' @export
 #'
+#' @examples
+#' data("Nhanes")
+#'
+#' ## Using different methods on the raw data
+#' df <- Nhanes[sample(nrow(Nhanes), 100), ]
+#' dim_reduce(df, method = "pca", levels = 15)
+#' dim_reduce(df, method = "tsne", annot1 = df$BMXBMI, annot1.name = "BMI", levels = 15)
+#' dim_reduce(df, method = "umap", annot1 = df$LBXTC, annot1.name = "Total Cholesterol",
+#' annot2 = as.factor(df$RIAGENDR), annot2.name = "Gender", levels = 15)
 #' @importFrom Rtsne Rtsne
 #' @importFrom stats prcomp dist
 #' @import     ggplot2
@@ -28,8 +40,13 @@ dim_reduce <-
            annot1 = NULL,
            annot1.name = "annot1",
            annot2 = NULL,
-           annot2.name = "annot2") {
+           annot2.name = "annot2",
+           levels = NULL) {
 
+    if (!is.null(levels))
+      data <- data_preproc(data, levels = levels)
+
+    data <- data.matrix(data)
     theme_Publication <- function(base_size = 14) {
       (
         ggthemes::theme_foundation(base_size = base_size)
@@ -126,11 +143,11 @@ dim_reduce <-
         eigs <- pcRes$sdev ^ 2
         eigs <- eigs / sum(eigs)
         plotTab <- data.frame(pcRes$x[, c(1, 2)])
-        to.ret <- ggplot(plotTab, aes(x = PC1, y = PC2)) +
-          geom_point() +
-          ggtitle(paste("Scatter plot for PCA")) +
+        to.ret <- ggplot2::ggplot(plotTab, aes(x = PC1, y = PC2)) +
+          ggplot2::geom_point() +
+          ggplot2::ggtitle(paste("Scatter plot for PCA")) +
           theme_Publication() + scale_fill_Publication() +
-          labs(x = "component 1", y = "component 2")
+          ggplot2::labs(x = "component 1", y = "component 2")
       }
 
       if (method == "tsne") {
@@ -138,30 +155,32 @@ dim_reduce <-
         plotTab <-
           data.frame(tsneRun(distViab, perplexity = 2, max_iter = 10000))
         plotTab$sampleID <- rownames(plotTab)
-        to.ret <- ggplot(plotTab, aes(x = x, y = y)) +
-          geom_point() +
-          ggtitle(paste("Scatter plot for t-SNE")) +
+        to.ret <- ggplot2::ggplot(plotTab, aes(x = x, y = y)) +
+          ggplot2::geom_point() +
+          ggplot2::ggtitle(paste("Scatter plot for t-SNE")) +
           theme_Publication() + scale_fill_Publication() +
-          labs(x = "component 1", y = "component 2")
+          ggplot2::labs(x = "component 1", y = "component 2")
 
       }
       if (method == "umap") {
         distViab <- dist(data)
         plotTab <-
-          smallvis::smallvis(
+          data.frame(smallvis::smallvis(
             t(distViab),
             method = "umap",
             perplexity = 40,
             eta = 0.01,
             epoch_callback = FALSE,
             verbose = FALSE
-          )
+          ))
         plotTab$sampleID <- rownames(plotTab)
-        to.ret <- ggplot(plotTab, aes(x = x, y = y)) +
-          geom_point() +
-          ggtitle(paste("Scatter plot for UMAP")) +
+        X1 <- NULL
+        X2 <- NULL
+        to.ret <- ggplot2::ggplot(plotTab, aes(x = X1, y = X2)) +
+          ggplot2::geom_point() +
+          ggplot2::ggtitle(paste("Scatter plot for UMAP")) +
           theme_Publication() + scale_fill_Publication() +
-          labs(x = "component 1", y = "component 2")
+          ggplot2::labs(x = "component 1", y = "component 2")
       }
     } else{
       if (is.null(annot2)) {
@@ -173,11 +192,11 @@ dim_reduce <-
           PC1 <- NULL
           PC2 <- NULL
           to.ret <-
-            ggplot(plotTab, aes(x = PC1, y = PC2, col = annot1)) +
-            geom_point() +
-            ggtitle(paste("Scatter plot for PCA")) +
+            ggplot2::ggplot(plotTab, aes(x = PC1, y = PC2, col = annot1)) +
+            ggplot2::geom_point() +
+            ggplot2::ggtitle(paste("Scatter plot for PCA")) +
             theme_Publication() + scale_fill_Publication() +
-            labs(x = "component 1",
+            ggplot2::labs(x = "component 1",
                  y = "component 2",
                  colour = annot1.name)
         }
@@ -188,11 +207,11 @@ dim_reduce <-
           plotTab$sampleID <- rownames(plotTab)
           x <- NULL
           y <- NULL
-          to.ret <- ggplot(plotTab, aes(x = x, y = y, col = annot1)) +
-            geom_point() +
-            ggtitle(paste("Scatter plot for t-SNE")) +
+          to.ret <- ggplot2::ggplot(plotTab, aes(x = x, y = y, col = annot1)) +
+            ggplot2::geom_point() +
+            ggplot2::ggtitle(paste("Scatter plot for t-SNE")) +
             theme_Publication() + scale_fill_Publication() +
-            labs(x = "component 1",
+            ggplot2::labs(x = "component 1",
                  y = "component 2",
                  colour = annot1.name)
 
@@ -200,20 +219,22 @@ dim_reduce <-
         if (method == "umap") {
           distViab <- stats::dist(data)
           plotTab <-
-            smallvis::smallvis(
+            data.frame(smallvis::smallvis(
               t(distViab),
               method = "umap",
               perplexity = 40,
               eta = 0.01,
               epoch_callback = FALSE,
               verbose = FALSE
-            )
+            ))
           plotTab$sampleID <- rownames(plotTab)
-          to.ret <- ggplot(plotTab, aes(x = x, y = y, col = annot1)) +
-            geom_point() +
-            ggtitle(paste("Scatter plot for UMAP")) +
+          X1 <- NULL
+          X2 <- NULL
+          to.ret <- ggplot2::ggplot(plotTab, aes(x = X1, y = X2, col = annot1)) +
+            ggplot2::geom_point() +
+            ggplot2::ggtitle(paste("Scatter plot for UMAP")) +
             theme_Publication() + scale_fill_Publication() +
-            labs(x = "component 1",
+            ggplot2::labs(x = "component 1",
                  y = "component 2",
                  colour = annot1.name)
         }
@@ -226,16 +247,16 @@ dim_reduce <-
           PC1 <- NULL
           PC2 <- NULL
           to.ret <-
-            ggplot(plotTab, aes(
+            ggplot2::ggplot(plotTab, aes(
               x = PC1,
               y = PC2,
               col = annot1,
               shape = annot2
             )) +
-            geom_point() +
-            ggtitle(paste("Scatter plot for PCA")) +
+            ggplot2::geom_point() +
+            ggplot2::ggtitle(paste("Scatter plot for PCA")) +
             theme_Publication() + scale_fill_Publication() +
-            labs(
+            ggplot2::labs(
               x = "component 1",
               y = "component 2",
               colour = annot1.name,
@@ -249,16 +270,16 @@ dim_reduce <-
           x <- NULL
           y <- NULL
           to.ret <-
-            ggplot(plotTab, aes(
+            ggplot2::ggplot(plotTab, aes(
               x = x,
               y = y,
               col = annot1,
               shape = annot2
             )) +
-            geom_point() +
-            ggtitle(paste("Scatter plot for t-SNE")) +
+            ggplot2::geom_point() +
+            ggplot2::ggtitle(paste("Scatter plot for t-SNE")) +
             theme_Publication() + scale_fill_Publication() +
-            labs(
+            ggplot2::labs(
               x = "component 1",
               y = "component 2",
               colour = annot1.name,
@@ -269,27 +290,28 @@ dim_reduce <-
         if (method == "umap") {
           distViab <- stats::dist(data)
           plotTab <-
-            smallvis::smallvis(
+            data.frame(smallvis::smallvis(
               t(distViab),
               method = "umap",
               perplexity = 40,
               eta = 0.01,
               epoch_callback = FALSE,
               verbose = FALSE
-            )
-          x <- NULL
-          y <- NULL
+            ))
+          print(plotTab)
+          X1 <- NULL
+          X2 <- NULL
           to.ret <-
-            ggplot(plotTab, aes(
-              x = x,
-              y = y,
+            ggplot2::ggplot(plotTab, aes(
+              x = X1,
+              y = X2,
               col = annot1,
               shape = annot2
             )) +
-            geom_point() +
-            ggtitle(paste("Scatter plot for UMAP")) +
+            ggplot2::geom_point() +
+            ggplot2::ggtitle(paste("Scatter plot for UMAP")) +
             theme_Publication() + scale_fill_Publication() +
-            labs(
+            ggplot2::labs(
               x = "component 1",
               y = "component 2",
               colour = annot1.name,

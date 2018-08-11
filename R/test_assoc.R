@@ -24,11 +24,23 @@
 #' \item{matrix}{A matrix containing p.values of tests between each two variables.}
 #' \item{heatmap}{A plotly object containing heatmap related to matrix.}
 #'
+#' @examples
+#' data("Nhanes")
+#' ## Using raw data
+#' df <- Nhanes[sample(nrow(Nhanes), 1000), ]
+#' test_assoc(data = df, vars = colnames(df), plot = FALSE, levels = 15)
+#'
+#' ## Using preprocessed data
+#' data <- data_preproc(Nhanes, levels = 15)
+#' data$SEQN <- NULL
+#' ## Outputs the heatmap too (plot = TRUE)
+#' test_assoc(data = data, vars = colnames(data[, 1:20]), plot = TRUE)
+#'
 #' @export
 #'
 #' @importFrom stats p.adjust
 #' @importFrom heatmaply heatmaply
-#' @importFrom graphics layout
+#' @importFrom plotly layout
 
 
 test_assoc <- function(data,
@@ -51,7 +63,7 @@ test_assoc <- function(data,
   rownames(to.ret) <- colnames(to.ret) <- vars
   if (plot) {
     heat.map <-
-      heatmaply::heatmaply(to.ret) %>% graphics::layout(margin = list(l = 130, b = 40))
+      heatmaply::heatmaply(to.ret) %>% plotly::layout(margin = list(l = 130, b = 40))
     return(list(matrix = to.ret, heatmap = heat.map))
   } else {
     return(matrix = to.ret)

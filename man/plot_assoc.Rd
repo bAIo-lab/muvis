@@ -4,7 +4,7 @@
 \alias{plot_assoc}
 \title{Plot variables.}
 \usage{
-plot_assoc(data, vars, levels = 5, interactive = FALSE)
+plot_assoc(data, vars, levels = NULL, interactive = FALSE)
 }
 \arguments{
 \item{data}{A dataframe. It is strongly recommended that the dataframe has no missing data and is preprocessed.}
@@ -26,6 +26,35 @@ There may be 5 scenarios for vars:
 }
 \description{
 Plots one or a pair of variables (non) interactively using ggplot2 and highcharter packages.
+}
+\examples{
+## Preprocess the data
+data("Nhanes")
+data <- data_preproc(Nhanes, levels = 15)
+
+## Plot (non)interactive for:
+## One categorical variable
+plot_assoc(data, vars = "PAD600")
+plot_assoc(data, vars = "SMD410", interactive = TRUE)
+
+## One continuous variable
+plot_assoc(data, vars = "LBXTC")
+plot_assoc(data, vars = "BMXBMI", interactive = TRUE)
+
+## One continuous and one categorical variable
+plot_assoc(data, vars = c("LBXTC", "RIAGENDR"))
+plot_assoc(data, vars = c("BMXBMI", "PAD600"), interactive = TRUE)
+##  Two continuous variables
+plot_assoc(data, vars = c("LBXTC", "BMXBMI"))
+plot_assoc(data, vars = c("LBXVIE", "LBXVIC"), interactive = TRUE)
+
+## Two categorical variables
+plot_assoc(data, vars = c("SMD410", "PAD600"))
+plot_assoc(data, vars = c("PAD600", "SMD410"), interactive = TRUE)
+
+## With raw data
+plot_assoc(Nhanes, vars = "RIDAGEYR", levels = 15)
+
 }
 \author{
 Elyas Heidari, Vahid Balazadeh

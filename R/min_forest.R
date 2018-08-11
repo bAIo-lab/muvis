@@ -10,7 +10,9 @@
 #' @param community A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)
 #' @param betweenness A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)
 #' @param plot A logical value to show if the graph should be plotted. (default = FALSE)
-#' @param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
+#' @param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
+#' Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
+#' If it is set, first will run \code{\link[muvis]{data_preproc}} to specify categorical and continuous variables.
 #'
 #'
 #' @details
@@ -23,6 +25,14 @@
 #'
 #' @author  Elyas Heidari
 #'
+#' @examples
+#' #' data("Nhanes")
+#' ## Using raw data
+#' min_forest(data = Nhanes[sample(nrow(Nhanes), 100), ], stat = "BIC", plot = TRUE, levels = 15)
+#'
+#' ## Using preprocessed data
+#' data <- data_preproc(Nhanes, levels = 15)
+#' min_forest(data = data[sample(nrow(data), 100), ], stat = "BIC", plot = FALSE)
 #'
 #' @return a list containing:
 #' \item{significanse}{A data.frame containing edges with p-statistics and p.values.}

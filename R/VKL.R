@@ -5,7 +5,7 @@
 #' @description
 #' Calculates variable-wise Kullback-Leibler divergence between the two groups of samples.
 #'
-#' @param  data A numerical dataframe with now missing value.
+#' @param  data A numerical dataframe with no missing value.
 #' @param  group1 A vector of integers. Demonstrates the row indices of group 1.
 #' @param  group2 A vector of integers. Demonstrates the row indices of group 2.
 #' @param  permute An integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
@@ -36,7 +36,7 @@ VKL <- function(data,
                 group1,
                 group2,
                 permute = 0,
-                levels = 5) {
+                levels = NULL) {
   is.cat <- function(var) {
     if(is.null(levels))
       return(is.factor(var))

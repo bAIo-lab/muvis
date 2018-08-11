@@ -18,7 +18,9 @@ min_forest(data, stat = "BIC", community = TRUE, betweenness = TRUE,
 
 \item{plot}{A logical value to show if the graph should be plotted. (default = FALSE)}
 
-\item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.}
+\item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
+Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
+If it is set, first will run \code{\link[muvis]{data_preproc}} to specify categorical and continuous variables.}
 }
 \value{
 a list containing:
@@ -34,6 +36,16 @@ Fits a minimal forest to data and visualizes it.
 }
 \details{
 The function is a wrapper for bnlearn package implementing several algorithms including Constraint-based algorithms (i.e., Max-Min Parents and Children, Semi-Interleaved HITON-PC, and Grow-Shrink), Score-based algorithms (i.e., Hill-Climbing and Tabu Search), and Hybrid algorithms (i.e., Max-Min Hill-Climbing), and Local Discovery algorithms (i.e, Max-Min Parents and Children and ARACNE). If one uses a more than one algorithm, the function combines all of the algorithms and returns a graph based on the combination. The graph is constructed based on the strength of associations calculated by bootstrapping.
+}
+\examples{
+#' data("Nhanes")
+## Using raw data
+min_forest(data = Nhanes[sample(nrow(Nhanes), 100), ], stat = "BIC", plot = TRUE, levels = 15)
+
+## Using preprocessed data
+data <- data_preproc(Nhanes, levels = 15)
+min_forest(data = data[sample(nrow(data), 100), ], stat = "BIC", plot = FALSE)
+
 }
 \references{
 Chow, C.K., and Liu, C.N. (1968) Approximating discrete probability distributions with dependence trees. IEEE Transactions on Information Theory, Vol. IT-14, 3:462-7.

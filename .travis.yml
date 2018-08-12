@@ -4,14 +4,18 @@ bioc_required: yes
 bioc_use_devel: yes
 sudo: no
 cache: packages
+repos:
+  CRAN: https://cloud.r-project.org
+r_packages:
+  - kableExtra
+  - bnlearn
 warnings_are_errors: no
-before_install:
-  - sudo apt-get install libgsl0-dev
-  - sudo apt-get install libv8-3.14-dev
-  - Rscript -e "install.packages(\"kableExtra\")"
-  - Rscript -e "install.packages(\"bnlearn\")"
+addons:
+  apt:
+    packages:
+      - libgsl0-dev
+      - libv8-3.14-dev
 after_success:
-  - Rscript -e "devtools::install()"
   - Rscript -e "packagedocs::deploy_travis()"
 
 env:

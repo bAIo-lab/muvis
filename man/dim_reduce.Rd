@@ -10,15 +10,15 @@ dim_reduce(data, method = "pca", annot1 = NULL, annot1.name = "annot1",
 \arguments{
 \item{data}{A normalized dataframe or matrix with no missing data to be reduced in dimension.}
 
-\item{method}{a character string as the name of the method. Available values are "pca" (the default), "tsne", "umap".}
+\item{method}{A character string as the name of the method. Available values are "pca" (the default), "tsne", "umap".}
 
-\item{annot1}{Defaults to NULL.}
+\item{annot1}{A vector of continuous or factor values to color samples in the resulted plot (the order of values should be the same as the order of rows in data). Default to NULL.}
 
-\item{annot1.name}{Defaults to "annot1".}
+\item{annot1.name}{The name of the variable indicating annot1 vector. Defaults to "annot1".}
 
-\item{annot2}{Defaults to NULL.}
+\item{annot2}{A vector of factor values indicating sample shapes to plot (the order of values should be the same as the order of rows in data). Default to NULL.}
 
-\item{annot2.name}{Defaults to "annot2".}
+\item{annot2.name}{The name of the variable indicating annot2 vector. Defaults to "annot2".}
 
 \item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
 Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
@@ -31,10 +31,10 @@ A plot of data points in the 2 dimensional space.
 Reduce dimensionality with a method in \{tsne, umap, pca\}.
 }
 \examples{
-data("Nhanes")
+data("NHANES")
 
 ## Using different methods on the raw data
-df <- Nhanes[sample(nrow(Nhanes), 500), ]
+df <- NHANES[sample(nrow(NHANES), 500), ]
 plt_pca <- dim_reduce(df, method = "pca", levels = 15)
 plt_tsne <- dim_reduce(df, method = "tsne", annot1 = df$BMXBMI, annot1.name = "BMI", levels = 15)
 plt_umap <- dim_reduce(df, method = "umap", annot1 = df$LBXTC, annot1.name = "Total Cholesterol",

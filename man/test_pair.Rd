@@ -31,8 +31,8 @@ This provides a wrapper to \code{chisq.test}, \code{cor.test}, \code{aov} from \
 }
 \examples{
 ## Preprocess the data
-data("Nhanes")
-data <- data_preproc(Nhanes, levels = 15)
+data("NHANES")
+data <- data_preproc(NHANES, levels = 15)
 ## Find test p.values for:
 ## One continuous and one categorical variable
 cont_cat_test <- test_pair(data, var1 = "LBXTC", var2 = "RIAGENDR")

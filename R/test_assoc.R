@@ -25,13 +25,13 @@
 #' \item{heatmap}{A plotly object containing heatmap related to matrix.}
 #'
 #' @examples
-#' data("Nhanes")
+#' data("NHANES")
 #' ## Using raw data
-#' df <- Nhanes[sample(nrow(Nhanes), 1000), ]
+#' df <- NHANES[1:1000, ]
 #' test_matrix <- test_assoc(data = df, vars = colnames(df), plot = FALSE, levels = 15)
 #'
 #' ## Using preprocessed data
-#' data <- data_preproc(Nhanes, levels = 15)
+#' data <- data_preproc(NHANES, levels = 15)
 #' data$SEQN <- NULL
 #' ## Outputs the heatmap too (plot = TRUE)
 #' test_mat_heatmap <- test_assoc(data = data, vars = colnames(data[, 1:20]), plot = TRUE)

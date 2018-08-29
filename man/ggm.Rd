@@ -49,15 +49,15 @@ The function combines the methods to construct the model, that is, the edge set 
 }
 
 \examples{
-data("Nhanes")
+data("NHANES")
 ## Using raw data
 ## No need to choose the continuous variables (They will be detected automatically)
-glasso_ggm <- ggm(data = Nhanes[sample(nrow(Nhanes), 1000), ], methods = c("glasso"), levels = 15)
+glasso_ggm <- ggm(data = NHANES[1:1000, ], methods = c("glasso"), levels = 15)
 
 ## Using preprocessed data
-data <- data_preproc(Nhanes, levels = 15)
+data <- data_preproc(NHANES, levels = 15)
 data$SEQN <- NULL
-glasso_sin_ggm <- ggm(data = data[sample(nrow(data), 1000), 1:74], methods = c("glasso", "sin"),
+glasso_sin_ggm <- ggm(data = data[1:1000, 1:74], methods = c("glasso", "sin"),
 plot = TRUE, rho = 0.2, significance = 0.03)
 
 }

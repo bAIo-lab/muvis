@@ -8,13 +8,13 @@ data_preproc(data, is.cat = NULL, levels = 5, detect.outliers = FALSE,
   alpha = 0.5)
 }
 \arguments{
-\item{data}{An arbitrary dataset (For example data.frame or matrix).}
+\item{data}{A data.frame object or a matrix.}
 
-\item{is.cat}{A boolean list specifies which variables are categorical. (default = NULL)}
+\item{is.cat}{A boolean vector specifies which variables are categorical. (default = NULL)}
 
 \item{levels}{An integer number indicates the maximum levels of categorical variables. It is used when \code{is.cat} in NULL. (default = 5)}
 
-\item{detect.outliers}{Logical indicating if data outliers should be detected. If TRUE will replace outliers with NA. Defaults to FALSE.}
+\item{detect.outliers}{Logical indicating if data outliers should be detected. If TRUE outliers will be treated as NA. Defaults to FALSE.}
 
 \item{alpha}{A number between (0, 1). Rows where the ratio of the NA values in them is more than alpha will be deleted.}
 }
@@ -26,8 +26,8 @@ Specify categorical and continuous variables and impute the missing values.
 }
 \examples{
 ## Using levels
-data("Nhanes")
-df <- data_preproc(Nhanes, levels = 15)
+data("NHANES")
+df <- data_preproc(NHANES, levels = 15)
 
 ## Using is.cat
 require(datasets)
@@ -37,7 +37,7 @@ l[c(8, 9)] <- TRUE
 df <- data_preproc(mtcars, is.cat = l)
 
 ## Detect outliers
-df <- data_preproc(Nhanes, levels = 15, detect.outliers = TRUE, alpha = 0.4)
+df <- data_preproc(NHANES, levels = 15, detect.outliers = TRUE, alpha = 0.4)
 
 }
 \author{

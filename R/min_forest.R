@@ -26,13 +26,13 @@
 #' @author  Elyas Heidari
 #'
 #' @examples
-#' data("Nhanes")
+#' data("NHANES")
 #' ## Using raw data
-#' mf <- min_forest(data = Nhanes[sample(nrow(Nhanes), 100), ], stat = "BIC", plot = TRUE, levels = 15)
+#' mf <- min_forest(data = NHANES[1:200, ], stat = "BIC", plot = TRUE, levels = 5)
 #'
 #' ## Using preprocessed data
-#' data <- data_preproc(Nhanes, levels = 15)
-#' mf <- min_forest(data = data[sample(nrow(data), 100), ], stat = "BIC", plot = FALSE)
+#' data <- data_preproc(NHANES, levels = 15)
+#' mf <- min_forest(data = data[1:200, ], stat = "BIC", plot = FALSE)
 #'
 #' @return a list containing:
 #' \item{significanse}{A data.frame containing edges with p-statistics and p.values.}

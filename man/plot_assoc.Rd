@@ -29,8 +29,8 @@ Plots one or a pair of variables (non) interactively using ggplot2 and highchart
 }
 \examples{
 ## Preprocess the data
-data("Nhanes")
-data <- data_preproc(Nhanes, levels = 15)
+data("NHANES")
+data <- data_preproc(NHANES, levels = 15)
 
 ## Plot (non)interactive for:
 ## One categorical variable
@@ -53,7 +53,7 @@ plot_assoc(data, vars = c("SMD410", "PAD600"))
 plot_assoc(data, vars = c("PAD600", "SMD410"), interactive = TRUE)
 
 ## With raw data
-plot_assoc(Nhanes, vars = "RIDAGEYR", levels = 15)
+plot_assoc(NHANES, vars = "RIDAGEYR", levels = 15)
 
 }
 \author{

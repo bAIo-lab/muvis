@@ -24,8 +24,8 @@
 #'
 #' @examples
 #' ## Preprocess the data
-#' data("Nhanes")
-#' data <- data_preproc(Nhanes, levels = 15)
+#' data("NHANES")
+#' data <- data_preproc(NHANES, levels = 15)
 #'
 #' ## Plot (non)interactive for:
 #' ## One categorical variable
@@ -49,7 +49,7 @@
 #' plot_assoc(data, vars = c("PAD600", "SMD410"), interactive = TRUE)
 #'
 #' ## With raw data
-#' plot_assoc(Nhanes, vars = "RIDAGEYR", levels = 15)
+#' plot_assoc(NHANES, vars = "RIDAGEYR", levels = 15)
 #'
 #' @import     ggplot2
 #' @importFrom ggthemes theme_foundation
@@ -61,18 +61,19 @@
 #' @importFrom limma strsplit2
 #' @importFrom stats density cor.test chisq.test aov p.adjust
 #' @importFrom dplyr %>%
+#' @importFrom ggplotify as.ggplot
 
 plot_assoc <- function(data,
                        vars,
                        levels = NULL,
                        interactive = FALSE) {
-
   is.cat <- function(var) {
-    if(is.null(levels))
+    if (is.null(levels))
       return(is.factor(var))
     else
       return(!length(unique(var[!is.na(var)])) > levels)
   }
+
   theme_Publication <- function(base_size = 14) {
     (
       ggthemes::theme_foundation(base_size = base_size)
@@ -146,7 +147,6 @@ plot_assoc <- function(data,
   var1 <- data[, vars[1]]
   var1.is.cat <- is.cat(var1)
 
-  cat_cat <- F
   if (interactive) {
     if (length(vars) == 1) {
       if (var1.is.cat) {
@@ -233,7 +233,13 @@ plot_assoc <- function(data,
         ..density.. <- NULL
         to.ret <-
           ggplot2::ggplot(data = data, ggplot2::aes(data[, vars[1]])) +
-          ggplot2::geom_histogram(ggplot2::aes(y = ..density..), binwidth  = diff(range(data[, vars[1]], na.rm = T)) / 20,  fill = "steelblue", col = "grey", alpha = 0.7) + ggplot2::geom_density(col = "gray") +
+          ggplot2::geom_histogram(
+            ggplot2::aes(y = ..density..),
+            binwidth  = diff(range(data[, vars[1]], na.rm = T)) / 20,
+            fill = "steelblue",
+            col = "grey",
+            alpha = 0.7
+          ) + ggplot2::geom_density(col = "gray") +
           ggplot2::labs(title = paste("Histogram for", vars[1], sep = " ")) +
           ggplot2::labs(x = vars[1]) +
           ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 0.6)) + theme_Publication() + scale_fill_Publication()
@@ -243,8 +249,27 @@ plot_assoc <- function(data,
       var2.is.cat <- is.cat(var2)
 
       if (var1.is.cat & var2.is.cat) {
-        lbl <- paste("Pearson's chi-squared test p.value =", test_pair(data, vars[1], vars[2], levels = levels))
-
+        lbl <-
+          paste(
+            "Pearson's chi-squared test p.value =",
+            formatC(
+              test_pair(data, vars[1], vars[2], levels = levels),
+              digits = 4,
+              format = "g"
+            )
+          )
+        txt_grob <-
+          grid::grid.text(
+            lbl,
+            x = 0.5,
+            y = 0.5,
+            gp = grid::gpar(
+              col = "firebrick",
+              fontsize = 14,
+              fontface = "bold"
+            ),
+            draw = F
+          )
         to.ret <-
           ggplot2::ggplot(data) +
           ggplot2::geom_bar(alpha = 0.7,  ggplot2::aes(x = factor(data[, vars[1]]), fill = factor(data[, vars[1]]))) +
@@ -260,16 +285,33 @@ plot_assoc <- function(data,
         k <- 1
         for (i in strip_both) {
           j <- which(grepl('rect', g$grobs[[i]]$grobs[[1]]$childrenOrder))
-          g$grobs[[i]]$grobs[[1]]$children[[j]]$gp$fill <- fills[k] + 1
-          k <- k+1
+          g$grobs[[i]]$grobs[[1]]$children[[j]]$gp$fill <-
+            fills[k] + 1
+          k <- k + 1
         }
-        grid::grid.draw(g)
-        grid::grid.text(lbl, x=0.5,  y=0.5, gp=grid::gpar(col="firebrick", fontsize=14, fontface="bold"), draw = T)
-        cat_cat <- T
+        to.ret <- ggplotify::as.ggplot(g) +
+          ggplot2::annotation_custom(txt_grob)
       }
       if (var1.is.cat & !var2.is.cat) {
-        lbl <- paste("ANOVA test p.value =", test_pair(data, vars[1], vars[2], levels = levels))
-        txt_grob <- grid::grid.text(lbl, x=0.5,  y=0.8, gp=grid::gpar(col="firebrick", fontsize=14, fontface="bold"), draw = F)
+        lbl <-
+          paste("ANOVA test p.value =",
+                formatC(
+                  test_pair(data, vars[1], vars[2], levels = levels),
+                  digits = 4,
+                  format = "g"
+                ))
+        txt_grob <-
+          grid::grid.text(
+            lbl,
+            x = 0.5,
+            y = 0.8,
+            gp = grid::gpar(
+              col = "firebrick",
+              fontsize = 14,
+              fontface = "bold"
+            ),
+            draw = F
+          )
         to.ret <-
           ggplot2::ggplot(data, ggplot2::aes(
             x = factor(var1),
@@ -286,8 +328,25 @@ plot_assoc <- function(data,
           theme_Publication() + scale_fill_Publication()
       }
       if (!var1.is.cat & var2.is.cat) {
-        lbl <- paste("ANOVA test p.value =", test_pair(data, vars[1], vars[2], levels = levels))
-        txt_grob <- grid::grid.text(lbl, x=0.5,  y=0.8, gp=grid::gpar(col="firebrick", fontsize=14, fontface="bold"), draw = F)
+        lbl <-
+          paste("ANOVA test p.value =",
+                formatC(
+                  test_pair(data, vars[1], vars[2], levels = levels),
+                  digits = 4,
+                  format = "g"
+                ))
+        txt_grob <-
+          grid::grid.text(
+            lbl,
+            x = 0.5,
+            y = 0.8,
+            gp = grid::gpar(
+              col = "firebrick",
+              fontsize = 14,
+              fontface = "bold"
+            ),
+            draw = F
+          )
         to.ret <-
           ggplot2::ggplot(data, ggplot2::aes(
             x = factor(var2),
@@ -304,11 +363,31 @@ plot_assoc <- function(data,
           theme_Publication() + scale_fill_Publication()
       }
       if (!var1.is.cat & !var2.is.cat) {
-        lbl <- paste("Correlation test p.value =", test_pair(data, vars[1], vars[2], levels = levels))
-        txt_grob <- grid::grid.text(lbl, x=0.5,  y=0.8, gp=grid::gpar(col="firebrick", fontsize=14, fontface="bold"), draw = F)
-        g <- ggplot2::ggplot(data, ggplot2::aes(x = var1, y = var2)) +
+        lbl <-
+          paste("Correlation test p.value =",
+                formatC(
+                  test_pair(data, vars[1], vars[2], levels = levels),
+                  digits = 4,
+                  format = "g"
+                ))
+        txt_grob <-
+          grid::grid.text(
+            lbl,
+            x = 0.5,
+            y = 0.8,
+            gp = grid::gpar(
+              col = "firebrick",
+              fontsize = 14,
+              fontface = "bold"
+            ),
+            draw = F
+          )
+        g <-
+          ggplot2::ggplot(data, ggplot2::aes(x = var1, y = var2)) +
           ggplot2::geom_jitter(color = "steelblue") +
-          ggplot2::geom_smooth(method = "lm", se = TRUE, color = "black") +
+          ggplot2::geom_smooth(method = "lm",
+                               se = TRUE,
+                               color = "black") +
           ggplot2::ggtitle(paste("Scatter plot for", vars[1], "and", vars[2], collapse = " ")) +
           ggplot2::labs(x = vars[1],
                         y = vars[2],
@@ -318,10 +397,16 @@ plot_assoc <- function(data,
 
 
         to.ret <-
-          ggExtra::ggMarginal(g, type = "histogram", fill = "transparent", color = "black")
+          ggplotify::as.ggplot(
+            ggExtra::ggMarginal(
+              g,
+              type = "histogram",
+              fill = "transparent",
+              color = "black"
+            )
+          )
       }
     }
   }
-  if(!cat_cat)
-    to.ret
+  to.ret
 }

@@ -37,17 +37,22 @@ VKL <- function(data,
                 group2,
                 permute = 0,
                 levels = NULL) {
+  if (!is.null(levels))
+    data <- data_preproc(data, levels = levels)
+
   is.cat <- function(var) {
-    if(is.null(levels))
-      return(is.factor(var))
-    else
-      return(!length(unique(var[!is.na(var)])) > levels)
+    return(is.factor(var))
   }
 
+  if(is.null(levels))
+    lvl <- max(sapply(data, nlevels))
+  else
+    lvl <- levels
+
   kl.calc <- function(data, group1, group2) {
-    1:dim(data)[2] %>% map(function(x)
-      freq(data[, x], group1, group2))  %>% map(function(x)
-        abs(KL.plugin(x$group1, x$group2)) + abs(KL.plugin(x$group2, x$group1))) -> to.ret
+    1:dim(data)[2] %>% purrr::map(function(x)
+      freq(data[, x], group1, group2))  %>% purrr::map(function(x)
+        abs(entropy::KL.plugin(x$group1, x$group2)) + abs(entropy::KL.plugin(x$group2, x$group1))) -> to.ret
     return(unlist(to.ret))
   }
   freq <- function(vec, group1, group2) {
@@ -55,11 +60,11 @@ VKL <- function(data,
       vec <-
         cut(vec,
             breaks = seq((min(vec) - .0000001), (max(vec) + .0000001), (max(vec) - min(vec) + .0000002) /
-                           levels),
-            labels = 1:levels)
+                           lvl),
+            labels = 1:lvl)
     to.ret <- list(group1 = c(), group2 = c())
-    levels(factor(vec)) %>% map(function(x)
-      list(group1 = max(1, sum(vec[group1] == x)), group2 = max(1, sum(vec[group2] == x)))) %>% map(function(x)
+    levels(factor(vec)) %>% purrr::map(function(x)
+      list(group1 = max(1, sum(vec[group1] == x)), group2 = max(1, sum(vec[group2] == x)))) %>% purrr::map(function(x)
         to.ret <<-
           list(
             group1 = c(to.ret$group1, x$group1),
@@ -79,13 +84,13 @@ VKL <- function(data,
     kl.calc(data, group1.group2[1:length(group1)], group1.group2[(length(group1) + 1):length(group1.group2)])
   if (permute > 0) {
     kl.df <- data.frame()
-    1:permute %>% map(function(x)
-      shuffle(group1.group2)) %>% map(function(x)
-        list(group1 = x[1:length(group1)], group2 = x[(length(group1) + 1):length(x)])) %>% map(function(f)
-          kl.calc(data, f[[1]], f[[2]])) %>% map(function(x)
+    1:permute %>% purrr::map(function(x)
+      permute::shuffle(group1.group2)) %>% purrr::map(function(x)
+        list(group1 = x[1:length(group1)], group2 = x[(length(group1) + 1):length(x)])) %>% purrr::map(function(f)
+          kl.calc(data, f[[1]], f[[2]])) %>% purrr::map(function(x)
             kl.df <<- rbind(kl.df, x)) -> na
 
-    1:dim(kl.df)[2] %>% map(function(i)
+    1:dim(kl.df)[2] %>% purrr::map(function(i)
       p.val(kl[i], kl.df[, i])) -> kls
     return(sort(data.frame(
       KL = kl,
@@ -93,5 +98,7 @@ VKL <- function(data,
       p.value = unlist(kls)
     ), decreasing = T))
   }
-  return(sort(data.frame(KL = kl, row.names = colnames(data)), decreasing = T))
+
+  df <- data.frame(KL = kl, row.names = colnames(data))
+  return(data.frame(KL = df[order(-df$KL), ], row.names = rownames(df)))
 }

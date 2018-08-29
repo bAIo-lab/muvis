@@ -23,36 +23,34 @@ dgm(data, alpha = 1e-05, dtype = "gaussian", community = TRUE,
 \item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
 Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
 If it is set, first will run \code{\link[muvis]{data_preproc}} to specify categorical and continuous variables.}
-
-\item{...}{Remaining parameters of skleton function.}
 }
 \value{
 A list in which each element is the details of a specific fitted dtype.
-\item{significanse}{A data.frame containing edges with p.values.}
+\item{significance}{A data.frame containing edges with p.values.}
 \item{graph}{an igraph object of the graphical model.}
 \item{betweenness}{betweenness measurements of each node.}
 \item{communities}{a named vector indicating the community of each node.}
 \item{network}{a visNetwork plot of the graphical model.}
 }
 \description{
-A wrapper of skeleton function in pcalg package. Estimates the skeleton of a Directed Acyclic Graph (DAG) using PC, FCI, or RFCI algorithms.
+A wrapper of \code{\link[pcalg]{fci}} function in \code{pcalg} package. Estimates a simplified Partial Ancestral Graph (PAG) using FCI algorithm.
 }
 \details{
 There is no specific distribution needed for the data. The parameter dtype will be used for determining the data type to be provided as the input of the function. However, it is highly recommended to use "guassian" data type for both continuous and ordinal discrete data.
 }
 \examples{
-data("Nhanes")
+data("NHANES")
 ## Using raw data
 ## Using "gaussian" method for continuous data
-gaussian_dgm <- dgm(data = Nhanes[sample(nrow(Nhanes), 100), ], dtype = "gaussian", levels = 15)
+gaussian_dgm <- dgm(data = NHANES[1:200, ], dtype = "gaussian", levels = 5)
 
 ## Using "discrete" method for categorical data
-discrete_dgm <- dgm(data = Nhanes[sample(nrow(Nhanes), 100), ], dtype = "discrete", levels = 15)
+discrete_dgm <- dgm(data = NHANES[1:200, ], dtype = "discrete", levels = 5)
 
 ## Using preprocessed data
-data <- data_preproc(Nhanes, levels = 15)
+data <- data_preproc(NHANES, levels = 15)
 data$SEQN <- NULL
-prep_gauss_dgm <- dgm(data = data[sample(nrow(data), 100), ], plot = TRUE)
+prep_gauss_dgm <- dgm(data = data[1:200, ], plot = TRUE)
 
 
 

@@ -27,6 +27,21 @@ Calculates variable-wise Kullback-Leibler divergence between the two groups of s
 The function helps users to find out the variables with the most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements, we are interested in finding the most important variables in occurring cardiovascular disease.
 The function is able to carry out the permutation test to calculate the p_value for each variable.
 }
+\examples{
+data("NHANES")
+## Using preprocessed data
+data <- data_preproc(NHANES, levels = 15)
+data$SEQN <- NULL
+# Construct two groups of samples
+g1 <- which(data$PAD590 == 1)
+g2 <- which(data$PAD590 == 6)
+# Set permute to calculate p.values
+kl <- VKL(data, group1 = g1, var2 = group2 = g2, permute = 100, levels = NULL)
+
+## Using raw data
+kl <- VKL(NHANES, group1 = g1, group2 = g2, permute = 0, levels = 15)
+
+}
 \author{
 Elyas Heidari
 }

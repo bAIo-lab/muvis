@@ -17,7 +17,19 @@
 #'
 #'
 #' @author Elyas Heidari
+#' @examples
+#' data("NHANES")
+#' ## Using preprocessed data
+#' data <- data_preproc(NHANES, levels = 15)
+#' data$SEQN <- NULL
+#' # Construct two groups of samples
+#' g1 <- which(data$PAD590 == 1)
+#' g2 <- which(data$PAD590 == 6)
+#' # Set permute to calculate p.values
+#' kl <- VKL(data, group1 = g1, var2 = group2 = g2, permute = 100, levels = NULL)
 #'
+#' ## Using raw data
+#' kl <- VKL(NHANES, group1 = g1, group2 = g2, permute = 0, levels = 15)
 #'
 #' @return if permute = 0 returns a dataframe including sorted Kullback-Liebler (KL) divergence. if permute > 0 returns a dataframe including p.values and sorted KL divergence.
 #'

@@ -71,6 +71,7 @@ graph_vis <-
         igraph::as_adjacency_matrix(sub_graph),
         groups = as.factor(igraph::V(sub_graph)$community),
         layout = "spring",
+        bidirectional = T,
         color = igraph::V(sub_graph)$color,
         label.norm = "OOOOOOO",
         labels = names(igraph::V(sub_graph)),
@@ -134,13 +135,15 @@ graph_vis <-
       ))
     if (directed)
       vs <- vs %>% visNetwork::visEdges(arrows = "to")
-
     if (plot) {
       gg <- qgraph::qgraph(
         igraph::as_adjacency_matrix(ig),
+        bidirectional = T,
         groups = as.factor(igraph::V(ig)$community),
         layout = "spring",
         palette = "ggplot2",
+        label.norm = "OOOOOOO",
+        labels = names(igraph::V(ig)),
         vsize = max(1, 0.5 + 320 / (length(igraph::V(
           ig
         )) + 50)),

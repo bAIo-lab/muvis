@@ -134,7 +134,7 @@ graph_vis <-
         hover = TRUE
       ))
     if (directed)
-      vs <- vs %>% visNetwork::visEdges(arrows = "to")
+      vs <- vs %>% visNetwork::visEdges(arrows = "to", smooth = F)
     if (plot) {
       gg <- qgraph::qgraph(
         igraph::as_adjacency_matrix(ig),

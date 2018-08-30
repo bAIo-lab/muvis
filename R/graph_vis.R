@@ -27,7 +27,7 @@
 #' ## Visualize Harman23.cor covariance matrix
 #' require(datasets)
 #' data("Harman23.cor")
-#' graph_vis(Harman23.cor$cov, plot = TRUE, plot.community = TRUE, plot.community.list = c(1, 2))
+#' gv <- graph_vis(Harman23.cor$cov, plot = TRUE, plot.community = TRUE, plot.community.list = c(1, 2))
 #'
 #' @section Additional arguments:
 #' \describe{

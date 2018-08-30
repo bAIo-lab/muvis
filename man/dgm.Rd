@@ -42,15 +42,15 @@ There is no specific distribution needed for the data. The parameter dtype will 
 data("NHANES")
 ## Using raw data
 ## Using "gaussian" method for continuous data
-gaussian_dgm <- dgm(data = NHANES[1:200, ], dtype = "gaussian", levels = 5)
+gaussian_dgm <- dgm(data = NHANES[1:1000, ], dtype = "gaussian", levels = 10)
 
 ## Using "discrete" method for categorical data
-discrete_dgm <- dgm(data = NHANES[1:200, ], dtype = "discrete", levels = 5)
+discrete_dgm <- dgm(data = NHANES[1000:1200, ], dtype = "discrete", levels = 5)
 
 ## Using preprocessed data
 data <- data_preproc(NHANES, levels = 15)
 data$SEQN <- NULL
-prep_gauss_dgm <- dgm(data = data[1:200, ], plot = TRUE)
+prep_gauss_dgm <- dgm(data = data[1:1000, ], plot = TRUE)
 
 
 

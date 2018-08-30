@@ -29,27 +29,27 @@
 #'
 #' ## Plot (non)interactive for:
 #' ## One categorical variable
-#' plot_assoc(data, vars = "PAD600")
-#' plot_assoc(data, vars = "SMD410", interactive = TRUE)
+#' pt1 <- plot_assoc(data, vars = "PAD600")
+#' pt2 <- plot_assoc(data, vars = "SMD410", interactive = TRUE)
 #'
 #' ## One continuous variable
-#' plot_assoc(data, vars = "LBXTC")
-#' plot_assoc(data, vars = "BMXBMI", interactive = TRUE)
+#' pt3 <- plot_assoc(data, vars = "LBXTC")
+#' pt4 <- plot_assoc(data, vars = "BMXBMI", interactive = TRUE)
 #'
 #' ## One continuous and one categorical variable
-#' plot_assoc(data, vars = c("LBXTC", "RIAGENDR"))
-#' plot_assoc(data, vars = c("BMXBMI", "PAD600"), interactive = TRUE)
+#' pt5 <- plot_assoc(data, vars = c("LBXTC", "RIAGENDR"))
+#' pt6 <- plot_assoc(data, vars = c("BMXBMI", "PAD600"), interactive = TRUE)
 #
 #' ##  Two continuous variables
-#' plot_assoc(data, vars = c("LBXTC", "BMXBMI"))
-#' plot_assoc(data, vars = c("LBXVIE", "LBXVIC"), interactive = TRUE)
+#' pt7 <- plot_assoc(data, vars = c("LBXTC", "BMXBMI"))
+#' pt8 <- plot_assoc(data, vars = c("LBXVIE", "LBXVIC"), interactive = TRUE)
 #'
 #' ## Two categorical variables
-#' plot_assoc(data, vars = c("SMD410", "PAD600"))
-#' plot_assoc(data, vars = c("PAD600", "SMD410"), interactive = TRUE)
+#' pt9 <- plot_assoc(data, vars = c("SMD410", "PAD600"))
+#' pt10 <- plot_assoc(data, vars = c("PAD600", "SMD410"), interactive = TRUE)
 #'
 #' ## With raw data
-#' plot_assoc(NHANES, vars = "RIDAGEYR", levels = 15)
+#' pt11 <- plot_assoc(NHANES, vars = "RIDAGEYR", levels = 15)
 #'
 #' @import     ggplot2
 #' @importFrom ggthemes theme_foundation

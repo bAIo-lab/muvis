@@ -26,7 +26,7 @@
 #' g1 <- which(data$PAD590 == 1)
 #' g2 <- which(data$PAD590 == 6)
 #' # Set permute to calculate p.values
-#' kl <- VKL(data, group1 = g1, var2 = group2 = g2, permute = 100, levels = NULL)
+#' kl <- VKL(data, group1 = g1, group2 = g2, permute = 100, levels = NULL)
 #'
 #' ## Using raw data
 #' kl <- VKL(NHANES, group1 = g1, group2 = g2, permute = 0, levels = 15)

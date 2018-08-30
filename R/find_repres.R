@@ -24,14 +24,12 @@
 #' @examples
 #' data("NHANES")
 #' ## Using raw data
-#' repres_vars <- find_repres(data = NHANES[1:500, ], ratio = .2, levels = 10)
-#' repres_vars
+#' repres_vars <- find_repres(data = NHANES[1:1000, ], ratio = .2, levels = 10)
 #'
 #' ## Using preprocessed data
 #' data <- data_preproc(NHANES, levels = 15)
 #' ## With \code{weighted = TRUE}
-#' repres_vars <- find_repres(data = data[1:500, ], weighted = TRUE)
-#' repres_vars
+#' repres_vars <- find_repres(data = data[1:1000, ], weighted = TRUE)
 #'
 #' @return a vector containing names of representative variables.
 #'

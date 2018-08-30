@@ -28,11 +28,11 @@
 #' @examples
 #' data("NHANES")
 #' ## Using raw data
-#' mf <- min_forest(data = NHANES[1:200, ], stat = "BIC", plot = TRUE, levels = 5)
+#' mf <- min_forest(data = NHANES[1:1000, ], stat = "BIC", plot = TRUE, levels = 5)
 #'
 #' ## Using preprocessed data
 #' data <- data_preproc(NHANES, levels = 15)
-#' mf <- min_forest(data = data[1:200, ], stat = "BIC", plot = FALSE)
+#' mf <- min_forest(data = data[1:1000, ], stat = "BIC", plot = FALSE)
 #'
 #' @return a list containing:
 #' \item{significanse}{A data.frame containing edges with p-statistics and p.values.}

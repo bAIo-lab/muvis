@@ -20,7 +20,7 @@ sections:
     - min_forest
     - dim_reduce
     - dgm
-    - find_rep
+    - find_repres
     - graph_vis
     - VKL
     - VVKL

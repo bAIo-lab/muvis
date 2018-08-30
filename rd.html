@@ -7,7 +7,7 @@
     <meta name="author" content="statCompTeam@bAIo-lab" />
   
   
-  <title>muvis Documentation</title>
+  <title>muvis</title>
 
     <script src="rd_files/jquery-1.11.3/jquery.min.js"></script>
   <link href="rd_files/bootstrap-3.3.2/css/bootstrap.min.css" rel="stylesheet" />
@@ -46,7 +46,7 @@
           <span class="icon-bar"></span>
         </button>
                 <a href="index.html" class="navbar-brand page-scroll">
-        muvis Documentation - multivariate analysis and visualization
+        muvis - multivariate analysis and visualization
         </a>
       </div>
             <nav class="collapse navbar-collapse" role="navigation">
@@ -257,7 +257,7 @@ A logical value to show if the graph should be plotted. (default = FALSE)
 levels
 </dt>
 <dd class="rd-dd">
-An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified. If it is set, first will run <code>data_preproc</code> to specify categorical and continuous variables.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> and the categorical variables are specified. If it is set, first will run <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> to specify categorical and continuous variables.
 </dd>
 <dt>
 …
@@ -438,7 +438,7 @@ A logical value to show if the graph should be plotted. (default = FALSE)
 levels
 </dt>
 <dd class="rd-dd">
-An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified. If it is set, first will run <code>data_preproc</code> to specify categorical and continuous variables.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> and the categorical variables are specified. If it is set, first will run <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> to specify categorical and continuous variables.
 </dd>
 </dl>
 <h4>
@@ -584,7 +584,7 @@ The name of the variable indicating annot2 vector. Defaults to “annot2”.
 levels
 </dt>
 <dd class="rd-dd">
-An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified. If it is set, first will run <code>data_preproc</code> to specify categorical and continuous variables.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> and the categorical variables are specified. If it is set, first will run <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> to specify categorical and continuous variables.
 </dd>
 </dl>
 <h4>
@@ -668,7 +668,7 @@ A logical value to show if the graph should be plotted. (default = FLASE)
 levels
 </dt>
 <dd class="rd-dd">
-An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified. If it is set, first will run <code>data_preproc</code> to specify categorical and continuous variables.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> and the categorical variables are specified. If it is set, first will run <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> to specify categorical and continuous variables.
 </dd>
 </dl>
 <h4>
@@ -767,7 +767,7 @@ Author
 Find representative variables.
 </h3>
 <p class="rd-p">
-Uses <code>min_forest</code> community detection and selects a number of variables from each community as representative.
+Uses <code><a href='http://www.rdocumentation.org/packages/muvis/topics/min_forest'>min_forest</a></code> community detection and selects a number of variables from each community as representative.
 </p>
 <h4>
 Usage
@@ -799,7 +799,7 @@ A logical indicating if the number of nodes selected from each community is weig
 levels
 </dt>
 <dd class="rd-dd">
-An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified. If it is set, first will run <code>data_preproc</code> to specify categorical and continuous variables.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> and the categorical variables are specified. If it is set, first will run <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> to specify categorical and continuous variables.
 </dd>
 </dl>
 <h4>
@@ -814,7 +814,7 @@ a vector containing names of representative variables.
 Details
 </h4>
 <p class="rd-p">
-The function uses <code>min_forest</code> to detect communities of variables. It sorts each community nodes based on their degree and selects an equal number of each based on <code>ratio</code> parameter. If <code>weighted</code> is TRUE it will select different number of nodes from each community based on their sizes.
+The function uses <code><a href=http://www.rdocumentation.org/packages/muvis/topics/min_forest>min_forest</a></code> to detect communities of variables. It sorts each community nodes based on their degree and selects an equal number of each based on <code>ratio</code> parameter. If <code>weighted</code> is TRUE it will select different number of nodes from each community based on their sizes.
 </p>
 <h4>
 Examples
@@ -1036,7 +1036,7 @@ An integer indicating the number of permutations for permutation test. If 0 (the
 levels
 </dt>
 <dd class="rd-dd">
-An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> and the categorical variables are specified.
 </dd>
 </dl>
 <h4>
@@ -1118,7 +1118,7 @@ An integer indicating the number of permutations for permutation test. If 0 (the
 levels
 </dt>
 <dd class="rd-dd">
-An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> and the categorical variables are specified.
 </dd>
 <dt>
 plot
@@ -1224,7 +1224,7 @@ Second variable
 levels
 </dt>
 <dd class="rd-dd">
-An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> and the categorical variables are specified.
 </dd>
 </dl>
 <h4>
@@ -1314,7 +1314,7 @@ a list including the name (or index) of columns of data.
 levels
 </dt>
 <dd class="rd-dd">
-An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> and the categorical variables are specified.
 </dd>
 <dt>
 plot
@@ -1404,7 +1404,7 @@ A vector of length one or two including the name (or index) of a (row) column(s)
 levels
 </dt>
 <dd class="rd-dd">
-An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code><a href=http://www.rdocumentation.org/packages/muvis/topics/data_preproc>data_preproc</a></code> and the categorical variables are specified.
 </dd>
 <dt>
 interactive

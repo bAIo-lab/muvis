@@ -141,7 +141,7 @@ dgm <-
         enabled = T,
         degree = 1,
         hover = T
-      )) %>% visNetwork::visEdges(arrows = "to")
+      )) %>% visNetwork::visEdges(arrows = "to", smooth = F)
     if (community) {
       to.ret <- list(
         significance = significance,

@@ -53,25 +53,18 @@ library(kableExtra)
 We'll use National Health and Nutrition Examination Survey (NHANES), 2005-2006 dataset to work with `muvis`. The original dataset contains more than 7,000 variables and nearly 10,000 samples which we selected 4461 samples and 161 variables, including Id variable ("SEQN"), continuous (i.e., laboratory measurements), and categorical variables (i.e., questions). For more details about variable names and samples visit website- <https://www.icpsr.umich.edu/icpsrweb/ICPSR/studies/25504/summary>
 
 ```{r dataset}
-data("Nhanes")
-Nhanes$SEQN <- NULL
+data("NHANES")
+NHANES$SEQN <- NULL
 ```
 
 ## data_preproc
 The dataset has some missing values. We'll use `data_preproc` to impute missing values and to specify categorical and continuous variables (Setting level = 15). The first 74 columns are continuous.
 ```{r preprocess}
-data <- data_preproc(Nhanes, levels = 15, detect.outliers = T, alpha = .4)
+data <- data_preproc(NHANES, levels = 15, detect.outliers = T, alpha = .4)
 kableExtra::kable(head(data)) %>%
   kable_styling() %>%
   scroll_box(width = "100%", height = "200px")
 ```
-
-<!-- ## dim.reduce -->
-<!-- Use `dim.reduce` to visualize the continuous variables in 2 dimensions with tsne.  -->
-<!-- ```{r dim, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE} -->
-<!-- dim.reduce(data[,1:63], method = "tsne") -> plt -->
-<!-- #plt -->
-<!-- ``` -->
 
 ## ggm
 Use `ggm` to construct a Gaussian Graphical Model with glasso and significance test method. (Levels is set to default (NULL) as the data has been preprocessed using `data_preproc`.)
@@ -88,15 +81,29 @@ mf <- min_forest(data, stat = "BIC", community = T, plot = F, levels = NULL)
 mf$network
 mf$betweenness[1:10]
 ```
+Cluster the first 200 samples of data using `min.forest` with community = TRUE. Before running function transpose the data and convert the values to numeric (Because the community detection applies on the columns of the dataset).
 
-<!-- ## should be dgm not bn -->
-<!-- Use `bn` to learn the structure of a Bayesian network fitting data. -->
-<!-- ```{r bn, echo=TRUE, message=FALSE, warning=FALSE, eval=FALSE} -->
-<!-- b <- bn(data = data[,1:63]) -->
-<!-- b$network -->
-<!-- b$betweenness -->
-<!-- b$communities -->
-<!-- ``` -->
+```{r cluster, echo=TRUE, message=FALSE, warning=FALSE}
+t_nhanes <- as.data.frame(sapply(as.data.frame(t(data[1:200, ])), function(x) as.numeric(as.character(x))))
+cluster_mf <- min_forest(t_nhanes, plot = F)
+cluster_mf$network
+```
+
+## dim_reduce
+Use `dim_reduce` function with tsne method to plot the first 200 samples in the 2 dimensional space and also color the points based on communities resulted in the above minimal forest graph (cluster_mf).
+
+```{r dim_red, echo=TRUE, message=FALSE, warning=FALSE}
+communities <- cluster_mf$communities
+communities <- communities[match(c(1:200), as.integer(names(communities)))]
+dim_reduce(data[1:200,], method = "tsne", annot1 = as.factor(communities), annot1.name = "minimal forest communities")
+```
+
+## dgm
+Construct a causal network of continuous-valued variables of data using `dgm`. (dtype parameter is set to 'gaussian' to run on continuous variables)
+```{r dgm, echo=TRUE, message=FALSE, warning=FALSE}
+nhanes_dgm <- dgm(data, dtype = "gaussian", alpha = 1e-15, plot = F)
+nhanes_dgm$network
+```
 
 ## graph_vis
 Use `graph_vis` to find communities of an arbitrary graph object and plot them. (The graph "mf$graph" here is the one resulted by `minforest` function.)
@@ -105,7 +112,18 @@ Here we plot just the two first communities.
 mf.val <- graph_vis(mf$graph, directed = F, community = T, betweenness = T, plot = T, plot.community = T, plot.community.list = c(1,2))
 ```
 
-<!-- here should be the VKL --->
+## VKL
+Calculate variable-wise Kullback-Leibler divergence between two groups of samples g1 and g2. The first group is people watching TV less than an hour a day, and nobody smokes in their home. In contrast, the second one consists of people who watch television for more than 5 hours a day and smoke.
+Use `VKL` function to find the most different variables between the two groups.
+
+```{r div1, echo=TRUE, message=FALSE, warning=FALSE}
+g1 <- which(data$PAD590 == 1 & data$SMD410 == 2)
+g2 <- which(data$PAD590 == 6 & data$SMD410 == 1)
+KL <- VKL(data, group1 = g1, group2 = g2, permute = 100)
+kableExtra::kable(head(KL, n = 5)) %>%
+  kable_styling() %>%
+  scroll_box(width = "300px", height = "300px")
+```
 ## VVKL
 Use `VVKL` to find the most deferentially variables between people with relatively high Total Cholesterol (relative to vitamin E) and people with high Vitamin E (relative to Total Cholesterol).
 "LBXTC" is Total Cholesterol and "LBXVIE" is Vitamin E. Here we use the function to find just the categorical variables.
@@ -144,10 +162,11 @@ edges[edges$from == "DRD360" | edges$to == "DRD360", ]
 plot_assoc(data, vars = c("LBXTHG", "DRD360"), levels = 15, interactive = F)
 ```
 
-<!-- Relative histogram of DIQ010 (Having diabetes) vs PAD590 (Number of hours watch TV or Video last month. 1: less than hour, 2: one hour, ..., 6: five or more. 7: None, 8: Don't know): -->
-<!-- ```{r plot4, echo=TRUE, message=FALSE, warning=FALSE} -->
-<!-- plot_assoc(data, vars = c("DIQ010", "PAD590"), levels = 15) -->
-<!-- ``` -->
+Relative histogram of "DSD010" question (about taking any dietary supplements. 1: yes, 2: no, 3: refused, 4: don't know) vs "SMD410" question (about smoking in the home. 1: yes, 2: no):
+```{r plot4, echo=TRUE, message=FALSE, warning=FALSE}
+edges[edges$from == 'SMD410'| edges$to == 'SMD410', ]
+plot_assoc(data, vars = c("DSD010", "SMD410"))
+```
 
 Scatter plot of "LBXHGB" (hemoglobin amount in the blood (g/dL)) and "LBXSIR" (refrigerated Iron in the blood (ug/dL)):
 ```{r plot5, echo=TRUE, message=FALSE, warning=FALSE}

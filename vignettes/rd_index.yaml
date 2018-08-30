@@ -16,10 +16,11 @@ sections:
   section_name: Package Functions
   topics:
     - data_preproc
-    - dim_reduce
     - ggm
     - min_forest
+    - dim_reduce
     - dgm
+    - find_rep
     - graph_vis
     - VKL
     - VVKL

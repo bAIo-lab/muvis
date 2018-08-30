@@ -13,7 +13,7 @@ RoxygenNote: 6.0.1
 biocViews: 
 remotes: cran/gRapHD, 
          jlmelville/smallvis/smallvis,
-         jbkunst/highcharter
+         git::https://github.com/jbkunst/highcharter.git
          git::https://github.com/bAIo-lab/AnomalyDetection.git
 Imports:
     visNetwork,

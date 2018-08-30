@@ -72,13 +72,18 @@
         <div id="toc">
           <ul>
           <li><a href="#package-functions">Package Functions</a><ul>
-          <li><a href="#data.preproc">data.preproc</a></li>
+          <li><a href="#data_preproc">data_preproc</a></li>
           <li><a href="#ggm">ggm</a></li>
-          <li><a href="#min.forest">min.forest</a></li>
-          <li><a href="#graph.vis">graph.vis</a></li>
-          <li><a href="#div.vars">div.vars</a></li>
-          <li><a href="#violating.vars">violating.vars</a></li>
-          <li><a href="#plot.assoc">plot.assoc</a></li>
+          <li><a href="#min_forest">min_forest</a></li>
+          <li><a href="#dim_reduce">dim_reduce</a></li>
+          <li><a href="#dgm">dgm</a></li>
+          <li><a href="#find_repres">find_repres</a></li>
+          <li><a href="#graph_vis">graph_vis</a></li>
+          <li><a href="#vkl">VKL</a></li>
+          <li><a href="#vvkl">VVKL</a></li>
+          <li><a href="#test_pair">test_pair</a></li>
+          <li><a href="#test_assoc">test_assoc</a></li>
+          <li><a href="#plot_assoc">plot_assoc</a></li>
           </ul></li>
           </ul>
         </div>
@@ -90,7 +95,7 @@
 multivariate analysis and visualization
 </h1>
 <p>
-<strong>Authors:</strong> statCompTeam@bAIo-lab
+<strong>Authors:</strong>
 </p>
 <p>
 <strong>Version:</strong> 0.1.0
@@ -102,13 +107,19 @@ multivariate analysis and visualization
 Description
 </h4>
 <p>
-A collection of tools to preprocess, analyze, and visualize multivariate datasets, including both continuous and categorical variables, e.g., genotype-phenotype datasets, etc.
+A collection of tools to preprocess, analyze, and visualize multivariate datasets, including both continuous and categorical variables, e.g., biological assays, social surveys, questionnaires, etc.
+</p>
+<h4>
+Depends
+</h4>
+<p>
+R (&gt;= 3.0)
 </p>
 <h4>
 Imports
 </h4>
 <p>
-visNetwork, gRbase, gRim, purrr, gRapHD, permute, graph, SIN, glasso, igraph, stats, entropy, dplyr, highcharter, limma, smallvis, bnlearn, magrittr, utils, methods, qgraph
+visNetwork, gRbase, gRim, purrr, gRapHD, permute, graph, SIN, glasso, igraph, stats, entropy, dplyr, limma, smallvis, highcharter, utils, methods, qgraph, pcalg, Rtsne, ggExtra, ggplot2, ggthemes, heatmaply, scales, plotly, AnomalyDetection, ggplotify
 </p>
 <h4>
 Suggests
@@ -118,19 +129,19 @@ packagedocs
 </p>
 <div id="package-functions" class="section level1">
 <h1>Package Functions</h1>
-<div id="data.preproc" class="section level2">
-<h2>data.preproc</h2>
-<a id="data.preproc_alias"></a>
+<div id="data_preproc" class="section level2">
+<h2>data_preproc</h2>
+<a id="data_preproc_alias"></a>
 <h3>
-data preprocess
+preprocess the data
 </h3>
 <p class="rd-p">
-Specify categorical and continuous variables and imputes dataset missing-values.
+Specify categorical and continuous variables and impute the missing values.
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>data.preproc(data, is.cat&nbsp;=&nbsp;NULL, levels&nbsp;=&nbsp;10)</div></code></pre>
+<pre class="r"><code><div>data_preproc(data, is.cat&nbsp;=&nbsp;NULL, levels&nbsp;=&nbsp;5, detect.outliers&nbsp;=&nbsp;FALSE, alpha&nbsp;=&nbsp;0.5)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -139,19 +150,31 @@ Arguments
 data
 </dt>
 <dd class="rd-dd">
-an arbitrary dataset.
+A data.frame object or a matrix.
 </dd>
 <dt>
 is.cat
 </dt>
 <dd class="rd-dd">
-A list containing boolean elements related to dataset variables. (For each categorical variable it is TRUE) (Default = NULL)
+A boolean vector specifies which variables are categorical. (default = NULL)
 </dd>
 <dt>
 levels
 </dt>
 <dd class="rd-dd">
-an integer to indicate the maximum levels of categorical variables. The default is 10. (It will be used when “is.cat” list in NULL)
+An integer number indicates the maximum levels of categorical variables. It is used when <code>is.cat</code> in NULL. (default = 5)
+</dd>
+<dt>
+detect.outliers
+</dt>
+<dd class="rd-dd">
+Logical indicating if data outliers should be detected. If TRUE outliers will be treated as NA. Defaults to FALSE.
+</dd>
+<dt>
+alpha
+</dt>
+<dd class="rd-dd">
+A number between (0, 1). Rows where the ratio of the NA values in them is more than alpha will be deleted.
 </dd>
 </dl>
 <h4>
@@ -159,9 +182,25 @@ Value
 </h4>
 <p class="rd-p">
 <dl>
-a normalized dataframe with no missing data of continuous and (or) categorical measurements.
+A normalized data.frame object with specified continuous and (or) categorical variables and no missing values.
 </dl>
 </p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>## Using levels
+data(&quot;NHANES&quot;)
+df &lt;- data_preproc(NHANES, levels = 15)
+
+## Using is.cat
+require(datasets)
+data(&quot;mtcars&quot;)
+l &lt;- logical(11)
+l[c(8, 9)] &lt;- TRUE
+df &lt;- data_preproc(mtcars, is.cat = l)
+
+## Detect outliers
+df &lt;- data_preproc(NHANES, levels = 15, detect.outliers = TRUE, alpha = 0.4)</code></pre>
 <h4>
 Author
 </h4>
@@ -179,7 +218,7 @@ Fit a Gaussian Graphical Model to continuous-valued dataset employing a subset o
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>ggm(data, methods&nbsp;=&nbsp;c("glasso"), community&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;FALSE, ...)</div></code></pre>
+<pre class="r"><code><div>ggm(data, methods&nbsp;=&nbsp;c("glasso"), community&nbsp;=&nbsp;TRUE, betweenness&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;FALSE, levels&nbsp;=&nbsp;NULL, ...)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -194,25 +233,37 @@ A normalized dataframe or matrix with no missing data of continuous measurements
 methods
 </dt>
 <dd class="rd-dd">
-(default = “glasso”)
+A string or list of strings indicate methods used to construct the model. See the details for more information. (default = “glasso”)
 </dd>
 <dt>
 community
 </dt>
 <dd class="rd-dd">
-(default = TRUE)
+A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)
+</dd>
+<dt>
+betweenness
+</dt>
+<dd class="rd-dd">
+A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)
 </dd>
 <dt>
 plot
 </dt>
 <dd class="rd-dd">
-(default = FALSE)
+A logical value to show if the graph should be plotted. (default = FALSE)
+</dd>
+<dt>
+levels
+</dt>
+<dd class="rd-dd">
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified. If it is set, first will run <code>data_preproc</code> to specify categorical and continuous variables.
 </dd>
 <dt>
 …
 </dt>
 <dd class="rd-dd">
-Fit a Gaussian Graphical Model to continuous-valued dataset employing a subset of methods from stepwise AIC, stepwise BIC, stepwise significance test, partial correlation thresholding, edgewise significance test, or glasso. Also visualizes the fitted Graphical Model.
+Any additional arguments described below.
 </dd>
 </dl>
 <h4>
@@ -220,7 +271,15 @@ Value
 </h4>
 <p class="rd-p">
 <dl>
-A list in which each element is the details of a specific fitted method.
+A list in which each element is the details of a specific fitting method.
+<dt>
+significance
+</dt>
+<dd>
+A data.frame containing edges with p.values.
+</dd>
+</p>
+<p class="rd-p">
 <dt>
 graph
 </dt>
@@ -233,7 +292,7 @@ an igraph object of the graphical model.
 betweenness
 </dt>
 <dd>
-betweenness measurements of each edge.
+betweenness measurements of each node.
 </dd>
 </p>
 <p class="rd-p">
@@ -241,7 +300,15 @@ betweenness measurements of each edge.
 network
 </dt>
 <dd>
-a highcharter plot of the graphical model.
+a visNetwork plot of the graph.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+communities
+</dt>
+<dd>
+a named vector indicating the community of each node.
 </dd>
 </p>
 <p class="rd-p">
@@ -252,6 +319,43 @@ Details
 </h4>
 <p class="rd-p">
 The function combines the methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse estimation of the inverse covariance matrix.
+</p>
+<h4>
+Additional arguments
+</h4>
+<p class="rd-p">
+</p>
+<p class="rd-p">
+<dl>
+</p>
+<p class="rd-p">
+<dt>
+threshold
+</dt>
+<dd>
+A threshold for partial correlation thresholding method (default = 0.05). To be used only when the method “threshold” is used.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+significance
+</dt>
+<dd>
+A cutoff for edge significance (default = 0.05). To be used only when the method “significance” is used.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+rho
+</dt>
+<dd>
+(Non-negative) regularization parameter for glasso (default = 0.1). To be used only when the method “glasso” is used.
+</dd>
+</p>
+<p class="rd-p">
+</dl>
+</p>
+<p class="rd-p">
 </p>
 <h4>
 References
@@ -266,23 +370,36 @@ Friedman, J., Hastie, T., &amp; Tibshirani, R. (2007). Sparse inverse covariance
 Abreu, G. C. G., Edwards, D., &amp; Labouriau, R. (2010). High-Dimensional Graphical Model Search with thegRapHDRPackage. Journal of Statistical Software, 37(1). <a href = https://doi.org/10.18637/jss.v037.i01>https://doi.org/10.18637/jss.v037.i01</a>
 </p>
 <h4>
+Examples
+</h4>
+<pre class="r"><code>data(&quot;NHANES&quot;)
+## Using raw data
+## No need to choose the continuous variables (They will be detected automatically)
+glasso_ggm &lt;- ggm(data = NHANES[1:1000, ], methods = c(&quot;glasso&quot;), levels = 15)
+
+## Using preprocessed data
+data &lt;- data_preproc(NHANES, levels = 15)
+data$SEQN &lt;- NULL
+glasso_sin_ggm &lt;- ggm(data = data[1:1000, 1:74], methods = c(&quot;glasso&quot;, &quot;sin&quot;),
+plot = TRUE, rho = 0.2, significance = 0.03)</code></pre>
+<h4>
 Author
 </h4>
 <p>Elyas Heidari</p>
 </div>
-<div id="min.forest" class="section level2">
-<h2>min.forest</h2>
-<a id="min.forest_alias"></a>
+<div id="min_forest" class="section level2">
+<h2>min_forest</h2>
+<a id="min_forest_alias"></a>
 <h3>
-construct and visualize a minimum forest based on Chow-Liu algorithm
+construct and visualize a minimal forest based on Chow-Liu algorithm
 </h3>
 <p class="rd-p">
-Fits a minimum forest to data. Also visualizes the the minimum forest.
+Fits a minimal forest to data and visualizes it.
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>min.forest(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;FALSE)</div></code></pre>
+<pre class="r"><code><div>min_forest(data, stat&nbsp;=&nbsp;"BIC", community&nbsp;=&nbsp;TRUE, betweenness&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;FALSE, levels&nbsp;=&nbsp;NULL)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -291,25 +408,37 @@ Arguments
 data
 </dt>
 <dd class="rd-dd">
-a normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
+A normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
 </dd>
 <dt>
 stat
 </dt>
 <dd class="rd-dd">
-measure to be minimized: LR, AIC, or BIC (the default). Default is BIC. It can also be a user-defined function with the format: FUN(model, dataset, previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.
+Measure to be minimized: LR, AIC, or BIC (the default). The default is BIC. It can also be a user-defined function with the format: FUN (model, dataset, previous, forbEdges); where the parameters are defined as in chStat. The function must return a structure as in chStat.
 </dd>
 <dt>
 community
 </dt>
 <dd class="rd-dd">
-a logical value. If TRUE (the default) the network will be colored into communities of edge-dense subgraphs.
+A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)
+</dd>
+<dt>
+betweenness
+</dt>
+<dd class="rd-dd">
+A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)
 </dd>
 <dt>
 plot
 </dt>
 <dd class="rd-dd">
-(default = FALSE)
+A logical value to show if the graph should be plotted. (default = FALSE)
+</dd>
+<dt>
+levels
+</dt>
+<dd class="rd-dd">
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified. If it is set, first will run <code>data_preproc</code> to specify categorical and continuous variables.
 </dd>
 </dl>
 <h4>
@@ -319,6 +448,15 @@ Value
 <dl>
 a list containing:
 <dt>
+significanse
+</dt>
+<dd>
+A data.frame containing edges with p-statistics and p.values.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+summary
 </dt>
 <dd>
 a gRapHD object which is the fit model.
@@ -326,16 +464,34 @@ a gRapHD object which is the fit model.
 </p>
 <p class="rd-p">
 <dt>
+graph
 </dt>
 <dd>
-betweenness measurements for each node.
+an igraph object.
 </dd>
 </p>
 <p class="rd-p">
 <dt>
+betweenness
 </dt>
 <dd>
-the highcharter plot of the network.
+betweenness measurements of each node.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+network
+</dt>
+<dd>
+a visNetwork plot of the graph.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+communities
+</dt>
+<dd>
+a named vector indicating the community of each node.
 </dd>
 </p>
 <p class="rd-p">
@@ -357,56 +513,78 @@ Chow, C.K., and Liu, C.N. (1968) Approximating discrete probability distribution
 Edwards, D., de Abreu, G.C.G. and Labouriau, R. (2010). Selecting high- dimensional mixed graphical models using minimal AIC or BIC forests. BMC Bioinformatics, 11:18.
 </p>
 <h4>
+Examples
+</h4>
+<pre class="r"><code>data(&quot;NHANES&quot;)
+## Using raw data
+mf &lt;- min_forest(data = NHANES[1:1000, ], stat = &quot;BIC&quot;, plot = TRUE, levels = 5)
+
+## Using preprocessed data
+data &lt;- data_preproc(NHANES, levels = 15)
+mf &lt;- min_forest(data = data[1:1000, ], stat = &quot;BIC&quot;, plot = FALSE)</code></pre>
+<h4>
 Author
 </h4>
 <p>Elyas Heidari</p>
 </div>
-<div id="graph.vis" class="section level2">
-<h2>graph.vis</h2>
-<a id="graph.vis_alias"></a>
+<div id="dim_reduce" class="section level2">
+<h2>dim_reduce</h2>
+<a id="dim_reduce_alias"></a>
 <h3>
-graph visualization and community detection
+Dimensionality reduction and visualization.
 </h3>
 <p class="rd-p">
-Converts the graph to an igraph object, finds communities and plots it
+Reduce dimensionality with a method in {tsne, umap, pca}.
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>graph.vis(graph, directed&nbsp;=&nbsp;F, community&nbsp;=&nbsp;T, betweenness&nbsp;=&nbsp;T, plot&nbsp;=&nbsp;F, ...)</div></code></pre>
+<pre class="r"><code><div>dim_reduce(data, method&nbsp;=&nbsp;"pca", annot1&nbsp;=&nbsp;NULL, annot1.name&nbsp;=&nbsp;"annot1", annot2&nbsp;=&nbsp;NULL, annot2.name&nbsp;=&nbsp;"annot2", levels&nbsp;=&nbsp;NULL)</div></code></pre>
 <h4>
 Arguments
 </h4>
 <dl class="rd-dl">
 <dt>
-graph
+data
 </dt>
 <dd class="rd-dd">
-an arbitrary graph object in R
+A normalized dataframe or matrix with no missing data to be reduced in dimension.
 </dd>
 <dt>
-directed
+method
 </dt>
 <dd class="rd-dd">
-TRUE if the graph is directed (default = FALSE)
+A character string as the name of the method. Available values are “pca” (the default), “tsne”, “umap”.
 </dd>
 <dt>
-community
+annot1
 </dt>
 <dd class="rd-dd">
-if TRUE finds the communities (default = TRUE)
+A vector of continuous or factor values to color samples in the resulted plot (the order of values should be the same as the order of rows in data). Default to NULL.
 </dd>
 <dt>
-betweenness
+annot1.name
 </dt>
 <dd class="rd-dd">
-if TRUE calculate betweenness for the nodes (default = TRUE)
+The name of the variable indicating annot1 vector. Defaults to “annot1”.
 </dd>
 <dt>
-plot
+annot2
 </dt>
 <dd class="rd-dd">
-if TRUE plots the graph and communities (default = FALSE)
+A vector of factor values indicating sample shapes to plot (the order of values should be the same as the order of rows in data). Default to NULL.
+</dd>
+<dt>
+annot2.name
+</dt>
+<dd class="rd-dd">
+The name of the variable indicating annot2 vector. Defaults to “annot2”.
+</dd>
+<dt>
+levels
+</dt>
+<dd class="rd-dd">
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified. If it is set, first will run <code>data_preproc</code> to specify categorical and continuous variables.
 </dd>
 </dl>
 <h4>
@@ -414,12 +592,104 @@ Value
 </h4>
 <p class="rd-p">
 <dl>
-(If plot = TRUE it plots the noninteractive graph and communities) A list contains:
+A plot of data points in the 2 dimensional space.
+</dl>
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>data(&quot;NHANES&quot;)
+
+## Using different methods on the raw data
+df &lt;- NHANES[sample(nrow(NHANES), 500), ]
+plt_pca &lt;- dim_reduce(df, method = &quot;pca&quot;, levels = 15)
+plt_tsne &lt;- dim_reduce(df, method = &quot;tsne&quot;, annot1 = df$BMXBMI, annot1.name = &quot;BMI&quot;, levels = 15)
+plt_umap &lt;- dim_reduce(df, method = &quot;umap&quot;, annot1 = df$LBXTC, annot1.name = &quot;Total Cholesterol&quot;,
+annot2 = as.factor(df$RIAGENDR), annot2.name = &quot;Gender&quot;, levels = 15)</code></pre>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari</p>
+</div>
+<div id="dgm" class="section level2">
+<h2>dgm</h2>
+<a id="dgm_alias"></a>
+<h3>
+construct and visualize causal (directed) networks
+</h3>
+<p class="rd-p">
+A wrapper of <code><a href='http://www.rdocumentation.org/packages/pcalg/topics/fci'>fci</a></code> function in <code>pcalg</code> package. Estimates a simplified Partial Ancestral Graph (PAG) using FCI algorithm.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>dgm(data, alpha&nbsp;=&nbsp;1e-05, dtype&nbsp;=&nbsp;"gaussian", community&nbsp;=&nbsp;TRUE, betweenness&nbsp;=&nbsp;TRUE, plot&nbsp;=&nbsp;FALSE, levels&nbsp;=&nbsp;NULL)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+A normalized dataframe or matrix with no missing data.
+</dd>
+<dt>
+alpha
+</dt>
+<dd class="rd-dd">
+significance level (number in (0,1)) for the individual conditional independence tests. Defaults to 1e-5.
+</dd>
+<dt>
+dtype
+</dt>
+<dd class="rd-dd">
+Either “guassian” for continuous/ordinal discrete data or “discrete” for discrete/nominal data. (default = “gaussian”) See details for more description.
+</dd>
+<dt>
+community
+</dt>
+<dd class="rd-dd">
+A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)
+</dd>
+<dt>
+betweenness
+</dt>
+<dd class="rd-dd">
+A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)
+</dd>
+<dt>
+plot
+</dt>
+<dd class="rd-dd">
+A logical value to show if the graph should be plotted. (default = FLASE)
+</dd>
+<dt>
+levels
+</dt>
+<dd class="rd-dd">
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified. If it is set, first will run <code>data_preproc</code> to specify categorical and continuous variables.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+A list in which each element is the details of a specific fitted dtype.
+<dt>
+significance
+</dt>
+<dd>
+A data.frame containing edges with p.values.
+</dd>
+</p>
+<p class="rd-p">
 <dt>
 graph
 </dt>
 <dd>
-an igraph object
+an igraph object of the graphical model.
 </dd>
 </p>
 <p class="rd-p">
@@ -427,15 +697,7 @@ an igraph object
 betweenness
 </dt>
 <dd>
-betweenness measurements of each node (if betweenness = TRUE)
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-network
-</dt>
-<dd>
-a highcharter plot of the graph
+betweenness measurements of each node.
 </dd>
 </p>
 <p class="rd-p">
@@ -443,97 +705,74 @@ a highcharter plot of the graph
 communities
 </dt>
 <dd>
-a named vector of community number for each variable (if communities = TRUE)
+a named vector indicating the community of each node.
 </dd>
 </p>
 <p class="rd-p">
-</dl>
+<dt>
+network
+</dt>
+<dd>
+a visNetwork plot of the graphical model.
+</dd>
 </p>
-<h4>
-Author
-</h4>
-<p>Elyas Heidari, Vahid Balazadeh</p>
-</div>
-<div id="div.vars" class="section level2">
-<h2>div.vars</h2>
-<a id="div.vars_alias"></a>
-<h3>
-calculate variable-wise Kullback-Leibler divergence
-</h3>
 <p class="rd-p">
-Calculates variable-wise Kullback-Leibler divergence between two groups of samples.
-</p>
-<h4>
-Usage
-</h4>
-<pre class="r"><code><div>div.vars(data, g1, g2, permute&nbsp;=&nbsp;0, levels&nbsp;=&nbsp;5)</div></code></pre>
-<h4>
-Arguments
-</h4>
-<dl class="rd-dl">
-<dt>
-data
-</dt>
-<dd class="rd-dd">
-a numerical dataframe with now missing value
-</dd>
-<dt>
-g1
-</dt>
-<dd class="rd-dd">
-a vector of integers. Demonstrates the row indices of group 1.
-</dd>
-<dt>
-g2
-</dt>
-<dd class="rd-dd">
-a vector of integers. Demonstrates the row indices of group 2.
-</dd>
-<dt>
-permute
-</dt>
-<dd class="rd-dd">
-an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
-</dd>
-<dt>
-levels
-</dt>
-<dd class="rd-dd">
-an integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish categorical variable.
-</dd>
-</dl>
-<h4>
-Value
-</h4>
-<p class="rd-p">
-<dl>
-if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute &gt; 0 returns a dataframe including KL divergence and p.values.
 </dl>
 </p>
 <h4>
 Details
 </h4>
 <p class="rd-p">
-The function helps users to find out the variables with the most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements, we are interested in finding the most important variables in occurring cardiovascular disease. The function is able to carry out permutation test to calculate the p_value for each variable.
+There is no specific distribution needed for the data. The parameter dtype will be used for determining the data type to be provided as the input of the function. However, it is highly recommended to use “guassian” data type for both continuous and ordinal discrete data.
 </p>
+<h4>
+References
+</h4>
+<p class="rd-p">
+D. Colombo and M.H. Maathuis (2014).Order-independent constraint-based causal structure learning. Journal of Machine Learning Research 15 3741-3782.
+</p>
+<p class="rd-p">
+D. Colombo, M. H. Maathuis, M. Kalisch, T. S. Richardson (2012). Learning high-dimensional directed acyclic graphs with latent and selection variables. Ann. Statist. 40, 294-321.
+</p>
+<p class="rd-p">
+M. Kalisch and P. Buehlmann (2007). Estimating high-dimensional directed acyclic graphs with the PC-algorithm, JMLR 8 613-636.
+</p>
+<p class="rd-p">
+P. Spirtes, C. Glymour and R. Scheines (2000). Causation, Prediction, and Search, 2nd edition, MIT Press.
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>data(&quot;NHANES&quot;)
+## Using raw data
+## Using &quot;gaussian&quot; method for continuous data
+gaussian_dgm &lt;- dgm(data = NHANES[1:1000, ], dtype = &quot;gaussian&quot;, levels = 10)
+
+## Using &quot;discrete&quot; method for categorical data
+discrete_dgm &lt;- dgm(data = NHANES[1000:1200, ], dtype = &quot;discrete&quot;, levels = 5)
+
+## Using preprocessed data
+data &lt;- data_preproc(NHANES, levels = 15)
+data$SEQN &lt;- NULL
+prep_gauss_dgm &lt;- dgm(data = data[1:1000, ], plot = TRUE)</code></pre>
 <h4>
 Author
 </h4>
 <p>Elyas Heidari</p>
 </div>
-<div id="violating.vars" class="section level2">
-<h2>violating.vars</h2>
-<a id="violating.vars_alias"></a>
+<div id="find_repres" class="section level2">
+<h2>find_repres</h2>
+<a id="find_repres_alias"></a>
 <h3>
-calculating Kullback-Leibler divergence for each categorical variable between two different groups of samples
+Find representative variables.
 </h3>
 <p class="rd-p">
-Calculates variable-wise Kullback-Leibler divergence between two groups of samples which violate the linear relationship between two continuous variables.
+Uses <code>min_forest</code> community detection and selects a number of variables from each community as representative.
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>violating.vars(data, var1, var2, permute&nbsp;=&nbsp;0, frac&nbsp;=&nbsp;0.05, levels&nbsp;=&nbsp;5)</div></code></pre>
+<pre class="r"><code><div>find_repres(data, ratio&nbsp;=&nbsp;0.1, weighted&nbsp;=&nbsp;FALSE, levels&nbsp;=&nbsp;NULL)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -542,37 +781,25 @@ Arguments
 data
 </dt>
 <dd class="rd-dd">
-a numeric dataframe including no missing value
+A normalized dataframe or matrix with no missing data of continuous and (or) categorical measurements.
 </dd>
 <dt>
-var1
+ratio
 </dt>
 <dd class="rd-dd">
-a vector of continuous values indicating the first variable. (the order of values should be the same as the order of rows in data)
+A number between (0, 1) indicating the ratio of data variables to be chosen as representative. Defaults to 0.1.
 </dd>
 <dt>
-var2
+weighted
 </dt>
 <dd class="rd-dd">
-a vector of continuous values indicating the second variable. (the order of values should be the same as the order of rows in data)
-</dd>
-<dt>
-permute
-</dt>
-<dd class="rd-dd">
-an integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
-</dd>
-<dt>
-frac
-</dt>
-<dd class="rd-dd">
-a double value between 0 and 1 which indicates the fraction of outliers in the fit model. That is, the threshold to recognize a datapoint as an outlier of the fit line.
+A logical indicating if the number of nodes selected from each community is weighted. Defaults to FALSE. See details for more information.
 </dd>
 <dt>
 levels
 </dt>
 <dd class="rd-dd">
-an integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish categorical variable.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified. If it is set, first will run <code>data_preproc</code> to specify categorical and continuous variables.
 </dd>
 </dl>
 <h4>
@@ -580,27 +807,493 @@ Value
 </h4>
 <p class="rd-p">
 <dl>
-if permute = 0 returns a dataframe including Kullback-Liebler (KL) divergence. if permute &gt; 0 returns a dataframe including KL divergence and p.values.
+a vector containing names of representative variables.
 </dl>
 </p>
+<h4>
+Details
+</h4>
+<p class="rd-p">
+The function uses <code>min_forest</code> to detect communities of variables. It sorts each community nodes based on their degree and selects an equal number of each based on <code>ratio</code> parameter. If <code>weighted</code> is TRUE it will select different number of nodes from each community based on their sizes.
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>data(&quot;NHANES&quot;)
+## Using raw data
+repres_vars &lt;- find_repres(data = NHANES[1:1000, ], ratio = .2, levels = 10)
+
+## Using preprocessed data
+data &lt;- data_preproc(NHANES, levels = 15)
+## With \code{weighted = TRUE}
+repres_vars &lt;- find_repres(data = data[1:1000, ], weighted = TRUE)</code></pre>
+<h4>
+Author
+</h4>
+<p>Vahid Balazadeh, Elyas Heidari</p>
+</div>
+<div id="graph_vis" class="section level2">
+<h2>graph_vis</h2>
+<a id="graph_vis_alias"></a>
+<h3>
+graph visualization and community detection
+</h3>
+<p class="rd-p">
+Converts the graph to an igraph object, finds communities and plots it using qgraph package.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>graph_vis(graph, directed&nbsp;=&nbsp;F, community&nbsp;=&nbsp;T, betweenness&nbsp;=&nbsp;T, plot&nbsp;=&nbsp;F, ...)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+graph
+</dt>
+<dd class="rd-dd">
+An arbitrary graph object in R.
+</dd>
+<dt>
+directed
+</dt>
+<dd class="rd-dd">
+Set it TRUE when the graph is directed. (default = FALSE)
+</dd>
+<dt>
+community
+</dt>
+<dd class="rd-dd">
+A logical value to show if the node communities should be detected and colored in the returned graph. (default = TRUE)
+</dd>
+<dt>
+betweenness
+</dt>
+<dd class="rd-dd">
+A logical value to show if the node betweenness measurements should be computed and returned from the function. (default = TRUE)
+</dd>
+<dt>
+plot
+</dt>
+<dd class="rd-dd">
+A logical value to show if the graph should be plotted. (default = FALSE)
+</dd>
+<dt>
+…
+</dt>
+<dd class="rd-dd">
+Any additional arguments described below.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+If plot = TRUE it plots the non-interactive graph (If plot.community = TRUE plots communities too) also returns a list contains:
+<dt>
+graph
+</dt>
+<dd>
+an igraph object.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+betweenness
+</dt>
+<dd>
+betweenness measurements of each node.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+network
+</dt>
+<dd>
+a visNetwork plot of the graph.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+communities
+</dt>
+<dd>
+a named vector indicating the community of each node.
+</dd>
+</p>
+<p class="rd-p">
+</dl>
+</p>
+<h4>
+Additional arguments
+</h4>
+<p class="rd-p">
+</p>
+<p class="rd-p">
+<dl>
+</p>
+<p class="rd-p">
+<dt>
+groups
+</dt>
+<dd>
+A list that indicates which community each node is. The automatic community detection will be ignored when it is set.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+plot.community
+</dt>
+<dd>
+Logical indicating if communities should be plotted. Defaults to FALSE.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+filename
+</dt>
+<dd>
+Name of the plot file without extension. (qgraph function argument)
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+filetype
+</dt>
+<dd>
+A character indicates the file type to save the plots in. (qgraph function argument)
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+plot.community.list
+</dt>
+<dd>
+A list indicates which communities should be plotted. When is not set, will plot all the communities.
+</dd>
+</p>
+<p class="rd-p">
+</dl>
+</p>
+<p class="rd-p">
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>## Visualize Harman23.cor covariance matrix
+require(datasets)
+data(&quot;Harman23.cor&quot;)
+gv &lt;- graph_vis(Harman23.cor$cov, plot = TRUE, plot.community = TRUE, plot.community.list = c(1, 2))</code></pre>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari, Vahid Balazadeh</p>
+</div>
+<div id="vkl" class="section level2">
+<h2>VKL</h2>
+<a id="VKL_alias"></a>
+<h3>
+Calculate Variable-wise Kullback-Leibler divergence
+</h3>
+<p class="rd-p">
+Calculates variable-wise Kullback-Leibler divergence between the two groups of samples.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>VKL(data, group1, group2, permute&nbsp;=&nbsp;0, levels&nbsp;=&nbsp;NULL)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+A numerical dataframe with no missing value.
+</dd>
+<dt>
+group1
+</dt>
+<dd class="rd-dd">
+A vector of integers. Demonstrates the row indices of group 1.
+</dd>
+<dt>
+group2
+</dt>
+<dd class="rd-dd">
+A vector of integers. Demonstrates the row indices of group 2.
+</dd>
+<dt>
+permute
+</dt>
+<dd class="rd-dd">
+An integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
+</dd>
+<dt>
+levels
+</dt>
+<dd class="rd-dd">
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+if permute = 0 returns a dataframe including sorted Kullback-Liebler (KL) divergence. if permute &gt; 0 returns a dataframe including p.values and sorted KL divergence.
+</dl>
+</p>
+<h4>
+Details
+</h4>
+<p class="rd-p">
+The function helps users to find out the variables with the most divergence between two groups with different states of one specific variable. For instance, within a dataset of health measurements, we are interested in finding the most important variables in occurring cardiovascular disease. The function is able to carry out the permutation test to calculate the p_value for each variable.
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>data(&quot;NHANES&quot;)
+## Using preprocessed data
+data &lt;- data_preproc(NHANES, levels = 15)
+data$SEQN &lt;- NULL
+# Construct two groups of samples
+g1 &lt;- which(data$PAD590 == 1)
+g2 &lt;- which(data$PAD590 == 6)
+# Set permute to calculate p.values
+kl &lt;- VKL(data, group1 = g1, group2 = g2, permute = 100, levels = NULL)
+
+## Using raw data
+kl &lt;- VKL(NHANES, group1 = g1, group2 = g2, permute = 0, levels = 15)</code></pre>
 <h4>
 Author
 </h4>
 <p>Elyas Heidari</p>
 </div>
-<div id="plot.assoc" class="section level2">
-<h2>plot.assoc</h2>
-<a id="plot.assoc_alias"></a>
+<div id="vvkl" class="section level2">
+<h2>VVKL</h2>
+<a id="VVKL_alias"></a>
 <h3>
-interactive plot
+Calculate Violating Variable-wise Kullback-Leibler divergence
 </h3>
 <p class="rd-p">
-Plots one or a pair of variables.
+Calculates variable-wise Kullback-Leibler divergence between the two groups of samples which violate the linear relationship between two continuous variables.
 </p>
 <h4>
 Usage
 </h4>
-<pre class="r"><code><div>"plot"(data, vars, levels&nbsp;=&nbsp;5, pie&nbsp;=&nbsp;F)</div></code></pre>
+<pre class="r"><code><div>VVKL(data, var1, var2, permute&nbsp;=&nbsp;0, levels&nbsp;=&nbsp;NULL, plot&nbsp;=&nbsp;F, var1.name&nbsp;=&nbsp;"var1", var2.name&nbsp;=&nbsp;"var2")</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+A numeric dataframe including no missing value
+</dd>
+<dt>
+var1
+</dt>
+<dd class="rd-dd">
+A vector of continuous values indicating the first variable. (the order of values should be the same as the order of rows in data)
+</dd>
+<dt>
+var2
+</dt>
+<dd class="rd-dd">
+A vector of continuous values indicating the second variable. (the order of values should be the same as the order of rows in data)
+</dd>
+<dt>
+permute
+</dt>
+<dd class="rd-dd">
+An integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.
+</dd>
+<dt>
+levels
+</dt>
+<dd class="rd-dd">
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified.
+</dd>
+<dt>
+plot
+</dt>
+<dd class="rd-dd">
+A logical indicating if the scatter plot of two variables is returned. It highlights the two outlier groups with different colors.
+</dd>
+<dt>
+var1.name
+</dt>
+<dd class="rd-dd">
+The name of the first variable to be shown on the plot.
+</dd>
+<dt>
+var2.name
+</dt>
+<dd class="rd-dd">
+The name of the second variable to be shown on the plot.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+If permute = 0 returns a dataframe including sorted Kullback-Liebler (KL) divergence. If permute &gt; 0 returns a dataframe including p.values and sorted KL divergence.
+</dl>
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>data(&quot;NHANES&quot;)
+## Using preprocessed data
+data &lt;- data_preproc(NHANES, levels = 15)
+data$SEQN &lt;- NULL
+# Set permute to calculate p.values
+kl &lt;- VVKL(data, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = NULL)
+
+## Using raw data and plot
+kl &lt;- VVKL(NHANES, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 0, levels = 15,
+plot = TRUE, var1.name = &#39;LBXTC&#39;, var2.name = &#39;LBXVIE&#39;)</code></pre>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari</p>
+</div>
+<div id="test_pair" class="section level2">
+<h2>test_pair</h2>
+<a id="test_pair_alias"></a>
+<h3>
+Test for association between two paired variables.
+</h3>
+<p class="rd-p">
+Tests for association between two variables:
+<dl>
+<dt>
+Categorical-Categorical
+</dt>
+<dd>
+Using pearson’s chi-squared test (chisq.test function from stats package).
+</dd>
+<dt>
+Continuous-Continuous
+</dt>
+<dd>
+Using correlation test (cor.test function from stats package).
+</dd>
+<dt>
+Categorical-Continuous
+</dt>
+<dd>
+Using analysis of variance model (aov function from stats package).
+</dd>
+</dl>
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>test_pair(data, var1, var2, levels&nbsp;=&nbsp;NULL)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+A dataframe. It is strongly recommended that the dataframe has no missing data and is preprocessed.
+</dd>
+<dt>
+var1
+</dt>
+<dd class="rd-dd">
+First variable
+</dd>
+<dt>
+var2
+</dt>
+<dd class="rd-dd">
+Second variable
+</dd>
+<dt>
+levels
+</dt>
+<dd class="rd-dd">
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+P.value of test between the two variables.
+</dl>
+</p>
+<h4>
+Details
+</h4>
+<p class="rd-p">
+This provides a wrapper to <code>chisq.test</code>, <code>cor.test</code>, <code>aov</code> from <code>stats</code> package to test association between two variables
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>## Preprocess the data
+data(&quot;NHANES&quot;)
+data &lt;- data_preproc(NHANES, levels = 15)
+## Find test p.values for:
+## One continuous and one categorical variable
+cont_cat_test &lt;- test_pair(data, var1 = &quot;LBXTC&quot;, var2 = &quot;RIAGENDR&quot;)
+## Two continuous variables
+cont_cont_test &lt;- test_pair(data, var1 = &quot;LBXTC&quot;, var2 = &quot;LBXVIE&quot;)
+
+## Two categorical variables
+cat_cat_test &lt;- test_pair(data, var1 = &quot;DIQ010&quot;, var2 = &quot;SMD410&quot;)</code></pre>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari</p>
+</div>
+<div id="test_assoc" class="section level2">
+<h2>test_assoc</h2>
+<a id="test_assoc_alias"></a>
+<h3>
+Test for association between each paired variables and construct heatmap using heatmaply package.
+</h3>
+<p class="rd-p">
+Tests for association between each paired variables:
+<dl>
+<dt>
+Categorical-Categorical
+</dt>
+<dd>
+Using pearson’s chi-squared test (chisq.test function from stats package).
+</dd>
+<dt>
+Continuous-Continuous
+</dt>
+<dd>
+Using correlation test (cor.test function from stats package).
+</dd>
+<dt>
+Categorical-Continuous
+</dt>
+<dd>
+Using analysis of variance model (aov function from stats package).
+</dd>
+</dl>
+Also adjusts p.values using Benjamini &amp; Hochberg method (p.adjust function from stats package) and constructs heatmap using heatmaply function.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>test_assoc(data, vars, levels&nbsp;=&nbsp;NULL, plot&nbsp;=&nbsp;FALSE)</div></code></pre>
 <h4>
 Arguments
 </h4>
@@ -615,19 +1308,19 @@ a dataframe. It is strongly recommended that the dataframe has no missing data a
 vars
 </dt>
 <dd class="rd-dd">
-a vector of length one or two including the name (or index) of a (tow) column(s) of data.
+a list including the name (or index) of columns of data.
 </dd>
 <dt>
 levels
 </dt>
 <dd class="rd-dd">
-an integer to indicate the maximum levels of categorical variables. The default is 5.
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified.
 </dd>
 <dt>
-pie
+plot
 </dt>
 <dd class="rd-dd">
-a logical variable. If TRUE the function returns a pie chart for one variable.
+Logical indicating if the heatmap should be constructed. Defaults to FALSE.
 </dd>
 </dl>
 <h4>
@@ -635,48 +1328,173 @@ Value
 </h4>
 <p class="rd-p">
 <dl>
-if pie = TRUE the function returns pie chart, otherwise, there may be 5 scenarios:
+If plot = FALSE, returns a matrix containing p.values of tests between each two variables. Otherwise returns A list which contains:
 <dt>
+matrix
 </dt>
 <dd>
-one categorical variable: plots the histogram of the variable.
+A matrix containing p.values of tests between each two variables.
 </dd>
 </p>
 <p class="rd-p">
 <dt>
+heatmap
 </dt>
 <dd>
-one continuous variable: plots the density plot of the variable.
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-</dt>
-<dd>
-one categorical and one continuous variable: plots a boxplot of the continuous variable for different levels of the categorical variable.
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-</dt>
-<dd>
-two continuous variables: plots a scatter plot of two variables.
-</dd>
-</p>
-<p class="rd-p">
-<dt>
-</dt>
-<dd>
-two categorical variables: plots a relative histogram showing distribution of one variable for each level of the other.
+A plotly object containing heatmap related to matrix.
 </dd>
 </p>
 <p class="rd-p">
 </dl>
 </p>
 <h4>
+Details
+</h4>
+<p class="rd-p">
+This provides a wrapper to <code>chisq.test</code>, <code>cor.test</code>, <code>aov</code>, <code>p.adjust</code> from <code>stats</code> package to test association between variables And a wrapper to <code>heatmaply</code> package to construct heatmap.
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>data(&quot;NHANES&quot;)
+## Using raw data
+df &lt;- NHANES[1:1000, ]
+test_matrix &lt;- test_assoc(data = df, vars = colnames(df), plot = FALSE, levels = 15)
+
+## Using preprocessed data
+data &lt;- data_preproc(NHANES, levels = 15)
+data$SEQN &lt;- NULL
+## Outputs the heatmap too (plot = TRUE)
+test_mat_heatmap &lt;- test_assoc(data = data, vars = colnames(data[, 1:20]), plot = TRUE)</code></pre>
+<h4>
 Author
 </h4>
 <p>Elyas Heidari</p>
+</div>
+<div id="plot_assoc" class="section level2">
+<h2>plot_assoc</h2>
+<a id="plot_assoc_alias"></a>
+<h3>
+Plot variables.
+</h3>
+<p class="rd-p">
+Plots one or a pair of variables (non) interactively using ggplot2 and highcharter packages.
+</p>
+<h4>
+Usage
+</h4>
+<pre class="r"><code><div>plot_assoc(data, vars, levels&nbsp;=&nbsp;NULL, interactive&nbsp;=&nbsp;FALSE)</div></code></pre>
+<h4>
+Arguments
+</h4>
+<dl class="rd-dl">
+<dt>
+data
+</dt>
+<dd class="rd-dd">
+A dataframe. It is strongly recommended that the dataframe has no missing data and is preprocessed.
+</dd>
+<dt>
+vars
+</dt>
+<dd class="rd-dd">
+A vector of length one or two including the name (or index) of a (row) column(s) of data.
+</dd>
+<dt>
+levels
+</dt>
+<dd class="rd-dd">
+An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that <code>data</code> has been preprocessed using <code>data_preproc</code> and the categorical variables are specified.
+</dd>
+<dt>
+interactive
+</dt>
+<dd class="rd-dd">
+Logical indicating if the output should be interactive. Defaults to FALSE.
+</dd>
+</dl>
+<h4>
+Value
+</h4>
+<p class="rd-p">
+<dl>
+There may be 5 scenarios for vars:
+<dt>
+One categorical variable
+</dt>
+<dd>
+Plots the barplot of the variable.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+One continuous variable
+</dt>
+<dd>
+Plots the density (histogram) plot of the variable.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+A categorical and a continuous variable
+</dt>
+<dd>
+Plots a boxplot of the continuous variable for different levels of the categorical variable.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+Two continuous variables
+</dt>
+<dd>
+Plots a scatter plot of two variables.
+</dd>
+</p>
+<p class="rd-p">
+<dt>
+Two categorical variables
+</dt>
+<dd>
+Plots a relative histogram showing distribution of one variable for each level of the other.
+</dd>
+</p>
+<p class="rd-p">
+(Plots interactively If interactive = TRUE).
+</dl>
+</p>
+<h4>
+Examples
+</h4>
+<pre class="r"><code>## Preprocess the data
+data(&quot;NHANES&quot;)
+data &lt;- data_preproc(NHANES, levels = 15)
+
+## Plot (non)interactive for:
+## One categorical variable
+pt1 &lt;- plot_assoc(data, vars = &quot;PAD600&quot;)
+pt2 &lt;- plot_assoc(data, vars = &quot;SMD410&quot;, interactive = TRUE)
+
+## One continuous variable
+pt3 &lt;- plot_assoc(data, vars = &quot;LBXTC&quot;)
+pt4 &lt;- plot_assoc(data, vars = &quot;BMXBMI&quot;, interactive = TRUE)
+
+## One continuous and one categorical variable
+pt5 &lt;- plot_assoc(data, vars = c(&quot;LBXTC&quot;, &quot;RIAGENDR&quot;))
+pt6 &lt;- plot_assoc(data, vars = c(&quot;BMXBMI&quot;, &quot;PAD600&quot;), interactive = TRUE)
+##  Two continuous variables
+pt7 &lt;- plot_assoc(data, vars = c(&quot;LBXTC&quot;, &quot;BMXBMI&quot;))
+pt8 &lt;- plot_assoc(data, vars = c(&quot;LBXVIE&quot;, &quot;LBXVIC&quot;), interactive = TRUE)
+
+## Two categorical variables
+pt9 &lt;- plot_assoc(data, vars = c(&quot;SMD410&quot;, &quot;PAD600&quot;))
+pt10 &lt;- plot_assoc(data, vars = c(&quot;PAD600&quot;, &quot;SMD410&quot;), interactive = TRUE)
+
+## With raw data
+pt11 &lt;- plot_assoc(NHANES, vars = &quot;RIDAGEYR&quot;, levels = 15)</code></pre>
+<h4>
+Author
+</h4>
+<p>Elyas Heidari, Vahid Balazadeh</p>
 </div>
 </div>
 

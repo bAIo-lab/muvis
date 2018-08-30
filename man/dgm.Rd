@@ -5,7 +5,7 @@
 \title{construct and visualize causal (directed) networks}
 \usage{
 dgm(data, alpha = 1e-05, dtype = "gaussian", community = TRUE,
-  betweenness = TRUE, plot = FALSE, levels = NULL, ...)
+  betweenness = TRUE, plot = FALSE, levels = NULL)
 }
 \arguments{
 \item{data}{A normalized dataframe or matrix with no missing data.}

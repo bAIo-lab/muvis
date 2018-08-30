@@ -61,8 +61,7 @@ dgm <-
            community = TRUE,
            betweenness = TRUE,
            plot = FALSE,
-           levels = NULL,
-           ...) {
+           levels = NULL) {
     if (!is.null(levels))
       data <- data_preproc(data, levels = levels)
 
@@ -80,8 +79,7 @@ dgm <-
         pcalg::fci(suffStat,
                         pcalg::gaussCItest,
                         p = ncol(data),
-                        alpha = alpha,
-                        ...)
+                        alpha = alpha)
       fci.data@amat <- ifelse(fci.data@amat == 2, 1, 0)
       rownames(fci.data@amat) <- names(data)
       colnames(fci.data@amat) <- names(data)
@@ -108,8 +106,7 @@ dgm <-
         pcalg::fci(suffStat,
                         pcalg::disCItest,
                         p = ncol(data),
-                        alpha = alpha,
-                        ...)
+                        alpha = alpha)
       fci.data@amat <- ifelse(fci.data@amat == 2, 1, 0)
       rownames(fci.data@amat) <- names(data)
       colnames(fci.data@amat) <- names(data)

@@ -1,5 +1,5 @@
 ---
-title: "muvis Documentation"
+title: "muvis"
 subtitle: "multivariate analysis and visualization"
 author: statCompTeam@bAIo-lab
 copyright: statCompTeam@bAIo-lab
@@ -9,7 +9,7 @@ output:
     toc_collapse: false
 redirect: http://bAIo-lab.github.io/muvis
 vignette: |
-  %\VignetteIndexEntry{muvis Documentation}
+  %\VignetteIndexEntry{muvis}
   %\VignetteEngine{packagedocs::redirect}
 navpills: |
   <li class="active"><a href='index.html'>Docs</a></li>
@@ -69,8 +69,7 @@ kableExtra::kable(head(data)) %>%
 ## ggm
 Use `ggm` to construct a Gaussian Graphical Model with glasso and significance test method. (Levels is set to default (NULL) as the data has been preprocessed using `data_preproc`.)
 ```{r ggm, echo=TRUE, message=FALSE, warning=FALSE}
-ggm(data[,1:74], significance = 0.05, rho = 0.1, community = TRUE, methods = c("glasso", "sin"), plot = F, levels = NULL) -> g
-g$network
+ggm(data[,1:74], significance = 0.05, rho = 0.1, community = TRUE, methods = c("glasso", "sin"), plot = T, levels = NULL) -> g
 g$communities[1:10]
 ```
 
@@ -85,8 +84,7 @@ Cluster the first 200 samples of data using `min.forest` with community = TRUE. 
 
 ```{r cluster, echo=TRUE, message=FALSE, warning=FALSE}
 t_nhanes <- as.data.frame(sapply(as.data.frame(t(data[1:200, ])), function(x) as.numeric(as.character(x))))
-cluster_mf <- min_forest(t_nhanes, plot = F)
-cluster_mf$network
+cluster_mf <- min_forest(t_nhanes, plot = T)
 ```
 
 ## dim_reduce
@@ -120,9 +118,7 @@ Use `VKL` function to find the most different variables between the two groups.
 g1 <- which(data$PAD590 == 1 & data$SMD410 == 2)
 g2 <- which(data$PAD590 == 6 & data$SMD410 == 1)
 KL <- VKL(data, group1 = g1, group2 = g2, permute = 100)
-kableExtra::kable(head(KL, n = 5)) %>%
-  kable_styling() %>%
-  scroll_box(width = "300px", height = "300px")
+KL[1:5, ]
 ```
 ## VVKL
 Use `VVKL` to find the most deferentially variables between people with relatively high Total Cholesterol (relative to vitamin E) and people with high Vitamin E (relative to Total Cholesterol).
@@ -133,11 +129,11 @@ Use `VVKL` to find the most deferentially variables between people with relative
 edges <- mf$network$x$edges
 lbxtc_edges <- edges[edges$from == "LBXTC" | edges$to == "LBXTC", ]
 lbxtc_edges[1:5, ]
-plot_assoc(data, vars = c("LBXTC", "LBXVIE"), levels = NULL, interactive = T)
-VVKL(data[75:160], var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = NULL) -> KL
-kableExtra::kable(head(KL, n = 5)) %>%
+VVKL(data[, 75:160], var1 = data$LBXTC, var2 = data$LBXVIE, plot = T, var1.name = 'LBXTC', var2.name = 'LBXVIE', permute = 100, levels = NULL) -> KL
+kableExtra::kable(head(KL$kl, n = 5)) %>%
   kable_styling() %>%
   scroll_box(width = "300px", height = "300px")
+KL$plot
 ```
 
 <!---test_pair and test_assoc --->

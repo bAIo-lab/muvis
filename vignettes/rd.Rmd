@@ -1,5 +1,5 @@
 ---
-title: "muvis Documentation"
+title: "muvis"
 subtitle: "multivariate analysis and visualization"
 author: "statCompTeam@bAIo-lab"
 copyright: "statCompTeam@bAIo-lab"

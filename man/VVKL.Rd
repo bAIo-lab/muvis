@@ -4,7 +4,8 @@
 \alias{VVKL}
 \title{Calculate Violating Variable-wise Kullback-Leibler divergence}
 \usage{
-VVKL(data, var1, var2, permute = 0, levels = NULL)
+VVKL(data, var1, var2, permute = 0, levels = NULL, plot = F,
+  var1.name = "var1", var2.name = "var2")
 }
 \arguments{
 \item{data}{A numeric dataframe including no missing value}
@@ -16,6 +17,12 @@ VVKL(data, var1, var2, permute = 0, levels = NULL)
 \item{permute}{An integer indicating the number of permutations for permutation test. If 0 (the default) no permutation test will be carried out.}
 
 \item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.}
+
+\item{plot}{A logical indicating if the scatter plot of two variables is returned. It highlights the two outlier groups with different colors.}
+
+\item{var1.name}{The name of the first variable to be shown on the plot.}
+
+\item{var2.name}{The name of the second variable to be shown on the plot.}
 }
 \value{
 If permute = 0 returns a dataframe including sorted Kullback-Liebler (KL) divergence. If permute > 0 returns a dataframe including p.values and sorted KL divergence.
@@ -31,8 +38,9 @@ data$SEQN <- NULL
 # Set permute to calculate p.values
 kl <- VVKL(data, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 100, levels = NULL)
 
-## Using raw data
-kl <- VVKL(NHANES, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 0, levels = 15)
+## Using raw data and plot
+kl <- VVKL(NHANES, var1 = data$LBXTC, var2 = data$LBXVIE, permute = 0, levels = 15,
+plot = TRUE, var1.name = 'LBXTC', var2.name = 'LBXVIE')
 }
 \author{
 Elyas Heidari

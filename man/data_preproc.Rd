@@ -5,7 +5,7 @@
 \title{preprocess the data}
 \usage{
 data_preproc(data, is.cat = NULL, levels = 5, detect.outliers = FALSE,
-  alpha = 0.5)
+  alpha = 0.5, ...)
 }
 \arguments{
 \item{data}{A data.frame object or a matrix.}
@@ -17,6 +17,8 @@ data_preproc(data, is.cat = NULL, levels = 5, detect.outliers = FALSE,
 \item{detect.outliers}{Logical indicating if data outliers should be detected. If TRUE outliers will be treated as NA. Defaults to FALSE.}
 
 \item{alpha}{A number between (0, 1). Rows where the ratio of the NA values in them is more than alpha will be deleted.}
+
+\item{...}{Any additional arguments.}
 }
 \value{
 A normalized data.frame object with specified continuous and (or) categorical variables and no missing values.
@@ -24,6 +26,13 @@ A normalized data.frame object with specified continuous and (or) categorical va
 \description{
 Specify categorical and continuous variables and impute the missing values.
 }
+\section{Additional arguments}{
+
+\describe{
+\item{beta}{The level of statistical significance with which to accept or reject outliers. The argument of \code{\link[AnomalyDetection]{AnomalyDetectionVec}} function. Defaults to 0.5.}
+}
+}
+
 \examples{
 ## Using levels
 data("NHANES")
@@ -37,7 +46,7 @@ l[c(8, 9)] <- TRUE
 df <- data_preproc(mtcars, is.cat = l)
 
 ## Detect outliers
-df <- data_preproc(NHANES, levels = 15, detect.outliers = TRUE, alpha = 0.4)
+df <- data_preproc(NHANES, levels = 15, detect.outliers = TRUE, alpha = 0.4, beta = 1)
 
 }
 \author{

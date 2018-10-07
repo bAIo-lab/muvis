@@ -10,9 +10,14 @@
 #' @param  levels An integer number indicates the maximum levels of categorical variables. It is used when \code{is.cat} in NULL. (default = 5)
 #' @param  detect.outliers Logical indicating if data outliers should be detected. If TRUE outliers will be treated as NA. Defaults to FALSE.
 #' @param  alpha A number between (0, 1). Rows where the ratio of the NA values in them is more than alpha will be deleted.
+#' @param  ... Any additional arguments.
 #'
 #' @author  Elyas Heidari, Vahid Balazadeh
 #'
+#' @section Additional arguments:
+#' \describe{
+#' \item{beta}{The level of statistical significance with which to accept or reject outliers. The argument of \code{\link[AnomalyDetection]{AnomalyDetectionVec}} function. Defaults to 0.5.}
+#' }
 #' @examples
 #' ## Using levels
 #' data("NHANES")
@@ -26,7 +31,7 @@
 #' df <- data_preproc(mtcars, is.cat = l)
 #'
 #' ## Detect outliers
-#' df <- data_preproc(NHANES, levels = 15, detect.outliers = TRUE, alpha = 0.4)
+#' df <- data_preproc(NHANES, levels = 15, detect.outliers = TRUE, alpha = 0.4, beta = 1)
 #'
 #' @return A normalized data.frame object with specified continuous and (or) categorical variables and no missing values.
 #' @export
@@ -38,8 +43,12 @@ data_preproc <- function(data,
                          is.cat = NULL,
                          levels = 5,
                          detect.outliers = FALSE,
-                         alpha = 0.5) {
-
+                         alpha = 0.5,
+                         ...) {
+  args <- list(...)
+  beta = args$beta
+  if (is.null(beta))
+    beta = 0.5
   df_anomaly_detector <- function(df) {
     df <- data.frame(df)
     column_anom_detect <- function(x) {
@@ -55,7 +64,8 @@ data_preproc <- function(data,
         x = col_df[, 2],
         period = nrow(col_df) / 5,
         plot = F,
-        direction = "both"
+        direction = "both",
+        alpha = beta
       )
       col_df[anm$anoms$index, 2] <- NA
 
@@ -132,12 +142,14 @@ data_preproc <- function(data,
 
   # Set outlier to NA
   if (detect.outliers) {
-    cont_df <- data[, sapply(data, function(x) !is.factor(x))]
-    data <- cbind(df_anomaly_detector(cont_df), data[, sapply(data, is.factor)])
+    cont_vars <- sapply(data, function(x)! is.factor(x))
+    data[, cont_vars] <- df_anomaly_detector(data[, cont_vars])
   }
 
   # Delete rows with more NA ratio more than alpha
-  data <- data[apply(data, 1, function(x) (sum(is.na(x)) / length(x)) <= alpha), ]
+  data <-
+    data[apply(data, 1, function(x)
+      (sum(is.na(x)) / length(x)) <= alpha), ]
 
   # Impute the dataset
   data.frame(lapply(data, function(x)

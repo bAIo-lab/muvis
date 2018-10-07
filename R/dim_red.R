@@ -42,7 +42,6 @@ dim_reduce <-
            annot2 = NULL,
            annot2.name = "annot2",
            levels = NULL) {
-
     if (!is.null(levels))
       data <- data_preproc(data, levels = levels)
 
@@ -67,11 +66,6 @@ dim_reduce <-
           axis.ticks = ggplot2::element_line(),
           panel.grid.major = ggplot2::element_line(colour = "#f0f0f0"),
           panel.grid.minor = ggplot2::element_blank(),
-          legend.key = ggplot2::element_rect(colour = NA),
-          legend.position = "bottom",
-          legend.direction = "horizontal",
-          legend.key.size = grid::unit(0.2, "cm"),
-          legend.spacing = grid::unit(0, "cm"),
           legend.title = ggplot2::element_text(face = "italic"),
           plot.margin = grid::unit(c(10, 5, 5, 5), "mm"),
           strip.background = ggplot2::element_rect(colour = "#f0f0f0", fill = "#f0f0f0"),
@@ -165,14 +159,16 @@ dim_reduce <-
       if (method == "umap") {
         distViab <- dist(data)
         plotTab <-
-          data.frame(smallvis::smallvis(
-            t(distViab),
-            method = "umap",
-            perplexity = 40,
-            eta = 0.01,
-            epoch_callback = FALSE,
-            verbose = FALSE
-          ))
+          data.frame(
+            smallvis::smallvis(
+              t(distViab),
+              method = "umap",
+              perplexity = 40,
+              eta = 0.01,
+              epoch_callback = FALSE,
+              verbose = FALSE
+            )
+          )
         plotTab$sampleID <- rownames(plotTab)
         X1 <- NULL
         X2 <- NULL
@@ -197,8 +193,8 @@ dim_reduce <-
             ggplot2::ggtitle(paste("Scatter plot for PCA")) +
             theme_Publication() + scale_fill_Publication() +
             ggplot2::labs(x = "component 1",
-                 y = "component 2",
-                 colour = annot1.name)
+                          y = "component 2",
+                          colour = annot1.name) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
         }
         if (method == "tsne") {
           distViab <- dist(data)
@@ -207,36 +203,40 @@ dim_reduce <-
           plotTab$sampleID <- rownames(plotTab)
           x <- NULL
           y <- NULL
-          to.ret <- ggplot2::ggplot(plotTab, aes(x = x, y = y, col = annot1)) +
+          to.ret <-
+            ggplot2::ggplot(plotTab, aes(x = x, y = y, col = annot1)) +
             ggplot2::geom_point() +
             ggplot2::ggtitle(paste("Scatter plot for t-SNE")) +
             theme_Publication() + scale_fill_Publication() +
             ggplot2::labs(x = "component 1",
-                 y = "component 2",
-                 colour = annot1.name)
+                          y = "component 2",
+                          colour = annot1.name) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
 
         }
         if (method == "umap") {
           distViab <- stats::dist(data)
           plotTab <-
-            data.frame(smallvis::smallvis(
-              t(distViab),
-              method = "umap",
-              perplexity = 40,
-              eta = 0.01,
-              epoch_callback = FALSE,
-              verbose = FALSE
-            ))
+            data.frame(
+              smallvis::smallvis(
+                t(distViab),
+                method = "umap",
+                perplexity = 40,
+                eta = 0.01,
+                epoch_callback = FALSE,
+                verbose = FALSE
+              )
+            )
           plotTab$sampleID <- rownames(plotTab)
           X1 <- NULL
           X2 <- NULL
-          to.ret <- ggplot2::ggplot(plotTab, aes(x = X1, y = X2, col = annot1)) +
+          to.ret <-
+            ggplot2::ggplot(plotTab, aes(x = X1, y = X2, col = annot1)) +
             ggplot2::geom_point() +
             ggplot2::ggtitle(paste("Scatter plot for UMAP")) +
             theme_Publication() + scale_fill_Publication() +
             ggplot2::labs(x = "component 1",
-                 y = "component 2",
-                 colour = annot1.name)
+                          y = "component 2",
+                          colour = annot1.name) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
         }
       } else{
         if (method == "pca") {
@@ -247,13 +247,10 @@ dim_reduce <-
           PC1 <- NULL
           PC2 <- NULL
           to.ret <-
-            ggplot2::ggplot(plotTab, aes(
-              x = PC1,
-              y = PC2,
-              col = annot1,
-              shape = annot2
-            )) +
-            ggplot2::geom_point() +
+            ggplot2::ggplot(plotTab, aes(x = PC1,
+                                         y = PC2)) +
+            ggplot2::geom_point(aes(colour = annot1,
+                                    shape = annot2)) +
             ggplot2::ggtitle(paste("Scatter plot for PCA")) +
             theme_Publication() + scale_fill_Publication() +
             ggplot2::labs(
@@ -261,7 +258,7 @@ dim_reduce <-
               y = "component 2",
               colour = annot1.name,
               shape = annot2.name
-            )
+            ) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
         }
         if (method == "tsne") {
           distViab <- stats::dist(data)
@@ -284,20 +281,22 @@ dim_reduce <-
               y = "component 2",
               colour = annot1.name,
               shape = annot2.name
-            )
+            ) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
 
         }
         if (method == "umap") {
           distViab <- stats::dist(data)
           plotTab <-
-            data.frame(smallvis::smallvis(
-              t(distViab),
-              method = "umap",
-              perplexity = 40,
-              eta = 0.01,
-              epoch_callback = FALSE,
-              verbose = FALSE
-            ))
+            data.frame(
+              smallvis::smallvis(
+                t(distViab),
+                method = "umap",
+                perplexity = 40,
+                eta = 0.01,
+                epoch_callback = FALSE,
+                verbose = FALSE
+              )
+            )
           X1 <- NULL
           X2 <- NULL
           to.ret <-
@@ -315,7 +314,7 @@ dim_reduce <-
               y = "component 2",
               colour = annot1.name,
               shape = annot2.name
-            )
+            ) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
         }
       }
     }

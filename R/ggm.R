@@ -12,7 +12,7 @@
 #' @param levels An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable.
 #' Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
 #' If it is set, first will run \code{\link[muvis]{data_preproc}} to specify categorical and continuous variables.
-#' @param ... Any additional arguments described below.
+#' @param ... Any additional arguments.
 #'
 #' @details The function combines the methods to construct the model, that is, the edge set is the intersection of all edge sets each of which is found by a method. The package gRim is used to implement AIC, BIC, and stepwise significance test. The method glasso from the package glasso is used to provide a sparse estimation of the inverse covariance matrix.
 #'
@@ -118,7 +118,7 @@ ggm <-
       diag(Z) <- 0
       Z[Z > 0] <- 1
       g.thresh <-  methods::as(Z, "graphNEL")
-      thresh <- gRim::cmod(g.thresh, data = data)
+      othermodels$thresh <- gRim::cmod(g.thresh, data = data)
     }
     if ("sin" %in% tolower(methods)) {
       psin <- SIN::sinUG(S, n = nrow(data))
@@ -155,6 +155,7 @@ ggm <-
         test_matrix[x[1], x[2]])
     title = paste0("<p>", paste("p.value =", p_values), "</p>")
     edges[, "title"] <- title
+    edges[, "weight"] <- p_values
 
     significance <- data.frame(edges$from, edges$to)
     significance$p.value <- p_values

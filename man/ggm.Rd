@@ -22,7 +22,7 @@ ggm(data, methods = c("glasso"), community = TRUE, betweenness = TRUE,
 Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.
 If it is set, first will run \code{\link[muvis]{data_preproc}} to specify categorical and continuous variables.}
 
-\item{...}{Any additional arguments described below.}
+\item{...}{Any additional arguments.}
 }
 \value{
 A list in which each element is the details of a specific fitting method.

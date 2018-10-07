@@ -107,6 +107,7 @@ min_forest <-
     title = paste0("<p>", paste("P.value =", p_values), "</p>")
     edges[, "statistics"] <- statistics
     edges[, "title"] <- title
+    edges[, "weight"] <- p_values
 
     significance <- data.frame(edges$from, edges$to)
     significance$statistics <- statistics

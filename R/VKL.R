@@ -39,8 +39,9 @@
 #' @importFrom purrr map
 #' @importFrom permute shuffle
 #' @importFrom dplyr pull
-#' @importFrom entropy KL.plugin
+#' @importFrom entropy KL.plugin discretize
 #' @importFrom dplyr %>%
+#' @importFrom LaplacesDemon KLD
 
 
 
@@ -55,34 +56,50 @@ VKL <- function(data,
   is.cat <- function(var) {
     return(is.factor(var))
   }
-
-  if(is.null(levels))
-    lvl <- max(sapply(data, nlevels))
-  else
-    lvl <- levels
-
+  # levels of continuous variables density is hardcoded
+  lvl = 20
   kl.calc <- function(data, group1, group2) {
     1:dim(data)[2] %>% purrr::map(function(x)
-      freq(data[, x], group1, group2))  %>% purrr::map(function(x)
-        abs(entropy::KL.plugin(x$group1, x$group2)) + abs(entropy::KL.plugin(x$group2, x$group1))) -> to.ret
+      kl.calc.vec(data[, x], group1, group2)) -> to.ret
     return(unlist(to.ret))
   }
-  freq <- function(vec, group1, group2) {
-    if (!is.cat(vec))
-      vec <-
-        cut(vec,
-            breaks = seq((min(vec) - .0000001), (max(vec) + .0000001), (max(vec) - min(vec) + .0000002) /
-                           lvl),
-            labels = 1:lvl)
-    to.ret <- list(group1 = c(), group2 = c())
-    levels(factor(vec)) %>% purrr::map(function(x)
-      list(group1 = max(1, sum(vec[group1] == x)), group2 = max(1, sum(vec[group2] == x)))) %>% purrr::map(function(x)
-        to.ret <<-
-          list(
-            group1 = c(to.ret$group1, x$group1),
-            group2 = c(to.ret$group2, x$group2)
-          )) -> na
-    return(to.ret)
+  kl.calc.vec <- function(vec, group1, group2) {
+    freqs <- list(group1 = c(), group2 = c())
+    if (!is.cat(vec)) {
+      rangee <-
+        c(min(vec[group1], vec[group2]), max(vec[group1], vec[group2]))
+      freqs$group1 <-
+        entropy::discretize(vec[group1], lvl, r = rangee)
+      freqs$group2 <-
+        entropy::discretize(vec[group2], lvl, r = rangee)
+      freqs$group1 <-
+        replace(x = freqs$group1,
+                list = which(freqs$group1 == 0),
+                1)
+      freqs$group2 <-
+        replace(x = freqs$group2,
+                list = which(freqs$group2 == 0),
+                1)
+    } else{
+      levels(factor(vec)) %>% purrr::map(function(x)
+        list(group1 = max(1, sum(vec[group1] == x)), group2 = max(1, sum(vec[group2] == x)))) %>% purrr::map(function(x)
+          freqs <<-
+            list(
+              group1 = c(freqs$group1, x$group1),
+              group2 = c(freqs$group2, x$group2)
+            )) -> na
+    }
+    kl1 <- entropy::KL.plugin(freqs$group1, freqs$group2)
+    kl2 <- entropy::KL.plugin(freqs$group2, freqs$group1)
+    if (kl1 == Inf)
+      return (abs(kl2 / 2))
+    else if (kl2 == Inf)
+      return (abs(kl1 / 2))
+    return((abs(
+      entropy::KL.plugin(freqs$group1, freqs$group2)
+    ) + abs(
+      entropy::KL.plugin(freqs$group2, freqs$group1)
+    )) / 2)
   }
 
   p.val <- function(x, vec) {
@@ -104,13 +121,18 @@ VKL <- function(data,
 
     1:dim(kl.df)[2] %>% purrr::map(function(i)
       p.val(kl[i], kl.df[, i])) -> kls
-    return(sort(data.frame(
+
+    df <- data.frame(
       KL = kl,
       row.names = colnames(data),
+      variable = colnames(data),
       p.value = unlist(kls)
-    ), decreasing = T))
+    )
+    return(df[order(-df$KL), ])
   }
 
-  df <- data.frame(KL = kl, row.names = colnames(data))
-  return(data.frame(KL = df[order(-df$KL), ], row.names = rownames(df)))
+  df <- data.frame(KL = kl,
+                   variable = colnames(data),
+                   row.names = colnames(data))
+  return(df[order(-df$KL), ])
 }

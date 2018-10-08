@@ -19,9 +19,9 @@ plot_assoc(data, vars, levels = NULL, interactive = FALSE)
 There may be 5 scenarios for vars:
 \item{One categorical variable}{Plots the barplot of the variable.}
 \item{One continuous variable}{Plots the density (histogram) plot of the variable.}
-\item{A categorical and a continuous variable}{Plots a boxplot of the continuous variable for different levels of the categorical variable.}
+\item{A categorical and a continuous variable}{Plots a Boxplot (or violin plot in non-interactive mode) of the continuous variable for different levels of the categorical variable.}
 \item{Two continuous variables}{Plots a scatter plot of two variables.}
-\item{Two categorical variables}{Plots a relative histogram showing distribution of one variable for each level of the other.}
+\item{Two categorical variables}{Plots a relative histogram (or heatmap in non-interactive mode) showing distribution of one variable for each level of the other.}
 (Plots interactively If interactive = TRUE).
 }
 \description{

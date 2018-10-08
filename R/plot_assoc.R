@@ -15,9 +15,9 @@
 #' @return There may be 5 scenarios for vars:
 #' \item{One categorical variable}{Plots the barplot of the variable.}
 #' \item{One continuous variable}{Plots the density (histogram) plot of the variable.}
-#' \item{A categorical and a continuous variable}{Plots a boxplot of the continuous variable for different levels of the categorical variable.}
+#' \item{A categorical and a continuous variable}{Plots a Boxplot (or violin plot in non-interactive mode) of the continuous variable for different levels of the categorical variable.}
 #' \item{Two continuous variables}{Plots a scatter plot of two variables.}
-#' \item{Two categorical variables}{Plots a relative histogram showing distribution of one variable for each level of the other.}
+#' \item{Two categorical variables}{Plots a relative histogram (or heatmap in non-interactive mode) showing distribution of one variable for each level of the other.}
 #' (Plots interactively If interactive = TRUE).
 #'
 #' @export
@@ -52,21 +52,30 @@
 #' pt11 <- plot_assoc(NHANES, vars = "RIDAGEYR", levels = 15)
 #'
 #' @import     ggplot2
-#' @importFrom ggthemes theme_foundation
-#' @importFrom scales manual_pal
 #' @importFrom ggExtra ggMarginal
-#' @importFrom grid unit grid.text gpar
 #' @importFrom dplyr pull group_by summarise summarize filter
 #' @importFrom highcharter highchart hc_xAxis hc_yAxis hc_add_series hc_chart hc_add_theme hc_theme_google hcpie hcboxplot hc_add_series_scatter hc_title hcaes
 #' @importFrom limma strsplit2
-#' @importFrom stats density cor.test chisq.test aov p.adjust
+#' @importFrom stats density
 #' @importFrom dplyr %>%
 #' @importFrom ggplotify as.ggplot
+#' @importFrom limma strsplit2
+#' @importFrom leaflet colorNumeric
+#' @importFrom ggbeeswarm geom_quasirandom
 
 plot_assoc <- function(data,
                        vars,
                        levels = NULL,
                        interactive = FALSE) {
+  color_set <- c("#440154FF",
+                 "#3B528BFF",
+                 "#FDE725FF",
+                 "#21908CFF",
+                 "#5DC863FF"
+                 )
+
+  theme_publication <- theme_minimal
+
   is.cat <- function(var) {
     if (is.null(levels))
       return(is.factor(var))
@@ -74,74 +83,120 @@ plot_assoc <- function(data,
       return(!length(unique(var[!is.na(var)])) > levels)
   }
 
-  theme_Publication <- function(base_size = 14) {
-    (
-      ggthemes::theme_foundation(base_size = base_size)
-      + ggplot2::theme(
-        plot.title = ggplot2::element_text(
-          face = "bold",
-          size = ggplot2::rel(1.2),
-          hjust = 0.5
-        ),
-        text = ggplot2::element_text(),
-        panel.background = ggplot2::element_rect(colour = NA),
-        plot.background = ggplot2::element_rect(colour = NA),
-        panel.border = ggplot2::element_rect(colour = NA),
-        axis.title = ggplot2::element_text(face = "bold", size = ggplot2::rel(1)),
-        axis.title.y = ggplot2::element_text(angle = 90, vjust = 2),
-        axis.title.x = ggplot2::element_text(vjust = -0.2),
-        axis.line = ggplot2::element_line(colour = "black"),
-        axis.ticks = ggplot2::element_line(),
-        panel.grid.major = ggplot2::element_line(colour = "#f0f0f0"),
-        panel.grid.minor = ggplot2::element_blank(),
-        legend.key = ggplot2::element_rect(colour = NA),
-        legend.position = "bottom",
-        legend.direction = "horizontal",
-        legend.key.size = grid::unit(0.2, "cm"),
-        legend.spacing = grid::unit(0, "cm"),
-        legend.title = ggplot2::element_text(face = "italic"),
-        plot.margin = grid::unit(c(10, 5, 5, 5), "mm"),
-        strip.background = ggplot2::element_rect(colour = "#f0f0f0", fill = "#f0f0f0"),
-        strip.text = ggplot2::element_text(face = "bold")
+  # Assuming cat_var is a categorical but it is not factor in general
+  plot_cat <- function(data, cat_var) {
+    var_vect <- as.factor(data[, cat_var])
+    pal <-
+      leaflet::colorNumeric(color_set, domain = c(1:nlevels(var_vect)))
+    g <-
+      ggplot2::ggplot(data = data, ggplot2::aes(var_vect, fill = var_vect)) +
+      ggplot2::geom_bar(alpha = 0.7) +
+      ggplot2::labs(title = paste("Barplot for", cat_var, sep = " "),
+                    x = cat_var) +
+      scale_fill_manual(name = cat_var, values = sapply(c(1:nlevels(var_vect)), pal)) +
+      theme_publication()
+    return(g)
+  }
+  # Assuming cont_var is a continuous
+  plot_cont <- function(data, cont_var) {
+    ..density.. <- NULL
+    var_vect <- data[, cont_var]
+    g <-
+      ggplot2::ggplot(data = data, ggplot2::aes(var_vect)) +
+      ggplot2::geom_histogram(
+        ggplot2::aes(y = ..density..),
+        binwidth  = diff(range(var_vect, na.rm = T)) / 20,
+        fill = color_set[4],
+        col = color_set[1],
+        alpha = 0.7
+      ) + ggplot2::geom_density(col = color_set[2]) +
+      ggplot2::labs(title = paste("Histogram for", cont_var, sep = " "),
+                    x = cont_var) +
+      theme_publication()
+    return(g)
+  }
+
+  plot_cont_cat <- function(data, cont_var, cat_var) {
+    cat_vect <- as.factor(data[, cat_var])
+    cont_vect <- data[, cont_var]
+    pal <-leaflet::colorNumeric(color_set, domain = c(1:nlevels(cat_vect)))
+    g <-
+      ggplot2::ggplot(data,
+                      ggplot2::aes(x = cat_vect,
+                                   y = cont_vect,
+                                   col = cat_vect,)) +
+      ggbeeswarm::geom_quasirandom() +
+      ggplot2::ggtitle(paste("Violin plot for", cont_var, "and", cat_var, collapse = " ")) +
+      ggplot2::labs(x = cat_var,
+                    y = cont_var,
+                    color = cat_var) +
+      scale_color_manual(values = sapply(c(1:nlevels(cat_vect)), pal)) +
+      theme_publication()
+  }
+
+  plot_cont_cont <- function(data, var1, var2) {
+    vec1 <- data[, var1]
+    vec2 <- data[, var2]
+    g <-
+      ggplot2::ggplot(data, ggplot2::aes(x = vec1, y = vec2)) +
+      ggplot2::geom_jitter(color = color_set[2]) +
+      ggplot2::geom_smooth(method = "lm",
+                           se = TRUE,
+                           color = color_set[5]) +
+      ggplot2::ggtitle(paste("Scatter plot for", var1, "and", var2, collapse = " ")) +
+      ggplot2::labs(x = var1,
+                    y = var2,
+                    color = var1) +
+      theme_publication()
+
+
+    to.ret <-
+      ggplotify::as.ggplot(
+        ggExtra::ggMarginal(
+          g,
+          type = "histogram",
+          fill = "transparent",
+          color = color_set[1]
+        )
       )
+  }
+
+  plot_cat_cat <- function(data, var1, var2) {
+    t <- table(data[, var1], data[, var2])
+    m <- mean(t)
+    rownames(t) <-
+      sapply(c(1:nlevels(data[, var1])), function(x)
+        paste(var1, '_', x, sep = ""))
+    colnames(t) <-
+      sapply(c(1:nlevels(data[, var2])), function(x)
+        paste(var2, '_', x, sep = ""))
+    x <- limma::strsplit2(rownames(t), "_")[1, 1]
+    y <- limma::strsplit2(colnames(t), "_")[1, 1]
+    rownames(t) <- strsplit2(rownames(t), "_")[, 2]
+    colnames(t) <- strsplit2(colnames(t), "_")[, 2]
+
+    t.col <- t < m
+    # set all values that satisfy the condition to "white"
+    t.col <- gsub("TRUE", "white", t.col)
+    # set all values that do not satisfy the condition to "black"
+    t.col <- gsub("FALSE", "black", t.col)
+    t.col <- matrix(t.col, nrow = dim(t)[1])
+
+    g <- superheat::superheat(
+      t,
+      grid.hline.col = 'white',
+      grid.vline.col = 'white',
+      X.text = t,
+      left.label.col = 'white',
+      bottom.label.col = 'white',
+      row.title = x,
+      column.title = y,
+      X.text.col = t.col,
+      legend = F,
+      title = paste("Heatmap of", var1, "and", var2, collapse = " ")
+
     )
-
-  }
-
-  scale_fill_Publication <- function(...) {
-    ggplot2::discrete_scale("fill", "Publication", scales::manual_pal(
-      values = c(
-        "#386cb0",
-        "#fdb462",
-        "#7fc97f",
-        "#ef3b2c",
-        "#662506",
-        "#a6cee3",
-        "#fb9a99",
-        "#984ea3",
-        "#ffff33"
-      )
-    ), ...)
-
-  }
-
-  scale_colour_Publication <- function(...) {
-    discrete_scale("colour",
-                   "Publication",
-                   scales::manual_pal(
-                     values = c(
-                       "#386cb0",
-                       "#fdb462",
-                       "#7fc97f",
-                       "#ef3b2c",
-                       "#662506",
-                       "#a6cee3",
-                       "#fb9a99",
-                       "#984ea3",
-                       "#ffff33"
-                     )
-                   ),
-                   ...)
+    return(g)
   }
 
   var1 <- data[, vars[1]]
@@ -221,190 +276,25 @@ plot_assoc <- function(data,
   } else {
     if (length(vars) == 1) {
       if (var1.is.cat) {
-        pt <- data.frame(prop.table(table(var1)))
-        to.ret <-
-          ggplot2::ggplot(data = data, ggplot2::aes(factor(data[, vars[1]]), fill = factor(data[, vars[1]]))) +
-          ggplot2::geom_bar(alpha = 0.7) +
-          ggplot2::labs(title = paste("Barplot for", vars[1], sep = " ")) +
-          ggplot2::labs(x = vars[1]) +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 0.6)) + theme_Publication() + scale_fill_Publication() +
-          ggplot2::guides(fill = ggplot2::guide_legend(title = vars[1]))
+        to.ret <- plot_cat(data, vars[1])
       } else{
-        ..density.. <- NULL
-        to.ret <-
-          ggplot2::ggplot(data = data, ggplot2::aes(data[, vars[1]])) +
-          ggplot2::geom_histogram(
-            ggplot2::aes(y = ..density..),
-            binwidth  = diff(range(data[, vars[1]], na.rm = T)) / 20,
-            fill = "steelblue",
-            col = "grey",
-            alpha = 0.7
-          ) + ggplot2::geom_density(col = "gray") +
-          ggplot2::labs(title = paste("Histogram for", vars[1], sep = " ")) +
-          ggplot2::labs(x = vars[1]) +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 0.6)) + theme_Publication() + scale_fill_Publication()
+        to.ret <- plot_cont(data, vars[1])
       }
     } else{
       var2 <- data[, vars[2]]
       var2.is.cat <- is.cat(var2)
 
       if (var1.is.cat & var2.is.cat) {
-        lbl <-
-          paste(
-            "Pearson's chi-squared test p.value =",
-            formatC(
-              test_pair(data, vars[1], vars[2], levels = levels),
-              digits = 4,
-              format = "g"
-            )
-          )
-        txt_grob <-
-          grid::grid.text(
-            lbl,
-            x = 0.5,
-            y = 0.5,
-            gp = grid::gpar(
-              col = "firebrick",
-              fontsize = 14,
-              fontface = "bold"
-            ),
-            draw = F
-          )
-        to.ret <-
-          ggplot2::ggplot(data) +
-          ggplot2::geom_bar(alpha = 0.7,  ggplot2::aes(x = factor(data[, vars[1]]), fill = factor(data[, vars[1]]))) +
-          ggplot2::ggtitle(paste("Relative Histogram of", vars[1], "and", vars[2], collapse = " ")) +
-          ggplot2::facet_grid(factor(data[, vars[2]]) ~ ., scales = "free") +
-          ggplot2::labs(x = vars[1]) +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(vjust = 0.6))  + theme_Publication() + scale_fill_Publication() +
-          ggplot2::guides(fill = "none")
-
-        g <- ggplot2::ggplot_gtable(ggplot2::ggplot_build(to.ret))
-        strip_both <- which(grepl('strip-', g$layout$name))
-        fills <- as.integer(unique(factor(data[, vars[2]])))
-        k <- 1
-        for (i in strip_both) {
-          j <- which(grepl('rect', g$grobs[[i]]$grobs[[1]]$childrenOrder))
-          g$grobs[[i]]$grobs[[1]]$children[[j]]$gp$fill <-
-            fills[k] + 1
-          k <- k + 1
-        }
-        to.ret <- ggplotify::as.ggplot(g) +
-          ggplot2::annotation_custom(txt_grob)
+        to.ret <- plot_cat_cat(data, vars[1], vars[2])
       }
       if (var1.is.cat & !var2.is.cat) {
-        lbl <-
-          paste("ANOVA test p.value =",
-                formatC(
-                  test_pair(data, vars[1], vars[2], levels = levels),
-                  digits = 4,
-                  format = "g"
-                ))
-        txt_grob <-
-          grid::grid.text(
-            lbl,
-            x = 0.5,
-            y = 0.8,
-            gp = grid::gpar(
-              col = "firebrick",
-              fontsize = 14,
-              fontface = "bold"
-            ),
-            draw = F
-          )
-        to.ret <-
-          ggplot2::ggplot(data, ggplot2::aes(
-            x = factor(var1),
-            y = var2,
-            col = factor(var1)
-          )) +
-          ggplot2::geom_boxplot() +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(hjust = 1)) +
-          ggplot2::ggtitle(paste("Boxplot for", vars[1], "and", vars[2], collapse = " ")) +
-          ggplot2::labs(x = vars[1],
-                        y = vars[2],
-                        color = vars[1]) +
-          ggplot2::annotation_custom(txt_grob) +
-          theme_Publication() + scale_fill_Publication()
+        to.ret <- plot_cont_cat(data, cont_var = vars[2], cat_var = vars[1])
       }
       if (!var1.is.cat & var2.is.cat) {
-        lbl <-
-          paste("ANOVA test p.value =",
-                formatC(
-                  test_pair(data, vars[1], vars[2], levels = levels),
-                  digits = 4,
-                  format = "g"
-                ))
-        txt_grob <-
-          grid::grid.text(
-            lbl,
-            x = 0.5,
-            y = 0.8,
-            gp = grid::gpar(
-              col = "firebrick",
-              fontsize = 14,
-              fontface = "bold"
-            ),
-            draw = F
-          )
-        to.ret <-
-          ggplot2::ggplot(data, ggplot2::aes(
-            x = factor(var2),
-            y = var1,
-            col = factor(var2)
-          )) +
-          ggplot2::geom_boxplot() +
-          ggplot2::theme(axis.text.x = ggplot2::element_text(hjust = 1)) +
-          ggplot2::ggtitle(paste("Boxplot for", vars[2], "and", vars[1], collapse = " ")) +
-          ggplot2::labs(x = vars[2],
-                        y = vars[1],
-                        color = vars[2]) +
-          ggplot2::annotation_custom(txt_grob) +
-          theme_Publication() + scale_fill_Publication()
+        to.ret <- plot_cont_cat(data, cont_var = vars[1], cat_var = vars[2])
       }
       if (!var1.is.cat & !var2.is.cat) {
-        lbl <-
-          paste("Correlation test p.value =",
-                formatC(
-                  test_pair(data, vars[1], vars[2], levels = levels),
-                  digits = 4,
-                  format = "g"
-                ))
-        txt_grob <-
-          grid::grid.text(
-            lbl,
-            x = 0.5,
-            y = 0.8,
-            gp = grid::gpar(
-              col = "firebrick",
-              fontsize = 14,
-              fontface = "bold"
-            ),
-            draw = F
-          )
-        g <-
-          ggplot2::ggplot(data, ggplot2::aes(x = var1, y = var2)) +
-          ggplot2::geom_jitter(color = "steelblue") +
-          ggplot2::geom_smooth(method = "lm",
-                               se = TRUE,
-                               color = "black") +
-          ggplot2::ggtitle(paste("Scatter plot for", vars[1], "and", vars[2], collapse = " ")) +
-          ggplot2::labs(x = vars[1],
-                        y = vars[2],
-                        color = vars[1]) +
-          ggplot2::annotation_custom(txt_grob) +
-          theme_Publication() + scale_fill_Publication()
-
-
-        to.ret <-
-          ggplotify::as.ggplot(
-            ggExtra::ggMarginal(
-              g,
-              type = "histogram",
-              fill = "transparent",
-              color = "black"
-            )
-          )
+        to.ret <- plot_cont_cont(data, vars[1], vars[2])
       }
     }
   }

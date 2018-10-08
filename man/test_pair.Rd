@@ -4,14 +4,14 @@
 \alias{test_pair}
 \title{Test for association between two paired variables.}
 \usage{
-test_pair(data, var1, var2, levels = NULL)
+test_pair(data, var1_name, var2_name, levels = NULL)
 }
 \arguments{
 \item{data}{A dataframe. It is strongly recommended that the dataframe has no missing data and is preprocessed.}
 
-\item{var1}{First variable}
+\item{var1_name}{First variable's name.}
 
-\item{var2}{Second variable}
+\item{var2_name}{Second variable's name.}
 
 \item{levels}{An integer value indicating the maximum number of levels of a categorical variable. To be used to distinguish the categorical variable. Defaults to NULL because it is supposed that \code{data} has been preprocessed using \code{\link[muvis]{data_preproc}} and the categorical variables are specified.}
 }
@@ -35,12 +35,12 @@ data("NHANES")
 data <- data_preproc(NHANES, levels = 15)
 ## Find test p.values for:
 ## One continuous and one categorical variable
-cont_cat_test <- test_pair(data, var1 = "LBXTC", var2 = "RIAGENDR")
+cont_cat_test <- test_pair(data, var1_name = "LBXTC", var2_name = "RIAGENDR")
 ## Two continuous variables
-cont_cont_test <- test_pair(data, var1 = "LBXTC", var2 = "LBXVIE")
+cont_cont_test <- test_pair(data, var1_name = "LBXTC", var2_name = "LBXVIE")
 
 ## Two categorical variables
-cat_cat_test <- test_pair(data, var1 = "DIQ010", var2 = "SMD410")
+cat_cat_test <- test_pair(data, var1_name = "DIQ010", var2_name = "SMD410")
 
 }
 \author{

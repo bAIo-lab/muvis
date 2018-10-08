@@ -123,14 +123,14 @@ plot_assoc <- function(data,
     g <-
       ggplot2::ggplot(data,
                       ggplot2::aes(x = cat_vect,
-                                   y = cont_vect,
-                                   col = cat_vect,)) +
-      ggbeeswarm::geom_quasirandom() +
-      ggplot2::ggtitle(paste("Violin plot for", cont_var, "and", cat_var, collapse = " ")) +
+                                   y = cont_vect
+                                   )) +
+      ggplot2::geom_boxplot(aes(col = 'Boxplot')) + ggbeeswarm::geom_quasirandom(aes(col=cat_vect)) +
+      ggplot2::ggtitle(paste("Boxplot for", cont_var, "and", cat_var, collapse = " ")) +
       ggplot2::labs(x = cat_var,
                     y = cont_var,
                     color = cat_var) +
-      scale_color_manual(values = sapply(c(1:nlevels(cat_vect)), pal)) +
+      scale_color_manual(values = as.vector(c(sapply(c(1:nlevels(cat_vect)), pal), 'grey'))) +
       theme_publication()
   }
 

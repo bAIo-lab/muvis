@@ -41,6 +41,7 @@
 #' @importFrom scales manual_pal
 #' @importFrom ggExtra ggMarginal
 #' @importFrom grid unit
+#' @importFrom ggplotify as.ggplot
 
 
 VVKL <-
@@ -52,88 +53,25 @@ VVKL <-
            plot = F,
            var1.name = "var1",
            var2.name = "var2") {
-    theme_Publication <- function(base_size = 14) {
-      (
-        ggthemes::theme_foundation(base_size = base_size)
-        + ggplot2::theme(
-          plot.title = ggplot2::element_text(
-            face = "bold",
-            size = ggplot2::rel(1.2),
-            hjust = 0.5
-          ),
-          text = ggplot2::element_text(),
-          panel.background = ggplot2::element_rect(colour = NA),
-          plot.background = ggplot2::element_rect(colour = NA),
-          panel.border = ggplot2::element_rect(colour = NA),
-          axis.title = ggplot2::element_text(face = "bold", size = ggplot2::rel(1)),
-          axis.title.y = ggplot2::element_text(angle = 90, vjust = 2),
-          axis.title.x = ggplot2::element_text(vjust = -0.2),
-          axis.line = ggplot2::element_line(colour = "black"),
-          axis.ticks = ggplot2::element_line(),
-          panel.grid.major = ggplot2::element_line(colour = "#f0f0f0"),
-          panel.grid.minor = ggplot2::element_blank(),
-          legend.key = ggplot2::element_rect(colour = NA),
-          legend.position = "bottom",
-          legend.direction = "horizontal",
-          legend.key.size = grid::unit(0.2, "cm"),
-          legend.spacing = grid::unit(0, "cm"),
-          legend.title = ggplot2::element_text(face = "italic"),
-          plot.margin = grid::unit(c(10, 5, 5, 5), "mm"),
-          strip.background = ggplot2::element_rect(colour = "#f0f0f0", fill = "#f0f0f0"),
-          strip.text = ggplot2::element_text(face = "bold")
-        )
-      )
 
-    }
-
-    scale_fill_Publication <- function(...) {
-      ggplot2::discrete_scale("fill", "Publication", scales::manual_pal(
-        values = c(
-          "#386cb0",
-          "#fdb462",
-          "#7fc97f",
-          "#ef3b2c",
-          "#662506",
-          "#a6cee3",
-          "#fb9a99",
-          "#984ea3",
-          "#ffff33"
-        )
-      ), ...)
-
-    }
-
-    scale_colour_Publication <- function(...) {
-      discrete_scale("colour",
-                     "Publication",
-                     scales::manual_pal(
-                       values = c(
-                         "#386cb0",
-                         "#fdb462",
-                         "#7fc97f",
-                         "#ef3b2c",
-                         "#662506",
-                         "#a6cee3",
-                         "#fb9a99",
-                         "#984ea3",
-                         "#ffff33"
-                       )
-                     ),
-                     ...)
-    }
-
+    color_set <- c("#440154FF",
+                   "#3B528BFF",
+                   "#FDE725FF",
+                   "#21908CFF",
+                   "#5DC863FF"
+    )
     if (plot) {
       g <-
         ggplot2::ggplot(data, ggplot2::aes(x = var1, y = var2)) +
-        ggplot2::geom_jitter(color = "steelblue") +
+        ggplot2::geom_jitter(color = color_set[2]) +
         ggplot2::geom_smooth(method = "lm",
                              se = TRUE,
-                             color = "black") +
+                             color = 'black') +
         ggplot2::ggtitle(paste("Scatter plot for", var1.name, "and", var2.name, collapse = " ")) +
         ggplot2::labs(x = var1.name,
                       y = var2.name,
                       color = var1.name) +
-        theme_Publication() + scale_fill_Publication()
+        theme_minimal()
     }
 
     if (!is.null(levels))
@@ -148,46 +86,67 @@ VVKL <-
     else
       lvl <- levels
 
+    # levels of continuous variables density is hardcoded
+    lvl = 20
     kl.calc <- function(data, group1, group2) {
       1:dim(data)[2] %>% purrr::map(function(x)
-        freq(data[, x], group1, group2))  %>% purrr::map(function(x)
-          abs(entropy::KL.plugin(x$group1, x$group2)) + abs(entropy::KL.plugin(x$group2, x$group1))) -> to.ret
+        kl.calc.vec(data[, x], group1, group2)) -> to.ret
       return(unlist(to.ret))
     }
-    freq <- function(vec, group1, group2) {
+    kl.calc.vec <- function(vec, group1, group2) {
+      freqs <- list(group1 = c(), group2 = c())
       if (!is.cat(vec)) {
-        vec <-
-          cut(vec,
-              breaks = seq((min(vec) - .0000001),
-                           (max(vec) + .0000001),
-                           (max(vec) - min(vec) + .0000002) /
-                             lvl
-              ),
-              labels = 1:lvl)
+        rangee <-
+          c(min(vec[group1], vec[group2]), max(vec[group1], vec[group2]))
+        freqs$group1 <-
+          entropy::discretize(vec[group1], lvl, r = rangee)
+        freqs$group2 <-
+          entropy::discretize(vec[group2], lvl, r = rangee)
+        freqs$group1 <-
+          replace(x = freqs$group1,
+                  list = which(freqs$group1 == 0),
+                  1)
+        freqs$group2 <-
+          replace(x = freqs$group2,
+                  list = which(freqs$group2 == 0),
+                  1)
+      } else{
+        levels(factor(vec)) %>% purrr::map(function(x)
+          list(group1 = max(1, sum(vec[group1] == x)), group2 = max(1, sum(vec[group2] == x)))) %>% purrr::map(function(x)
+            freqs <<-
+              list(
+                group1 = c(freqs$group1, x$group1),
+                group2 = c(freqs$group2, x$group2)
+              )) -> na
       }
-      to.ret <- list(group1 = c(), group2 = c())
-      levels(factor(vec)) %>% purrr::map(function(x)
-        list(group1 = max(1, sum(vec[group1] == x)), group2 = max(1, sum(vec[group2] == x)))) %>% purrr::map(function(x)
-          to.ret <<-
-            list(
-              group1 = c(to.ret$group1, x$group1),
-              group2 = c(to.ret$group2, x$group2)
-            )) -> na
-      return(to.ret)
+      kl1 <- entropy::KL.plugin(freqs$group1, freqs$group2)
+      kl2 <- entropy::KL.plugin(freqs$group2, freqs$group1)
+      if (kl1 == Inf)
+        return (abs(kl2 / 2))
+      else if (kl2 == Inf)
+        return (abs(kl1 / 2))
+      return((abs(
+        entropy::KL.plugin(freqs$group1, freqs$group2)
+      ) + abs(
+        entropy::KL.plugin(freqs$group2, freqs$group1)
+      )) / 2)
     }
-
     p.val <- function(x, vec) {
       return(which(sort(vec, decreasing = T) < x)[1] / length(vec))
     }
+
 
 
     lm <- lm(var2 ~ var1)
     sm <- summary(lm)
     res <- residuals(lm)
     names(res) <- 1:length(res)
+
+    # frac is hardcoded
     frac = .05
     down <- head(order(res), frac * dim(data)[1])
     up <- tail(order(res), frac * dim(data)[1])
+
     if (plot) {
       g <-
         g + ggplot2::geom_point(data = data[up, ],
@@ -197,11 +156,12 @@ VVKL <-
                             ggplot2::aes(x = var1[down], y = var2[down]),
                             color = 'springgreen3')
 
-      g <- ggExtra::ggMarginal(g,
+      g <- ggplotify::as.ggplot(ggExtra::ggMarginal(g,
                                type = "histogram",
                                fill = "transparent",
-                               color = "black")
+                               color = 'black'))
     }
+
     data <- data.frame(data)
     up.down <- c(up, down)
     kl <-
@@ -217,15 +177,19 @@ VVKL <-
       1:dim(kl.df)[2] %>% purrr::map(function(i)
         p.val(kl[i], kl.df[, i])) -> kls
 
-      kl <- sort(data.frame(
+      df <- data.frame(
         KL = kl,
         row.names = colnames(data),
+        variable = colnames(data),
         p.value = unlist(kls)
-      ),
-      decreasing = T)
+      )
+      kl <- df[order(-df$KL), ]
 
     } else {
-      kl <- sort(data.frame(KL = kl, row.names = colnames(data)), decreasing = T)
+      df <- data.frame(KL = kl,
+                       variable = colnames(data),
+                       row.names = colnames(data))
+      kl <- df[order(-df$KL), ]
     }
 
     if (plot) {

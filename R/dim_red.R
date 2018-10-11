@@ -33,6 +33,7 @@
 #' @importFrom stats prcomp dist
 #' @import     ggplot2
 #' @importFrom smallvis smallvis
+#' @importFrom leaflet colorNumeric
 
 dim_reduce <-
   function(data,
@@ -46,70 +47,15 @@ dim_reduce <-
       data <- data_preproc(data, levels = levels)
 
     data <- data.matrix(data)
-    theme_Publication <- function(base_size = 14) {
-      (
-        ggthemes::theme_foundation(base_size = base_size)
-        + ggplot2::theme(
-          plot.title = ggplot2::element_text(
-            face = "bold",
-            size = ggplot2::rel(1.2),
-            hjust = 0.5
-          ),
-          text = ggplot2::element_text(),
-          panel.background = ggplot2::element_rect(colour = NA),
-          plot.background = ggplot2::element_rect(colour = NA),
-          panel.border = ggplot2::element_rect(colour = NA),
-          axis.title = ggplot2::element_text(face = "bold", size = ggplot2::rel(1)),
-          axis.title.y = ggplot2::element_text(angle = 90, vjust = 2),
-          axis.title.x = ggplot2::element_text(vjust = -0.2),
-          axis.line = ggplot2::element_line(colour = "black"),
-          axis.ticks = ggplot2::element_line(),
-          panel.grid.major = ggplot2::element_line(colour = "#f0f0f0"),
-          panel.grid.minor = ggplot2::element_blank(),
-          legend.title = ggplot2::element_text(face = "italic"),
-          plot.margin = grid::unit(c(10, 5, 5, 5), "mm"),
-          strip.background = ggplot2::element_rect(colour = "#f0f0f0", fill = "#f0f0f0"),
-          strip.text = ggplot2::element_text(face = "bold")
-        )
-      )
+    theme_Publication <- ggplot2::theme_minimal
 
-    }
+    color_set <- c("#440154FF",
+                   "#3B528BFF",
+                   "#FDE725FF",
+                   "#21908CFF",
+                   "#5DC863FF"
+    )
 
-    scale_fill_Publication <- function(...) {
-      ggplot2::discrete_scale("fill", "Publication", scales::manual_pal(
-        values = c(
-          "#386cb0",
-          "#fdb462",
-          "#7fc97f",
-          "#ef3b2c",
-          "#662506",
-          "#a6cee3",
-          "#fb9a99",
-          "#984ea3",
-          "#ffff33"
-        )
-      ), ...)
-
-    }
-
-    scale_colour_Publication <- function(...) {
-      discrete_scale("colour",
-                     "Publication",
-                     scales::manual_pal(
-                       values = c(
-                         "#386cb0",
-                         "#fdb462",
-                         "#7fc97f",
-                         "#ef3b2c",
-                         "#662506",
-                         "#a6cee3",
-                         "#fb9a99",
-                         "#984ea3",
-                         "#ffff33"
-                       )
-                     ),
-                     ...)
-    }
 
 
     tsneRun <- function(distMat,
@@ -137,10 +83,10 @@ dim_reduce <-
         eigs <- pcRes$sdev ^ 2
         eigs <- eigs / sum(eigs)
         plotTab <- data.frame(pcRes$x[, c(1, 2)])
-        to.ret <- ggplot2::ggplot(plotTab, aes(x = PC1, y = PC2)) +
-          ggplot2::geom_point() +
+        to.ret <- ggplot2::ggplot(plotTab, ggplot2::aes(x = PC1, y = PC2)) +
+          ggplot2::geom_point(col=color_set[2]) +
           ggplot2::ggtitle(paste("Scatter plot for PCA")) +
-          theme_Publication() + scale_fill_Publication() +
+          theme_Publication() +
           ggplot2::labs(x = "component 1", y = "component 2")
       }
 
@@ -149,8 +95,8 @@ dim_reduce <-
         plotTab <-
           data.frame(tsneRun(distViab, perplexity = 2, max_iter = 10000))
         plotTab$sampleID <- rownames(plotTab)
-        to.ret <- ggplot2::ggplot(plotTab, aes(x = x, y = y)) +
-          ggplot2::geom_point() +
+        to.ret <- ggplot2::ggplot(plotTab, ggplot2::aes(x = x, y = y)) +
+          ggplot2::geom_point(col=color_set[2]) +
           ggplot2::ggtitle(paste("Scatter plot for t-SNE")) +
           theme_Publication() + scale_fill_Publication() +
           ggplot2::labs(x = "component 1", y = "component 2")
@@ -172,13 +118,19 @@ dim_reduce <-
         plotTab$sampleID <- rownames(plotTab)
         X1 <- NULL
         X2 <- NULL
-        to.ret <- ggplot2::ggplot(plotTab, aes(x = X1, y = X2)) +
-          ggplot2::geom_point() +
+        to.ret <- ggplot2::ggplot(plotTab, ggplot2::aes(x = X1, y = X2)) +
+          ggplot2::geom_point(col = color_set[2]) +
           ggplot2::ggtitle(paste("Scatter plot for UMAP")) +
-          theme_Publication() + scale_fill_Publication() +
+          theme_Publication() +
           ggplot2::labs(x = "component 1", y = "component 2")
       }
     } else{
+      if(is.factor(annot1)){
+        pal <-leaflet::colorNumeric(color_set, domain = c(1:nlevels(annot1)))
+        scale <- ggplot2::scale_color_manual(values = sapply(c(1:nlevels(annot1)), pal))
+      } else {
+        scale <- ggplot2::scale_color_gradientn(colours = color_set)
+      }
       if (is.null(annot2)) {
         if (method == "pca") {
           pcRes <- prcomp(data, scale. = FALSE, center = TRUE)
@@ -188,13 +140,13 @@ dim_reduce <-
           PC1 <- NULL
           PC2 <- NULL
           to.ret <-
-            ggplot2::ggplot(plotTab, aes(x = PC1, y = PC2, col = annot1)) +
+            ggplot2::ggplot(plotTab, ggplot2::aes(x = PC1, y = PC2, col = annot1)) +
             ggplot2::geom_point() +
             ggplot2::ggtitle(paste("Scatter plot for PCA")) +
-            theme_Publication() + scale_fill_Publication() +
+            theme_Publication() +
             ggplot2::labs(x = "component 1",
                           y = "component 2",
-                          colour = annot1.name) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
+                          colour = annot1.name) + scale
         }
         if (method == "tsne") {
           distViab <- dist(data)
@@ -204,13 +156,13 @@ dim_reduce <-
           x <- NULL
           y <- NULL
           to.ret <-
-            ggplot2::ggplot(plotTab, aes(x = x, y = y, col = annot1)) +
+            ggplot2::ggplot(plotTab, ggplot2::aes(x = x, y = y, col = annot1)) +
             ggplot2::geom_point() +
             ggplot2::ggtitle(paste("Scatter plot for t-SNE")) +
-            theme_Publication() + scale_fill_Publication() +
+            theme_Publication() +
             ggplot2::labs(x = "component 1",
                           y = "component 2",
-                          colour = annot1.name) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
+                          colour = annot1.name) + scale
 
         }
         if (method == "umap") {
@@ -230,13 +182,13 @@ dim_reduce <-
           X1 <- NULL
           X2 <- NULL
           to.ret <-
-            ggplot2::ggplot(plotTab, aes(x = X1, y = X2, col = annot1)) +
+            ggplot2::ggplot(plotTab, ggplot2::aes(x = X1, y = X2, col = annot1)) +
             ggplot2::geom_point() +
             ggplot2::ggtitle(paste("Scatter plot for UMAP")) +
             theme_Publication() + scale_fill_Publication() +
             ggplot2::labs(x = "component 1",
                           y = "component 2",
-                          colour = annot1.name) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
+                          colour = annot1.name) + scale
         }
       } else{
         if (method == "pca") {
@@ -247,9 +199,9 @@ dim_reduce <-
           PC1 <- NULL
           PC2 <- NULL
           to.ret <-
-            ggplot2::ggplot(plotTab, aes(x = PC1,
+            ggplot2::ggplot(plotTab, ggplot2::aes(x = PC1,
                                          y = PC2)) +
-            ggplot2::geom_point(aes(colour = annot1,
+            ggplot2::geom_point(ggplot2::aes(colour = annot1,
                                     shape = annot2)) +
             ggplot2::ggtitle(paste("Scatter plot for PCA")) +
             theme_Publication() + scale_fill_Publication() +
@@ -258,7 +210,7 @@ dim_reduce <-
               y = "component 2",
               colour = annot1.name,
               shape = annot2.name
-            ) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
+            ) + scale
         }
         if (method == "tsne") {
           distViab <- stats::dist(data)
@@ -267,7 +219,7 @@ dim_reduce <-
           x <- NULL
           y <- NULL
           to.ret <-
-            ggplot2::ggplot(plotTab, aes(
+            ggplot2::ggplot(plotTab, ggplot2::aes(
               x = x,
               y = y,
               col = annot1,
@@ -281,7 +233,7 @@ dim_reduce <-
               y = "component 2",
               colour = annot1.name,
               shape = annot2.name
-            ) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
+            ) + scale
 
         }
         if (method == "umap") {
@@ -300,7 +252,7 @@ dim_reduce <-
           X1 <- NULL
           X2 <- NULL
           to.ret <-
-            ggplot2::ggplot(plotTab, aes(
+            ggplot2::ggplot(plotTab, ggplot2::aes(
               x = X1,
               y = X2,
               col = annot1,
@@ -314,7 +266,7 @@ dim_reduce <-
               y = "component 2",
               colour = annot1.name,
               shape = annot2.name
-            ) + scale_colour_gradientn(colours = c("red", "yellow", "green", "lightblue", "darkblue"))
+            ) + scale
         }
       }
     }

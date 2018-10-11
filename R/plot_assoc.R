@@ -62,6 +62,7 @@
 #' @importFrom limma strsplit2
 #' @importFrom leaflet colorNumeric
 #' @importFrom ggbeeswarm geom_quasirandom
+#' @importFrom superheat superheat
 
 plot_assoc <- function(data,
                        vars,
@@ -142,7 +143,7 @@ plot_assoc <- function(data,
       ggplot2::geom_jitter(color = color_set[2]) +
       ggplot2::geom_smooth(method = "lm",
                            se = TRUE,
-                           color = color_set[5]) +
+                           color = 'black') +
       ggplot2::ggtitle(paste("Scatter plot for", var1, "and", var2, collapse = " ")) +
       ggplot2::labs(x = var1,
                     y = var2,
@@ -156,7 +157,7 @@ plot_assoc <- function(data,
           g,
           type = "histogram",
           fill = "transparent",
-          color = color_set[1]
+          color = 'black'
         )
       )
   }

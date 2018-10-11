@@ -44,5 +44,9 @@ Imports:
     scales,
     plotly,
     AnomalyDetection,
-    ggplotify
+    ggplotify,
+    ggbeeswarm,
+    leaflet,
+    superheat,
+    ForceAtlas2
 Suggests: packagedocs

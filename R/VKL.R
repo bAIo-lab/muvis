@@ -41,7 +41,6 @@
 #' @importFrom dplyr pull
 #' @importFrom entropy KL.plugin discretize
 #' @importFrom dplyr %>%
-#' @importFrom LaplacesDemon KLD
 
 
 

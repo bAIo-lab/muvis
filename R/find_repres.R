@@ -61,7 +61,7 @@ find_repres <- function (graph,
     sapply(community_lengths, function(x)
       x / sum(community_lengths))
 
-  community_no <- round(weights * (ratio * ncol(data)))
+  community_no <- round(weights * (ratio * length(gv$network$x$nodes)))
 
   return(as.vector(unlist(sapply(c(
     1:length(community_lengths)

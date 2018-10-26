@@ -19,7 +19,7 @@ News and announcements for the **muvis** project will appear here:
 https://baio-lab.github.io/muvis/
 
 # Datasets
-It may be useful to test **muvis** on these datasets. Consider that these datasets have some missing values and must be replaced.
+It may be useful to test **muvis** on these datasets. Consider that these datasets have some missing values and must be imputed.
 
 * [Mice Protein Expression Data](https://archive.ics.uci.edu/ml/datasets/Mice+Protein+Expression)
 * [Ames Housing Data](http://ww2.amstat.org/publications/jse/v19n3/Decock/AmesHousing.xls) ([Documentation](http://ww2.amstat.org/publications/jse/v19n3/Decock/DataDocumentation.txt))

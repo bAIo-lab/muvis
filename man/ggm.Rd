@@ -4,8 +4,8 @@
 \alias{ggm}
 \title{construct and visualize Gaussian Graphical Models.}
 \usage{
-ggm(data, methods = c("glasso"), community = TRUE, betweenness = TRUE,
-  plot = FALSE, levels = NULL, ...)
+ggm(data, methods = c("glasso"), community = TRUE,
+  betweenness = TRUE, plot = FALSE, levels = NULL, ...)
 }
 \arguments{
 \item{data}{A normalized dataframe or matrix with no missing data of continuous measurements.}

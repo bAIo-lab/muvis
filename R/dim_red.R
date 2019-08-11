@@ -98,7 +98,7 @@ dim_reduce <-
         to.ret <- ggplot2::ggplot(plotTab, ggplot2::aes(x = x, y = y)) +
           ggplot2::geom_point(col=color_set[2]) +
           ggplot2::ggtitle(paste("Scatter plot for t-SNE")) +
-          theme_Publication() + scale_fill_Publication() +
+          theme_Publication() + #scale_fill_Publication() +
           ggplot2::labs(x = "component 1", y = "component 2")
 
       }
@@ -185,7 +185,7 @@ dim_reduce <-
             ggplot2::ggplot(plotTab, ggplot2::aes(x = X1, y = X2, col = annot1)) +
             ggplot2::geom_point() +
             ggplot2::ggtitle(paste("Scatter plot for UMAP")) +
-            theme_Publication() + scale_fill_Publication() +
+            theme_Publication() + #scale_fill_Publication() +
             ggplot2::labs(x = "component 1",
                           y = "component 2",
                           colour = annot1.name) + scale
@@ -204,7 +204,7 @@ dim_reduce <-
             ggplot2::geom_point(ggplot2::aes(colour = annot1,
                                     shape = annot2)) +
             ggplot2::ggtitle(paste("Scatter plot for PCA")) +
-            theme_Publication() + scale_fill_Publication() +
+            theme_Publication() + #scale_fill_Publication() +
             ggplot2::labs(
               x = "component 1",
               y = "component 2",
@@ -227,7 +227,7 @@ dim_reduce <-
             )) +
             ggplot2::geom_point() +
             ggplot2::ggtitle(paste("Scatter plot for t-SNE")) +
-            theme_Publication() + scale_fill_Publication() +
+            theme_Publication() + #scale_fill_Publication() +
             ggplot2::labs(
               x = "component 1",
               y = "component 2",
@@ -260,7 +260,7 @@ dim_reduce <-
             )) +
             ggplot2::geom_point() +
             ggplot2::ggtitle(paste("Scatter plot for UMAP")) +
-            theme_Publication() + scale_fill_Publication() +
+            theme_Publication() + # scale_fill_Publication() +
             ggplot2::labs(
               x = "component 1",
               y = "component 2",

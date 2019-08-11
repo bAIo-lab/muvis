@@ -4,8 +4,8 @@
 \alias{graph_vis}
 \title{graph visualization and community detection}
 \usage{
-graph_vis(graph, directed = F, community = T, betweenness = T, plot = F,
-  ...)
+graph_vis(graph, directed = F, community = T, betweenness = T,
+  plot = F, ...)
 }
 \arguments{
 \item{graph}{An arbitrary graph object in R.}

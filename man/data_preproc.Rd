@@ -4,8 +4,8 @@
 \alias{data_preproc}
 \title{preprocess the data}
 \usage{
-data_preproc(data, is.cat = NULL, levels = 5, detect.outliers = FALSE,
-  alpha = 0.5, ...)
+data_preproc(data, is.cat = NULL, levels = 5,
+  detect.outliers = FALSE, alpha = 0.5, ...)
 }
 \arguments{
 \item{data}{A data.frame object or a matrix.}

@@ -4,8 +4,9 @@
 \alias{dim_reduce}
 \title{Dimensionality reduction and visualization.}
 \usage{
-dim_reduce(data, method = "pca", annot1 = NULL, annot1.name = "annot1",
-  annot2 = NULL, annot2.name = "annot2", levels = NULL)
+dim_reduce(data, method = "pca", annot1 = NULL,
+  annot1.name = "annot1", annot2 = NULL, annot2.name = "annot2",
+  levels = NULL)
 }
 \arguments{
 \item{data}{A normalized dataframe or matrix with no missing data to be reduced in dimension.}
